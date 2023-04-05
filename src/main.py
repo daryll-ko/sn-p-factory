@@ -9,7 +9,7 @@ import xmltodict
 INPUT_FOLDER = "inputs"
 
 
-def parse_xmp(filename: str) -> dict[str, any]:
+def read_xmp(filename: str) -> dict[str, any]:
     with open(
         os.path.join(os.path.dirname(__file__), INPUT_FOLDER, filename), "r"
     ) as input_file:
@@ -70,5 +70,5 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     return System(name, neurons, synapses, input_neurons, output_neurons, spike_train)
 
 
-dict = parse_xmp("ex1 - 3k+3 spiker.xmp")
+dict = read_xmp("ex1 - 3k+3 spiker.xmp")
 parse_xmp_dict(dict)
