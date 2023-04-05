@@ -25,7 +25,7 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     output_neurons = []
     spike_train = ""
 
-    def get_value(s: str) -> int:
+    def get_symbol_value(s: str) -> int:
         if s == "0":
             return 0
         elif s == "a":
@@ -37,8 +37,8 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
         result = re.match("(.*)/(\d*a)->(\d*a|0);(\d+)", s)
         regex, consumed, produced, delay = result.groups()
 
-        consumed = int(get_value(consumed))
-        produced = int(get_value(produced))
+        consumed = int(get_symbol_value(consumed))
+        produced = int(get_symbol_value(produced))
         delay = int(delay)
 
         return Rule(regex, consumed, produced, delay)
