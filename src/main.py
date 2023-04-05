@@ -3,6 +3,7 @@ from classes.Neuron import Neuron
 from classes.Synapse import Synapse
 from classes.Rule import Rule
 
+import re
 import os
 import xmltodict
 
@@ -36,7 +37,14 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     spike_train = ""
 
     def parse_rule(s: str) -> Rule:
-        return Rule("a", 1, 1, 0)
+        result = re.match("(.*)/(\d*a)->(\d*a);(\d+)", s)
+        regex, consumed, produced, delay = result.groups()
+
+        consumed = int(consumed)
+        produced = int(produced)
+        delay = int(delay)
+
+        return Rule(regex, consumed, produced, delay)
 
     def parse_neuron_info(d: dict[str, any]) -> Neuron:
         id = to_id[d["id"]]
