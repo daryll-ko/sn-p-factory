@@ -29,10 +29,10 @@ def parse_rule(s: str) -> Rule:
 def parse_neuron(d: dict[str, any], to_id: dict[str, int]) -> Neuron:
     id = to_id[d["id"]]
     label = d["id"]
-    position = int(d["position"]["x"]), int(d["position"]["y"])
-    rules = list(map(parse_rule, d["rules"].split()))
+    position = round(float(d["position"]["x"])), round(float(d["position"]["y"]))
+    rules = list(map(parse_rule, d["rules"].split())) if "rules" in d else []
     spikes = int(d["spikes"])
-    downtime = int(d["delay"])
+    downtime = int(d["delay"]) if "delay" in d else 0
     return Neuron(id, label, position, rules, spikes, downtime)
 
 
@@ -48,7 +48,6 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
             to_id[k] = current_id
             current_id += 1
 
-    name = filename
     neurons = []
     synapses = []
     input_neurons = []
@@ -58,22 +57,25 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     for v in d.values():
         neurons.append(parse_neuron(v, to_id))
 
-    for k in d.keys():
-        id = to_id[k["id"]]
+    for v in d.values():
+        id = to_id[v["id"]]
 
-        if bool(k["isInput"]):
+        if v["isInput"] == "true":
             input_neurons.append(id)
 
-        if bool(k["isOutput"]):
+        if v["isOutput"] == "true":
             output_neurons.append(id)
 
-        if "bitstring" in k:
-            spike_train = k["bitstring"]
+        if "bitstring" in v and v["bitstring"]:
+            spike_train = v["bitstring"]
 
-        for inner_k, inner_v in k["outWeights"].items():
-            start = id
-            end = to_id[inner_k]
-            weight = inner_v
-            synapses.append(Synapse(start, end, weight))
+        if "outWeights" in v:
+            for inner_k, inner_v in v["outWeights"].items():
+                start = id
+                end = to_id[inner_k]
+                weight = int(inner_v)
+                synapses.append(Synapse(start, end, weight))
 
-    return System(name, neurons, synapses, input_neurons, output_neurons, spike_train)
+    return System(
+        filename, neurons, synapses, input_neurons, output_neurons, spike_train
+    )
