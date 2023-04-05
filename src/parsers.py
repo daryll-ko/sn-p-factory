@@ -1,7 +1,7 @@
-from classes.System import System
-from classes.Neuron import Neuron
-from classes.Synapse import Synapse
-from classes.Rule import Rule
+from src.classes.System import System
+from src.classes.Neuron import Neuron
+from src.classes.Synapse import Synapse
+from src.classes.Rule import Rule
 
 import re
 
