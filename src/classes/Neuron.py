@@ -6,5 +6,7 @@ from .Rule import Rule
 class Neuron:
     id: int
     label: str
-    spikes: int
+    position: tuple[int, int]
     rules: list[Rule]
+    spikes: int
+    downtime: int

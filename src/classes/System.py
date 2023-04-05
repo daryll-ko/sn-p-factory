@@ -5,7 +5,9 @@ from .Synapse import Synapse
 
 @dataclass
 class System:
+    name: str
     neurons: list[Neuron]
     synapses: list[Synapse]
-    input_neuron: int
-    output_neuron: int
+    input_neurons: list[int]
+    output_neuron: list[int]
+    spike_train: str
