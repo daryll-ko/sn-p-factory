@@ -9,5 +9,5 @@ class System:
     neurons: list[Neuron]
     synapses: list[Synapse]
     input_neurons: list[int]
-    output_neuron: list[int]
+    output_neurons: list[int]
     spike_train: str
