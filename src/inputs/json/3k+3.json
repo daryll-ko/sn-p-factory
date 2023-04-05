@@ -2,7 +2,7 @@
 	"name": "3k+3",
 	"neurons": [
 		{
-			"id": 1,
+			"id": 0,
 			"label": "n1",
 			"position": {
 				"x": 50,
@@ -20,7 +20,7 @@
 			"downtime": 0
 		},
 		{
-			"id": 2,
+			"id": 1,
 			"label": "n2",
 			"position": {
 				"x": 200,
@@ -38,7 +38,7 @@
 			"downtime": 0
 		},
 		{
-			"id": 3,
+			"id": 2,
 			"label": "n3",
 			"position": {
 				"x": 400,
@@ -56,7 +56,7 @@
 			"downtime": 0
 		},
 		{
-			"id": 4,
+			"id": 3,
 			"label": "n4",
 			"position": {
 				"x": 655,
@@ -69,6 +69,11 @@
 	],
 	"synapses": [
 		{
+			"from": 0,
+			"to": 1,
+			"weight": 1
+		},
+		{
 			"from": 1,
 			"to": 2,
 			"weight": 1
@@ -77,14 +82,9 @@
 			"from": 2,
 			"to": 3,
 			"weight": 1
-		},
-		{
-			"from": 3,
-			"to": 4,
-			"weight": 1
 		}
 	],
 	"inputNeurons": [],
-	"outputNeuron": [4],
+	"outputNeuron": [3],
 	"spikeTrain": ""
 }
