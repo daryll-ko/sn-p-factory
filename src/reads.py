@@ -37,4 +37,4 @@ def read_yaml(filename: str) -> dict[str, any]:
         ),
         "r",
     ) as input_file:
-        return yaml.load(input_file.read())
+        return yaml.load(input_file.read(), Loader=yaml.Loader)
