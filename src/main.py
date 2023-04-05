@@ -4,17 +4,6 @@ from classes.Synapse import Synapse
 from classes.Rule import Rule
 
 import re
-import os
-import xmltodict
-
-INPUT_FOLDER = "inputs"
-
-
-def read_xmp(filename: str) -> dict[str, any]:
-    with open(
-        os.path.join(os.path.dirname(__file__), INPUT_FOLDER, filename), "r"
-    ) as input_file:
-        return xmltodict.parse(input_file.read())["content"]
 
 
 def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
@@ -36,12 +25,20 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     output_neurons = []
     spike_train = ""
 
+    def get_value(s: str) -> int:
+        if s == "0":
+            return 0
+        elif s == "a":
+            return 1
+        else:
+            return int(s.replace("a", ""))
+
     def parse_rule(s: str) -> Rule:
-        result = re.match("(.*)/(\d*a)->(\d*a);(\d+)", s)
+        result = re.match("(.*)/(\d*a)->(\d*a|0);(\d+)", s)
         regex, consumed, produced, delay = result.groups()
 
-        consumed = int(consumed)
-        produced = int(produced)
+        consumed = int(get_value(consumed))
+        produced = int(get_value(produced))
         delay = int(delay)
 
         return Rule(regex, consumed, produced, delay)
@@ -76,7 +73,3 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
         neurons.append(parse_neuron_info(v))
 
     return System(name, neurons, synapses, input_neurons, output_neurons, spike_train)
-
-
-dict = read_xmp("ex1 - 3k+3 spiker.xmp")
-parse_xmp_dict(dict)
