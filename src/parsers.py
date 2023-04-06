@@ -79,3 +79,42 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     return System(
         filename, neurons, synapses, input_neurons, output_neurons, spike_train
     )
+
+
+def parse_rule(d: dict[str, any]) -> Rule:
+    regex = d["regex"]
+    consumed = d["consumed"]
+    produced = d["produced"]
+    delay = d["delay"]
+
+    return Rule(regex, consumed, produced, delay)
+
+
+def parse_neuron(d: dict[str, any]) -> Neuron:
+    id = d["id"]
+    label = d["label"]
+    position = d["position"]["x"], d["position"]["y"]
+    rules = [parse_rule(rule) for rule in d["rules"]]
+    spikes = d["spikes"]
+    downtime = d["downtime"]
+
+    return Neuron(id, label, position, rules, spikes, downtime)
+
+
+def parse_synapse(d: dict[str, int]) -> Neuron:
+    start = d["from"]
+    end = d["to"]
+    weight = d["weight"]
+
+    return Synapse(start, end, weight)
+
+
+def parse_dict(d: dict[str, any]) -> System:
+    name = d["name"]
+    neurons = [parse_neuron(neuron) for neuron in d["neurons"]]
+    synapses = [parse_synapse(synapse) for synapse in d["synapses"]]
+    input_neurons = d["inputNeurons"]
+    output_neurons = d["outputNeurons"]
+    spike_train = d["spikeTrain"]
+
+    return System(name, neurons, synapses, input_neurons, output_neurons, spike_train)
