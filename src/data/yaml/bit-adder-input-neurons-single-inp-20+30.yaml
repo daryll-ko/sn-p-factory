@@ -1,0 +1,81 @@
+name: bit-adder-input-neurons-single-inp-20+30
+neurons:
+- id: 0
+  label: n4
+  position:
+    x: 728
+    y: 220
+  rules: []
+  spikes: 0
+  downtime: 0
+- id: 1
+  label: n0-phVoNyY4r
+  position:
+    x: 126
+    y: 151
+  rules:
+  - regex: 20a
+    consumed: 1
+    produced: 1
+    delay: 2
+  - regex: 19a
+    consumed: 1
+    produced: 1
+    delay: 1
+  spikes: 20
+  downtime: 0
+- id: 2
+  label: n2-Tx5pOCJeb
+  position:
+    x: 518
+    y: 270
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  - regex: 2a
+    consumed: 1
+    produced: 0
+    delay: 0
+  - regex: 3a
+    consumed: 2
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+- id: 3
+  label: out1-vW6yQ2nQJ
+  position:
+    x: 348
+    y: 100
+  rules: []
+  spikes: 0
+  downtime: 0
+- id: 4
+  label: n1-s3nFo3psl
+  position:
+    x: 137
+    y: 359
+  rules: []
+  spikes: 0
+  downtime: 0
+synapses:
+- from: 1
+  to: 2
+  weight: 1
+- from: 1
+  to: 3
+  weight: 1
+- from: 2
+  to: 0
+  weight: 1
+- from: 4
+  to: 2
+  weight: 1
+inputNeurons:
+- 4
+outputNeurons:
+- 0
+- 3
+spikeTrain: 0,1,1,1,1

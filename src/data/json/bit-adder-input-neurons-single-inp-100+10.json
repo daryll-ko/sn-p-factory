@@ -1,0 +1,128 @@
+{
+    "name": "bit-adder-input-neurons-single-inp-100+10",
+    "neurons": [
+        {
+            "id": 0,
+            "label": "n4",
+            "position": {
+                "x": 728,
+                "y": 220
+            },
+            "rules": [],
+            "spikes": 0,
+            "downtime": 0
+        },
+        {
+            "id": 1,
+            "label": "n1-ItXCNFOva",
+            "position": {
+                "x": 117,
+                "y": 356
+            },
+            "rules": [
+                {
+                    "regex": "100a",
+                    "consumed": 1,
+                    "produced": 1,
+                    "delay": 2
+                },
+                {
+                    "regex": "99a",
+                    "consumed": 1,
+                    "produced": 1,
+                    "delay": 2
+                },
+                {
+                    "regex": "98a",
+                    "consumed": 1,
+                    "produced": 1,
+                    "delay": 0
+                }
+            ],
+            "spikes": 100,
+            "downtime": 0
+        },
+        {
+            "id": 2,
+            "label": "n2-Tx5pOCJeb",
+            "position": {
+                "x": 479,
+                "y": 240
+            },
+            "rules": [
+                {
+                    "regex": "a",
+                    "consumed": 1,
+                    "produced": 1,
+                    "delay": 0
+                },
+                {
+                    "regex": "2a",
+                    "consumed": 1,
+                    "produced": 0,
+                    "delay": 0
+                },
+                {
+                    "regex": "3a",
+                    "consumed": 2,
+                    "produced": 1,
+                    "delay": 0
+                }
+            ],
+            "spikes": 0,
+            "downtime": 0
+        },
+        {
+            "id": 3,
+            "label": "out1-I_Yb5Ly07",
+            "position": {
+                "x": 296,
+                "y": 470
+            },
+            "rules": [],
+            "spikes": 0,
+            "downtime": 0
+        },
+        {
+            "id": 4,
+            "label": "n0-g5ewdW4hM",
+            "position": {
+                "x": 113,
+                "y": 73
+            },
+            "rules": [],
+            "spikes": 0,
+            "downtime": 0
+        }
+    ],
+    "synapses": [
+        {
+            "from": 1,
+            "to": 2,
+            "weight": 1
+        },
+        {
+            "from": 1,
+            "to": 3,
+            "weight": 1
+        },
+        {
+            "from": 2,
+            "to": 0,
+            "weight": 1
+        },
+        {
+            "from": 4,
+            "to": 2,
+            "weight": 1
+        }
+    ],
+    "inputNeurons": [
+        4
+    ],
+    "outputNeurons": [
+        0,
+        3
+    ],
+    "spikeTrain": "0,1,0,1"
+}

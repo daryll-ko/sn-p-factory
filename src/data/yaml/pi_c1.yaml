@@ -1,0 +1,75 @@
+name: pi_c1
+neurons:
+- id: 0
+  label: n0-JOq07l2L_
+  position:
+    x: 181
+    y: 134
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 1
+  downtime: 0
+- id: 1
+  label: n1-MFOIAHcaS
+  position:
+    x: 365
+    y: 134
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+- id: 2
+  label: n2-kSCNgatep
+  position:
+    x: 553
+    y: 132
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+- id: 3
+  label: n3-HXihrNEd3
+  position:
+    x: 724
+    y: 134
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+- id: 4
+  label: out-D-Rv4M4LE
+  position:
+    x: 915
+    y: 156
+  rules: []
+  spikes: 0
+  downtime: 0
+synapses:
+- from: 0
+  to: 1
+  weight: 1
+- from: 1
+  to: 2
+  weight: 1
+- from: 2
+  to: 3
+  weight: 1
+- from: 3
+  to: 4
+  weight: 1
+inputNeurons: []
+outputNeurons:
+- 4
+spikeTrain: ''

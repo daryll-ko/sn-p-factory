@@ -1,0 +1,94 @@
+name: bit-adder-input-neurons-single-inp-13+13
+neurons:
+- id: 0
+  label: n4
+  position:
+    x: 728
+    y: 220
+  rules: []
+  spikes: 0
+  downtime: 0
+- id: 1
+  label: n0-phVoNyY4r
+  position:
+    x: 112
+    y: 197
+  rules:
+  - regex: 13a
+    consumed: 1
+    produced: 1
+    delay: 0
+  - regex: 12a
+    consumed: 1
+    produced: 1
+    delay: 1
+  - regex: 11a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 13
+  downtime: 0
+- id: 2
+  label: n2-Tx5pOCJeb
+  position:
+    x: 511
+    y: 312
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  - regex: 2a
+    consumed: 1
+    produced: 0
+    delay: 0
+  - regex: 3a
+    consumed: 2
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+- id: 3
+  label: out1-JlPp9A7ID
+  position:
+    x: 304
+    y: 110
+  rules: []
+  spikes: 0
+  downtime: 0
+- id: 4
+  label: ou2-zBs7-iAAq
+  position:
+    x: 376
+    y: 542
+  rules: []
+  spikes: 0
+  downtime: 0
+- id: 5
+  label: n1-HD6U3IMB8
+  position:
+    x: 145
+    y: 409
+  rules: []
+  spikes: 0
+  downtime: 0
+synapses:
+- from: 1
+  to: 2
+  weight: 1
+- from: 1
+  to: 3
+  weight: 1
+- from: 2
+  to: 0
+  weight: 1
+- from: 5
+  to: 2
+  weight: 1
+inputNeurons:
+- 5
+outputNeurons:
+- 0
+- 3
+- 4
+spikeTrain: 1,0,1,1
