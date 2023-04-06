@@ -55,5 +55,5 @@ synapses:
     to: 4
     weight: 1
 inputNeurons: []
-outputNeurons: []
+outputNeurons: [4]
 spikeTrain: ""
