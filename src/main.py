@@ -29,7 +29,7 @@ def convert():
             with open(
                 os.path.join(JSON_PATH, f"{filename}.json"), "w"
             ) as json_output_file:
-                json_output_file.write(json.dumps(system_1.to_dict(), indent=4))
+                json_output_file.write(json.dumps(system_1.to_dict(), indent=2))
 
             with open(
                 os.path.join(YAML_PATH, f"{filename}.yaml"), "w"
@@ -68,10 +68,49 @@ def convert():
     print(f"Failures: {failure} ({round(100 * failure / (success + failure), 1)}%)")
     print()
     print("\n".join(failure_filenames))
+    print()
+
+
+def benchmark():
+    total_xmp_size = 0
+    total_json_size = 0
+    total_yaml_size = 0
+
+    for file in os.listdir(JSON_PATH):
+        filename = os.path.splitext(file)[0]
+
+        xmp_size = os.path.getsize(os.path.join(XMP_PATH, f"{filename}.xmp"))
+        json_size = os.path.getsize(os.path.join(JSON_PATH, f"{filename}.json"))
+        yaml_size = os.path.getsize(os.path.join(YAML_PATH, f"{filename}.yaml"))
+
+        total_xmp_size += xmp_size
+        total_json_size += json_size
+        total_yaml_size += yaml_size
+
+        xmp_to_json = round(json_size / xmp_size * 100, 1)
+        xmp_to_yaml = round(yaml_size / xmp_size * 100, 1)
+
+        print(f"File sizes for ({filename})")
+        print()
+        print(f"xmp: {xmp_size}")
+        print(f"json: {json_size} ({xmp_to_json}% of xmp)")
+        print(f"yaml: {yaml_size} ({xmp_to_yaml}% of xmp)")
+        print()
+
+    total_xmp_to_json = round(total_json_size / total_xmp_size * 100, 1)
+    total_xmp_to_yaml = round(total_yaml_size / total_xmp_size * 100, 1)
+
+    print("Total file sizes")
+    print()
+    print(f"xmp: {total_xmp_size}")
+    print(f"json: {total_json_size} ({total_xmp_to_json}% of xmp)")
+    print(f"yaml: {total_yaml_size} ({total_xmp_to_yaml}% of xmp)")
+    print()
 
 
 def main():
-    print("hello world~")
+    convert()
+    benchmark()
 
 
 if __name__ == "__main__":
