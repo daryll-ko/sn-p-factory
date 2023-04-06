@@ -1,99 +1,99 @@
 {
-    "name": "bit-adder-input-neurons-single-inp-0+1",
-    "neurons": [
+  "name": "bit-adder-input-neurons-single-inp-0+1",
+  "neurons": [
+    {
+      "id": 0,
+      "label": "n4",
+      "position": {
+        "x": 728,
+        "y": 220
+      },
+      "rules": [],
+      "spikes": 0,
+      "downtime": 0
+    },
+    {
+      "id": 1,
+      "label": "n0-phVoNyY4r",
+      "position": {
+        "x": 201,
+        "y": 149
+      },
+      "rules": [
         {
-            "id": 0,
-            "label": "n4",
-            "position": {
-                "x": 728,
-                "y": 220
-            },
-            "rules": [],
-            "spikes": 0,
-            "downtime": 0
-        },
-        {
-            "id": 1,
-            "label": "n0-phVoNyY4r",
-            "position": {
-                "x": 201,
-                "y": 149
-            },
-            "rules": [
-                {
-                    "regex": "2a",
-                    "consumed": 2,
-                    "produced": 1,
-                    "delay": 1
-                }
-            ],
-            "spikes": 0,
-            "downtime": 0
-        },
-        {
-            "id": 2,
-            "label": "n2-Tx5pOCJeb",
-            "position": {
-                "x": 470,
-                "y": 250
-            },
-            "rules": [
-                {
-                    "regex": "a",
-                    "consumed": 1,
-                    "produced": 1,
-                    "delay": 0
-                },
-                {
-                    "regex": "2a",
-                    "consumed": 1,
-                    "produced": 0,
-                    "delay": 0
-                },
-                {
-                    "regex": "3a",
-                    "consumed": 2,
-                    "produced": 1,
-                    "delay": 0
-                }
-            ],
-            "spikes": 0,
-            "downtime": 0
-        },
-        {
-            "id": 3,
-            "label": "n1-QsHwzIT_7",
-            "position": {
-                "x": 154,
-                "y": 321
-            },
-            "rules": [],
-            "spikes": 0,
-            "downtime": 0
+          "regex": "2a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 1
         }
-    ],
-    "synapses": [
+      ],
+      "spikes": 0,
+      "downtime": 0
+    },
+    {
+      "id": 2,
+      "label": "n2-Tx5pOCJeb",
+      "position": {
+        "x": 470,
+        "y": 250
+      },
+      "rules": [
         {
-            "from": 1,
-            "to": 2,
-            "weight": 1
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
         },
         {
-            "from": 2,
-            "to": 0,
-            "weight": 1
+          "regex": "2a",
+          "consumed": 1,
+          "produced": 0,
+          "delay": 0
         },
         {
-            "from": 3,
-            "to": 2,
-            "weight": 1
+          "regex": "3a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 0
         }
-    ],
-    "inputNeurons": [
-        3
-    ],
-    "outputNeurons": [
-        0
-    ],
-    "spikeTrain": "1"
+      ],
+      "spikes": 0,
+      "downtime": 0
+    },
+    {
+      "id": 3,
+      "label": "n1-QsHwzIT_7",
+      "position": {
+        "x": 154,
+        "y": 321
+      },
+      "rules": [],
+      "spikes": 0,
+      "downtime": 0
+    }
+  ],
+  "synapses": [
+    {
+      "from": 1,
+      "to": 2,
+      "weight": 1
+    },
+    {
+      "from": 2,
+      "to": 0,
+      "weight": 1
+    },
+    {
+      "from": 3,
+      "to": 2,
+      "weight": 1
+    }
+  ],
+  "inputNeurons": [
+    3
+  ],
+  "outputNeurons": [
+    0
+  ],
+  "spikeTrain": "1"
 }
