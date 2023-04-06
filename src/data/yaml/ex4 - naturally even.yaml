@@ -1,0 +1,158 @@
+name: ex4 - naturally even
+neurons:
+- id: 0
+  label: n1
+  position:
+    x: 842
+    y: 58
+  rules:
+  - regex: 2a
+    consumed: 2
+    produced: 1
+    delay: 0
+  - regex: a
+    consumed: 1
+    produced: 0
+    delay: 0
+  spikes: 2
+  downtime: 0
+- id: 1
+  label: n2
+  position:
+    x: 593
+    y: 90
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 1
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+- id: 2
+  label: n3
+  position:
+    x: 290
+    y: 318
+  rules:
+  - regex: 2a
+    consumed: 2
+    produced: 1
+    delay: 0
+  - regex: 3a
+    consumed: 3
+    produced: 0
+    delay: 0
+  spikes: 2
+  downtime: 0
+- id: 3
+  label: n4
+  position:
+    x: 107
+    y: 272
+  rules: []
+  spikes: 0
+  downtime: 0
+- id: 4
+  label: OU_Se5nmr
+  position:
+    x: 836
+    y: 318
+  rules:
+  - regex: 2a
+    consumed: 2
+    produced: 1
+    delay: 0
+  - regex: a
+    consumed: 1
+    produced: 0
+    delay: 0
+  spikes: 2
+  downtime: 0
+- id: 5
+  label: mfmDlx8Ls
+  position:
+    x: 608
+    y: 311
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+- id: 6
+  label: rNZ8WUWST
+  position:
+    x: 623
+    y: 525
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+- id: 7
+  label: ghsld1QG1
+  position:
+    x: 868
+    y: 529
+  rules:
+  - regex: 2a
+    consumed: 2
+    produced: 1
+    delay: 0
+  - regex: a
+    consumed: 1
+    produced: 0
+    delay: 0
+  spikes: 2
+  downtime: 0
+synapses:
+- from: 0
+  to: 1
+  weight: 1
+- from: 1
+  to: 2
+  weight: 1
+- from: 1
+  to: 0
+  weight: 1
+- from: 1
+  to: 4
+  weight: 1
+- from: 1
+  to: 7
+  weight: 1
+- from: 2
+  to: 3
+  weight: 1
+- from: 4
+  to: 5
+  weight: 1
+- from: 5
+  to: 2
+  weight: 1
+- from: 5
+  to: 0
+  weight: 1
+- from: 5
+  to: 4
+  weight: 1
+- from: 6
+  to: 2
+  weight: 1
+- from: 6
+  to: 7
+  weight: 1
+- from: 7
+  to: 6
+  weight: 1
+inputNeurons: []
+outputNeurons:
+- 3
+spikeTrain: ''

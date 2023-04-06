@@ -1,0 +1,154 @@
+{
+    "name": "ex3 - increasing comparator",
+    "neurons": [
+        {
+            "id": 0,
+            "label": "n1",
+            "position": {
+                "x": 50,
+                "y": 50
+            },
+            "rules": [
+                {
+                    "regex": "a+",
+                    "consumed": 1,
+                    "produced": 1,
+                    "delay": 0
+                }
+            ],
+            "spikes": 8,
+            "downtime": 0
+        },
+        {
+            "id": 1,
+            "label": "n2",
+            "position": {
+                "x": 356,
+                "y": 30
+            },
+            "rules": [
+                {
+                    "regex": "2a",
+                    "consumed": 2,
+                    "produced": 1,
+                    "delay": 0
+                },
+                {
+                    "regex": "a",
+                    "consumed": 1,
+                    "produced": 0,
+                    "delay": 0
+                }
+            ],
+            "spikes": 0,
+            "downtime": 0
+        },
+        {
+            "id": 2,
+            "label": "n4",
+            "position": {
+                "x": 650,
+                "y": 68
+            },
+            "rules": [],
+            "spikes": 0,
+            "downtime": 0
+        },
+        {
+            "id": 3,
+            "label": "n3-Ya7zAtdZO",
+            "position": {
+                "x": 70,
+                "y": 281
+            },
+            "rules": [
+                {
+                    "regex": "a+",
+                    "consumed": 1,
+                    "produced": 1,
+                    "delay": 0
+                }
+            ],
+            "spikes": 5,
+            "downtime": 0
+        },
+        {
+            "id": 4,
+            "label": "n5-4RzUmMqzL",
+            "position": {
+                "x": 404,
+                "y": 265
+            },
+            "rules": [
+                {
+                    "regex": "2a",
+                    "consumed": 2,
+                    "produced": 0,
+                    "delay": 0
+                },
+                {
+                    "regex": "a",
+                    "consumed": 1,
+                    "produced": 1,
+                    "delay": 0
+                }
+            ],
+            "spikes": 0,
+            "downtime": 0
+        },
+        {
+            "id": 5,
+            "label": "n6-TEqaMSlVi",
+            "position": {
+                "x": 662,
+                "y": 260
+            },
+            "rules": [],
+            "spikes": 0,
+            "downtime": 0
+        }
+    ],
+    "synapses": [
+        {
+            "from": 0,
+            "to": 1,
+            "weight": 1
+        },
+        {
+            "from": 0,
+            "to": 4,
+            "weight": 1
+        },
+        {
+            "from": 1,
+            "to": 2,
+            "weight": 1
+        },
+        {
+            "from": 1,
+            "to": 5,
+            "weight": 1
+        },
+        {
+            "from": 3,
+            "to": 4,
+            "weight": 1
+        },
+        {
+            "from": 3,
+            "to": 1,
+            "weight": 1
+        },
+        {
+            "from": 4,
+            "to": 5,
+            "weight": 1
+        }
+    ],
+    "inputNeurons": [],
+    "outputNeurons": [
+        2,
+        5
+    ],
+    "spikeTrain": ""
+}
