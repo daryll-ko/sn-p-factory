@@ -60,10 +60,10 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     for v in d.values():
         id = to_id[v["id"]]
 
-        if v["isInput"] == "true":
+        if "isInput" in v and v["isInput"] == "true":
             input_neurons.append(id)
 
-        if v["isOutput"] == "true":
+        if "isOutput" in v and v["isOutput"] == "true":
             output_neurons.append(id)
 
         if "bitstring" in v and v["bitstring"]:
