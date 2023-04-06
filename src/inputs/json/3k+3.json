@@ -85,6 +85,6 @@
 		}
 	],
 	"inputNeurons": [],
-	"outputNeuron": [3],
+	"outputNeurons": [3],
 	"spikeTrain": ""
 }
