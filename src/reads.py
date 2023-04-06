@@ -3,7 +3,7 @@ import xmltodict
 import json
 import yaml
 
-INPUTS_FOLDER = "inputs"
+INPUTS_FOLDER = "data"
 
 XMP_FOLDER = "xmp"
 JSON_FOLDER = "json"
