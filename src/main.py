@@ -58,7 +58,7 @@ def convert():
         except Exception as ex:
             failure += 1
             failure_filenames.append(filename)
-            print(f"Conversion failed: {type(ex).__name__}...")
+            print(f"Conversion failed: [{type(ex).__name__} - {ex}]...")
             print()
 
     print(f"Successes: {success} ({round(100 * success / (success + failure), 1)}%)")
