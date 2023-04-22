@@ -1,12 +1,13 @@
 from dataclasses import dataclass
 from .Rule import Rule
+from .Position import Position
 
 
 @dataclass
 class Neuron:
     id: int
     label: str
-    position: tuple[int, int]
+    position: Position
     rules: list[Rule]
     spikes: int
     downtime: int
@@ -15,10 +16,7 @@ class Neuron:
         return {
             "id": self.id,
             "label": self.label,
-            "position": {
-                "x": self.position[0],
-                "y": self.position[1],
-            },
+            "position": self.position.to_dict(),
             "rules": [rule.to_dict() for rule in self.rules],
             "spikes": self.spikes,
             "downtime": self.downtime,

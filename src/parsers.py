@@ -1,6 +1,7 @@
 from src.classes.System import System
 from src.classes.Neuron import Neuron
 from src.classes.Synapse import Synapse
+from src.classes.Position import Position
 from src.classes.Rule import Rule
 
 import re
@@ -29,7 +30,9 @@ def parse_xmp_rule(s: str) -> Rule:
 def parse_xmp_neuron(d: dict[str, any], to_id: dict[str, int]) -> Neuron:
     id = to_id[d["id"]]
     label = d["id"]
-    position = round(float(d["position"]["x"])), round(float(d["position"]["y"]))
+    position = Position(
+        round(float(d["position"]["x"])), round(float(d["position"]["y"]))
+    )
     rules = list(map(parse_xmp_rule, d["rules"].split())) if "rules" in d else []
     spikes = int(d["spikes"])
     downtime = int(d["delay"]) if "delay" in d else 0
@@ -81,30 +84,37 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     )
 
 
+def parse_position(d: dict[str, any]) -> Position:
+    x = int(d["x"])
+    y = int(d["y"])
+
+    return Position(x, y)
+
+
 def parse_rule(d: dict[str, any]) -> Rule:
     regex = d["regex"]
-    consumed = d["consumed"]
-    produced = d["produced"]
-    delay = d["delay"]
+    consumed = int(d["consumed"])
+    produced = int(d["produced"])
+    delay = int(d["delay"])
 
     return Rule(regex, consumed, produced, delay)
 
 
 def parse_neuron(d: dict[str, any]) -> Neuron:
-    id = d["id"]
+    id = int(d["id"])
     label = d["label"]
-    position = d["position"]["x"], d["position"]["y"]
+    position = parse_position(d["position"])
     rules = [parse_rule(rule) for rule in d["rules"]]
-    spikes = d["spikes"]
-    downtime = d["downtime"]
+    spikes = int(d["spikes"])
+    downtime = int(d["downtime"])
 
     return Neuron(id, label, position, rules, spikes, downtime)
 
 
-def parse_synapse(d: dict[str, int]) -> Neuron:
-    start = d["from"]
-    end = d["to"]
-    weight = d["weight"]
+def parse_synapse(d: dict[str, any]) -> Neuron:
+    start = int(d["from"])
+    end = int(d["to"])
+    weight = int(d["weight"])
 
     return Synapse(start, end, weight)
 
