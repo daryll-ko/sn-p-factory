@@ -161,6 +161,5 @@
     }
   ],
   "inputNeurons": [],
-  "outputNeurons": [],
-  "spikeTrain": ""
+  "outputNeurons": []
 }

@@ -120,7 +120,9 @@
   ],
   "inputNeurons": [],
   "outputNeurons": [
-    2
-  ],
-  "spikeTrain": ""
+    {
+      "id": 2,
+      "spikeTimes": []
+    }
+  ]
 }

@@ -94,7 +94,9 @@ synapses:
   weight: 4
 inputNeurons: []
 outputNeurons:
-- 0
-- 4
-- 5
-spikeTrain: ''
+- id: 0
+  spikeTimes: []
+- id: 4
+  spikeTimes: []
+- id: 5
+  spikeTimes: []

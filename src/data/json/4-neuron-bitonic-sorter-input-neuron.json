@@ -735,16 +735,60 @@
     }
   ],
   "inputNeurons": [
-    0,
-    1,
-    2,
-    3
+    {
+      "id": 0,
+      "spikeTimes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "id": 1,
+      "spikeTimes": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "spikeTimes": [
+        0
+      ]
+    },
+    {
+      "id": 3,
+      "spikeTimes": [
+        0,
+        1,
+        2
+      ]
+    }
   ],
   "outputNeurons": [
-    24,
-    25,
-    26,
-    27
-  ],
-  "spikeTrain": "1,1,1"
+    {
+      "id": 24,
+      "spikeTimes": []
+    },
+    {
+      "id": 25,
+      "spikeTimes": []
+    },
+    {
+      "id": 26,
+      "spikeTimes": []
+    },
+    {
+      "id": 27,
+      "spikeTimes": []
+    }
+  ]
 }

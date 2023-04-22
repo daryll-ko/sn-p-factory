@@ -103,4 +103,3 @@ synapses:
   weight: 1
 inputNeurons: []
 outputNeurons: []
-spikeTrain: ''

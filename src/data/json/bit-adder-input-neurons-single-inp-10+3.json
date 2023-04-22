@@ -123,12 +123,26 @@
     }
   ],
   "inputNeurons": [
-    5
+    {
+      "id": 5,
+      "spikeTimes": [
+        0,
+        1
+      ]
+    }
   ],
   "outputNeurons": [
-    0,
-    3,
-    4
-  ],
-  "spikeTrain": "1,1"
+    {
+      "id": 0,
+      "spikeTimes": []
+    },
+    {
+      "id": 3,
+      "spikeTimes": []
+    },
+    {
+      "id": 4,
+      "spikeTimes": []
+    }
+  ]
 }
