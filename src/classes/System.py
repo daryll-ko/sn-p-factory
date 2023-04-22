@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from .Neuron import Neuron
 from .Synapse import Synapse
+from .Terminal import Terminal
 
 
 @dataclass
@@ -8,18 +9,20 @@ class System:
     name: str
     neurons: list[Neuron]
     synapses: list[Synapse]
-    input_neurons: list[int]
-    output_neurons: list[int]
-    spike_train: str
+    input_neurons: list[Terminal]
+    output_neurons: list[Terminal]
 
     def to_dict(self) -> dict[str, any]:
         return {
             "name": self.name,
             "neurons": [neuron.to_dict() for neuron in self.neurons],
             "synapses": [synapse.to_dict() for synapse in self.synapses],
-            "inputNeurons": self.input_neurons,
-            "outputNeurons": self.output_neurons,
-            "spikeTrain": self.spike_train,
+            "inputNeurons": [
+                input_neuron.to_dict() for input_neuron in self.input_neurons
+            ],
+            "outputNeurons": [
+                output_neuron.to_dict() for output_neuron in self.output_neurons
+            ],
         }
 
     def to_dict_old(self) -> dict[str, any]:
@@ -46,11 +49,18 @@ class System:
                 "startingSpikes": neuron.spikes,
                 "delay": neuron.downtime,
                 "spikes": neuron.spikes,
-                "isOutput": neuron.id in self.output_neurons,
-                "isInput": neuron.id in self.input_neurons,
             }
-            if neuron.id in self.output_neurons:
-                v["bitstring"] = ""
+
+            for input_neuron in self.input_neurons:
+                if neuron.id == input_neuron.id:
+                    v["isInput"] = True
+                    v["bitstring"] = Terminal.decompress(input_neuron.spike_times)
+
+            for output_neuron in self.output_neurons:
+                if neuron.id == output_neuron.id:
+                    v["isOutput"] = True
+                    v["bitstring"] = Terminal.decompress(output_neuron.spike_times)
+
             for synapse in self.synapses:
                 if synapse.start == label_to_id[k]:
                     if "out" not in v:
@@ -60,6 +70,7 @@ class System:
                         v["outWeights"] = {}
                     v["outWeights"][id_to_label[synapse.end]] = synapse.weight
                     break
+
             neuron_entries.append((k, v))
 
         return {"content": dict(neuron_entries)}

@@ -1,6 +1,7 @@
 from src.classes.System import System
 from src.classes.Neuron import Neuron
 from src.classes.Synapse import Synapse
+from src.classes.Terminal import Terminal
 from src.classes.Position import Position
 from src.classes.Rule import Rule
 
@@ -36,6 +37,7 @@ def parse_xmp_neuron(d: dict[str, any], to_id: dict[str, int]) -> Neuron:
     rules = list(map(parse_xmp_rule, d["rules"].split())) if "rules" in d else []
     spikes = int(d["spikes"])
     downtime = int(d["delay"]) if "delay" in d else 0
+
     return Neuron(id, label, position, rules, spikes, downtime)
 
 
@@ -55,7 +57,6 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     synapses = []
     input_neurons = []
     output_neurons = []
-    spike_train = ""
 
     for v in d.values():
         neurons.append(parse_xmp_neuron(v, to_id))
@@ -64,13 +65,12 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
         id = to_id[v["id"]]
 
         if "isInput" in v and v["isInput"] == "true":
-            input_neurons.append(id)
+            s = v["bitstring"] if "bitstring" in v and v["bitstring"] else ""
+            input_neurons.append(Terminal(id, Terminal.compress(s)))
 
         if "isOutput" in v and v["isOutput"] == "true":
-            output_neurons.append(id)
-
-        if "bitstring" in v and v["bitstring"]:
-            spike_train = v["bitstring"]
+            s = v["bitstring"] if "bitstring" in v and v["bitstring"] else ""
+            output_neurons.append(Terminal(id, Terminal.compress(s)))
 
         if "outWeights" in v:
             for inner_k, inner_v in v["outWeights"].items():
@@ -79,9 +79,7 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
                 weight = int(inner_v)
                 synapses.append(Synapse(start, end, weight))
 
-    return System(
-        filename, neurons, synapses, input_neurons, output_neurons, spike_train
-    )
+    return System(filename, neurons, synapses, input_neurons, output_neurons)
 
 
 def parse_position(d: dict[str, any]) -> Position:
@@ -119,12 +117,20 @@ def parse_synapse(d: dict[str, any]) -> Neuron:
     return Synapse(start, end, weight)
 
 
+def parse_terminal(d: dict[str, any]) -> Terminal:
+    id = int(d["id"])
+    spike_times = list(map(int, d["spikeTimes"]))
+
+    return Terminal(id, spike_times)
+
+
 def parse_dict(d: dict[str, any]) -> System:
     name = d["name"]
     neurons = [parse_neuron(neuron) for neuron in d["neurons"]]
     synapses = [parse_synapse(synapse) for synapse in d["synapses"]]
-    input_neurons = d["inputNeurons"]
-    output_neurons = d["outputNeurons"]
-    spike_train = d["spikeTrain"]
+    input_neurons = [parse_terminal(input_neuron) for input_neuron in d["inputNeurons"]]
+    output_neurons = [
+        parse_terminal(output_neuron) for output_neuron in d["outputNeurons"]
+    ]
 
-    return System(name, neurons, synapses, input_neurons, output_neurons, spike_train)
+    return System(name, neurons, synapses, input_neurons, output_neurons)
