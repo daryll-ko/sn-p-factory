@@ -55,11 +55,11 @@ def convert():
                 failure_filenames.append(filename)
                 print("Systems don't match...")
                 print()
-                print(f"XMP: {system_1}")
+                print(f"xmp: {system_1}")
                 print()
-                print(f"JSON: {system_2}")
+                print(f"json: {system_2}")
                 print()
-                print(f"YAML: {system_3}")
+                print(f"yaml: {system_3}")
                 print()
 
         except Exception as ex:
