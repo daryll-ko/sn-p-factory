@@ -21,6 +21,7 @@ def convert():
     for file in os.listdir(XMP_PATH):
         filename = os.path.splitext(file)[0]
         print(f"Converting ({filename})...")
+        print()
 
         try:
             d_1 = read_xmp(filename)
@@ -53,6 +54,12 @@ def convert():
                 failure += 1
                 failure_filenames.append(filename)
                 print("Systems don't match...")
+                print()
+                print(f"XMP: {system_1}")
+                print()
+                print(f"JSON: {system_2}")
+                print()
+                print(f"YAML: {system_3}")
                 print()
 
         except Exception as ex:
