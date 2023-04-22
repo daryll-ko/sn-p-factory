@@ -21,4 +21,7 @@ class Rule:
             return f"{value}a"
 
     def form_rule_old(self) -> str:
-        return f"{self.regex}/{Rule.form_symbol(self.consumed)}->{Rule.form_symbol(self.produced)};{self.delay}"
+        return (
+            f"{self.regex}/{Rule.form_symbol(self.consumed)}"
+            f"->{Rule.form_symbol(self.produced)};{self.delay}"
+        )
