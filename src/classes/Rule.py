@@ -13,6 +13,12 @@ class Rule:
     def to_dict(self) -> dict[str, any]:
         return vars(self)
 
+    def form_rule_old(self) -> str:
+        return (
+            f"{self.regex}/{Rule.form_symbol(self.consumed)}"
+            f"->{Rule.form_symbol(self.produced)};{self.delay}"
+        )
+
     @staticmethod
     def form_symbol(value: int) -> str:
         if value == 0:
@@ -22,13 +28,8 @@ class Rule:
         else:
             return f"{value}a"
 
-    def form_rule_old(self) -> str:
-        return (
-            f"{self.regex}/{Rule.form_symbol(self.consumed)}"
-            f"->{Rule.form_symbol(self.produced)};{self.delay}"
-        )
-
-    def get_python_regex(self) -> str:
+    @staticmethod
+    def get_python_regex(s: str) -> str:
         return re.sub(
             r"\\cup",
             r"\|",
@@ -38,7 +39,7 @@ class Rule:
                 re.sub(
                     r"\^\{?\*\}?",
                     r"\*",
-                    re.sub(r"\^\{?(\d+)\}?", r"\{\1\}", self.regex),
+                    re.sub(r"\^\{?(\d+)\}?", r"\{\1\}", s),
                 ),
             ),
         )
