@@ -132,7 +132,7 @@ class System:
                     for output_neuron in self.output_neurons:
                         if neuron.id == output_neuron.id:
                             output_neuron.spike_times.append(time)
-                neuron.downtime += rule.delay
+                neuron.downtime = rule.delay
 
         for neuron in self.neurons:
             if neuron.downtime == 0:
