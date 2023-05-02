@@ -32,14 +32,14 @@ class Rule:
     def get_python_regex(s: str) -> str:
         return re.sub(
             r"\\cup",
-            r"\|",
+            "|",
             re.sub(
                 r"\^\{\+\}",
-                r"\+",
+                "+",
                 re.sub(
                     r"\^\{?\*\}?",
-                    r"\*",
-                    re.sub(r"\^\{?(\d+)\}?", r"\{\1\}", s),
+                    "*",
+                    re.sub(r"\^\{?(\d+)\}?", r"{\1}", s),
                 ),
             ),
-        )
+        ).replace(" ", "")
