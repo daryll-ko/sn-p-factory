@@ -1,9 +1,9 @@
 from src.reads import read_xmp, read_json, read_yaml
+from src.writes import write_json, write_yaml
 from src.parsers import parse_dict_xmp, parse_dict
 
 import os
-import json
-import yaml
+
 
 INPUTS_PATH = os.path.join(os.path.dirname(__file__), "data")
 
@@ -27,17 +27,8 @@ def convert():
             d_1 = read_xmp(filename)
             system_1 = parse_dict_xmp(d_1, filename)
 
-            with open(
-                os.path.join(JSON_PATH, f"{filename}.json"), "w"
-            ) as json_output_file:
-                json_output_file.write(json.dumps(system_1.to_dict(), indent=2))
-
-            with open(
-                os.path.join(YAML_PATH, f"{filename}.yaml"), "w"
-            ) as yaml_output_file:
-                yaml_output_file.write(
-                    yaml.dump(system_1.to_dict(), sort_keys=False, indent=2)
-                )
+            write_json(d_1, filename)
+            write_yaml(d_1, filename)
 
             d_2 = read_json(filename)
             system_2 = parse_dict(d_2)
