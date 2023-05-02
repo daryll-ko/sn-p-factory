@@ -4,6 +4,7 @@ import random
 from collections import defaultdict
 from dataclasses import dataclass
 from .Neuron import Neuron
+from .Rule import Rule
 from .Synapse import Synapse
 from .Terminal import Terminal
 
@@ -117,7 +118,7 @@ class System:
             i = to_index[neuron.id]
             possible_indices = []
             for index, rule in enumerate(neuron.rules):
-                python_regex = rule.get_python_regex()
+                python_regex = Rule.get_python_regex(rule.regex)
                 result = re.match(python_regex, "a" * neuron.spikes)
                 if result:
                     possible_indices.append(index)
