@@ -17,7 +17,7 @@ def get_symbol_value(s: str) -> int:
         return int(s.replace("a", ""))
 
 
-def parse_xmp_rule(s: str) -> Rule:
+def parse_rule_xmp(s: str) -> Rule:
     result = re.match("(.*)/(\d*a)->(\d*a|0);(\d+)", s)
     regex, consumed, produced, delay = result.groups()
 
@@ -28,20 +28,20 @@ def parse_xmp_rule(s: str) -> Rule:
     return Rule(regex, consumed, produced, delay)
 
 
-def parse_xmp_neuron(d: dict[str, any], to_id: dict[str, int]) -> Neuron:
+def parse_neuron_xmp(d: dict[str, any], to_id: dict[str, int]) -> Neuron:
     id = to_id[d["id"]]
     label = d["id"]
     position = Position(
         round(float(d["position"]["x"])), round(float(d["position"]["y"]))
     )
-    rules = list(map(parse_xmp_rule, d["rules"].split())) if "rules" in d else []
+    rules = list(map(parse_rule_xmp, d["rules"].split())) if "rules" in d else []
     spikes = int(d["spikes"])
     downtime = int(d["delay"]) if "delay" in d else 0
 
     return Neuron(id, label, position, rules, spikes, downtime)
 
 
-def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
+def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
     to_id = {}
     current_id = 0
 
@@ -59,7 +59,7 @@ def parse_xmp_dict(d: dict[str, any], filename: str) -> System:
     output_neurons = []
 
     for v in d.values():
-        neurons.append(parse_xmp_neuron(v, to_id))
+        neurons.append(parse_neuron_xmp(v, to_id))
 
     for v in d.values():
         id = to_id[v["id"]]
