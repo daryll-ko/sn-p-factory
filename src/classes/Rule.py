@@ -1,3 +1,5 @@
+import re
+
 from dataclasses import dataclass
 
 
@@ -24,4 +26,19 @@ class Rule:
         return (
             f"{self.regex}/{Rule.form_symbol(self.consumed)}"
             f"->{Rule.form_symbol(self.produced)};{self.delay}"
+        )
+
+    def get_python_regex(self) -> str:
+        return re.sub(
+            r"\\cup",
+            r"\|",
+            re.sub(
+                r"\^\{\+\}",
+                r"\+",
+                re.sub(
+                    r"\^\{?\*\}?",
+                    r"\*",
+                    re.sub(r"\^\{?(\d+)\}?", r"\{\1\}", self.regex),
+                ),
+            ),
         )
