@@ -24,19 +24,20 @@ def convert():
         print()
 
         try:
-            d_1 = read_xmp(filename)
-            system_1 = parse_dict_xmp(d_1, filename)
+            dict_xmp = read_xmp(filename)
+            system_xmp = parse_dict_xmp(dict_xmp, filename)
+            dict = system_xmp.to_dict()
 
-            write_json(d_1, filename)
-            write_yaml(d_1, filename)
+            write_json(dict, filename)
+            write_yaml(dict, filename)
 
-            d_2 = read_json(filename)
-            system_2 = parse_dict(d_2)
+            dict_json = read_json(filename)
+            system_json = parse_dict(dict_json)
 
-            d_3 = read_yaml(filename)
-            system_3 = parse_dict(d_3)
+            dict_yaml = read_yaml(filename)
+            system_yaml = parse_dict(dict_yaml)
 
-            if system_1 == system_2 == system_3:
+            if system_xmp == system_json == system_yaml:
                 success_count += 1
                 success_filenames.append(filename)
                 print("Conversion successful!")
@@ -46,11 +47,11 @@ def convert():
                 failure_filenames.append(filename)
                 print("Systems don't match...")
                 print()
-                print(f"xmp: {system_1}")
+                print(f"xmp: {system_xmp}")
                 print()
-                print(f"json: {system_2}")
+                print(f"json: {system_json}")
                 print()
-                print(f"yaml: {system_3}")
+                print(f"yaml: {system_yaml}")
                 print()
 
         except Exception as ex:
@@ -115,11 +116,8 @@ def benchmark():
 
 
 def main():
-    # convert()
-    # benchmark()
-    dict = read_json("ex1 - 3k+3")
-    system = parse_dict(dict)
-    system.simulate_completely()
+    convert()
+    benchmark()
 
 
 if __name__ == "__main__":
