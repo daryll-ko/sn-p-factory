@@ -30,7 +30,7 @@ class System:
             ],
         }
 
-    def to_dict_old(self) -> dict[str, any]:
+    def to_dict_xmp(self) -> dict[str, any]:
         id_to_label = {}
         label_to_id = {}
 

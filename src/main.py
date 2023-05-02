@@ -1,5 +1,5 @@
 from src.reads import read_xmp, read_json, read_yaml
-from src.parsers import parse_xmp_dict, parse_dict
+from src.parsers import parse_dict_xmp, parse_dict
 
 import os
 import json
@@ -25,7 +25,7 @@ def convert():
 
         try:
             d_1 = read_xmp(filename)
-            system_1 = parse_xmp_dict(d_1, filename)
+            system_1 = parse_dict_xmp(d_1, filename)
 
             with open(
                 os.path.join(JSON_PATH, f"{filename}.json"), "w"
@@ -124,8 +124,11 @@ def benchmark():
 
 
 def main():
-    convert()
-    benchmark()
+    # convert()
+    # benchmark()
+    dict = read_json("ex1 - 3k+3")
+    system = parse_dict(dict)
+    system.simulate_completely()
 
 
 if __name__ == "__main__":
