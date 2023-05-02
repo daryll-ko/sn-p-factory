@@ -13,9 +13,9 @@ YAML_PATH = os.path.join(INPUTS_PATH, "yaml")
 
 
 def convert():
-    success = 0
+    success_count = 0
     success_filenames = []
-    failure = 0
+    failure_count = 0
     failure_filenames = []
 
     for file in os.listdir(XMP_PATH):
@@ -46,12 +46,12 @@ def convert():
             system_3 = parse_dict(d_3)
 
             if system_1 == system_2 == system_3:
-                success += 1
+                success_count += 1
                 success_filenames.append(filename)
                 print("Conversion successful!")
                 print()
             else:
-                failure += 1
+                failure_count += 1
                 failure_filenames.append(filename)
                 print("Systems don't match...")
                 print()
@@ -63,16 +63,16 @@ def convert():
                 print()
 
         except Exception as ex:
-            failure += 1
+            failure_count += 1
             failure_filenames.append(filename)
             print(f"Conversion failed: [{type(ex).__name__} - {ex}]...")
             print()
 
-    print(f"Successes: {success} ({round(100 * success / (success + failure), 1)}%)")
+    print(f"Successes: {success_count} ({round(100 * success_count / (success_count + failure_count), 1)}%)")
     print()
     print("\n".join(success_filenames))
     print()
-    print(f"Failures: {failure} ({round(100 * failure / (success + failure), 1)}%)")
+    print(f"Failures: {failure_count} ({round(100 * failure_count / (success_count + failure_count), 1)}%)")
     print()
     print("\n".join(failure_filenames))
     print()
