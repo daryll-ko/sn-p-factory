@@ -68,11 +68,19 @@ def convert():
             print(f"Conversion failed: [{type(ex).__name__} - {ex}]...")
             print()
 
-    print(f"Successes: {success_count} ({round(100 * success_count / (success_count + failure_count), 1)}%)")
+    print(
+        f"Successes: {success_count}"
+        " "
+        f"({round(100 * success_count / (success_count + failure_count), 1)}%)"
+    )
     print()
     print("\n".join(success_filenames))
     print()
-    print(f"Failures: {failure_count} ({round(100 * failure_count / (success_count + failure_count), 1)}%)")
+    print(
+        f"Failures: {failure_count}"
+        " "
+        f"({round(100 * failure_count / (success_count + failure_count), 1)}%)"
+    )
     print()
     print("\n".join(failure_filenames))
     print()
