@@ -4,6 +4,9 @@ from src.classes.Rule import Rule
 
 
 class TestGetPythonRegex(unittest.TestCase):
+    def test_empty(self):
+        self.assertEqual(Rule.get_python_regex(r""), r"")
+
     def test_basic(self):
         self.assertEqual(Rule.get_python_regex(r"a"), r"a")
 
