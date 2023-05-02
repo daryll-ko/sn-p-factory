@@ -1,3 +1,7 @@
+import re
+import random
+
+from collections import defaultdict
 from dataclasses import dataclass
 from .Neuron import Neuron
 from .Synapse import Synapse
@@ -74,3 +78,70 @@ class System:
             neuron_entries.append((k, v))
 
         return {"content": dict(neuron_entries)}
+
+    def simulate_one_step(self, time: int) -> bool:
+        print(f"Time: {time}")
+        print()
+        print(f"System: {self}")
+
+        to_index = defaultdict(int)
+        current_index = 0
+
+        for neuron in self.neurons:
+            if neuron.id not in to_index:
+                to_index[neuron.id] = current_index
+                current_index += 1
+
+        N = current_index
+        adj_list = [[] for _ in range(N)]
+
+        for synapse in self.synapses:
+            adj_list[synapse.start].append((synapse.end, synapse.weight))
+
+        net_gain = [0 for _ in range(N)]
+
+        inputs = set()
+        outputs = set()
+
+        for input_neuron in self.input_neurons:
+            inputs.add(input_neuron.id)
+        for output_neuron in self.output_neurons:
+            outputs.add(output_neuron.id)
+
+        for neuron in self.neurons:
+            if neuron.id in inputs:
+                for input_neuron in self.input_neurons:
+                    if neuron.id == input_neuron.id:
+                        if time in input_neuron.spike_times:
+                            neuron.spikes += 1
+            i = to_index[neuron.id]
+            possible_indices = []
+            for index, rule in enumerate(neuron.rules):
+                python_regex = rule.get_python_regex()
+                result = re.match(python_regex, "a" * neuron.spikes)
+                if result:
+                    possible_indices.append(index)
+            if len(possible_indices) > 0:
+                chosen_index = random.choice(possible_indices)
+                rule = neuron.rules[chosen_index]
+                net_gain[i] -= rule.consumed
+                for j, w in adj_list[i]:
+                    net_gain[j] += rule.produced * w
+                if neuron.id in outputs:
+                    for output_neuron in self.output_neurons:
+                        if neuron.id == output_neuron.id:
+                            output_neuron.spike_times.append(time)
+                neuron.downtime += rule.delay
+
+        for neuron in self.neurons:
+            if neuron.downtime == 0:
+                neuron.spikes += net_gain[to_index[neuron.id]]
+            neuron.downtime = max(neuron.downtime - 1, 0)
+
+        return any(value != 0 for value in net_gain)
+
+    def simulate_completely(self):
+        time = 0
+        while self.simulate_one_step(time) and time < 2 * 10**4:
+            time += 1
+        return
