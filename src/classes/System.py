@@ -13,21 +13,11 @@ from .Terminal import Terminal
 class System:
     name: str
     neurons: list[Neuron]
-    synapses: list[Synapse]
-    input_neurons: list[Terminal]
-    output_neurons: list[Terminal]
 
     def to_dict(self) -> dict[str, any]:
         return {
             "name": self.name,
             "neurons": [neuron.to_dict() for neuron in self.neurons],
-            "synapses": [synapse.to_dict() for synapse in self.synapses],
-            "inputNeurons": [
-                input_neuron.to_dict() for input_neuron in self.input_neurons
-            ],
-            "outputNeurons": [
-                output_neuron.to_dict() for output_neuron in self.output_neurons
-            ],
         }
 
     def to_dict_xmp(self) -> dict[str, any]:
@@ -70,10 +60,10 @@ class System:
                 if synapse.start == label_to_id[k]:
                     if "out" not in v:
                         v["out"] = []
-                    v["out"].append(id_to_label[synapse.end])
+                    v["out"].append(id_to_label[synapse.to])
                     if "outWeights" not in v:
                         v["outWeights"] = {}
-                    v["outWeights"][id_to_label[synapse.end]] = synapse.weight
+                    v["outWeights"][id_to_label[synapse.to]] = synapse.weight
                     break
 
             neuron_entries.append((k, v))
@@ -97,7 +87,7 @@ class System:
         adj_list = [[] for _ in range(N)]
 
         for synapse in self.synapses:
-            adj_list[synapse.start].append((synapse.end, synapse.weight))
+            adj_list[synapse.start].append((synapse.to, synapse.weight))
 
         net_gain = [0 for _ in range(N)]
 
