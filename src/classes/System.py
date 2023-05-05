@@ -37,7 +37,7 @@ class System:
                     "y": neuron.position[1],
                 },
                 "rules": " ".join(
-                    list(map(lambda rule: rule.form_rule_old(), neuron.rules))
+                    list(map(lambda rule: rule.form_rule_xmp(), neuron.rules))
                 ),
                 "startingSpikes": neuron.spikes,
                 "delay": neuron.downtime,

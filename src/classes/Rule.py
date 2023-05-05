@@ -13,14 +13,23 @@ class Rule:
     def to_dict(self) -> dict[str, any]:
         return vars(self)
 
-    def form_rule_old(self) -> str:
+    def form_rule_xmp(self) -> str:
         return (
-            f"{self.regex}/{Rule.form_symbol(self.consumed)}"
-            f"->{Rule.form_symbol(self.produced)};{self.delay}"
+            f"{self.regex}/{Rule.get_symbol(self.consumed)}"
+            f"->{Rule.get_symbol(self.produced)};{self.delay}"
         )
 
     @staticmethod
-    def form_symbol(value: int) -> str:
+    def get_value(s: str) -> int:
+        if s == "0":
+            return 0
+        elif s == "a":
+            return 1
+        else:
+            return int(s.replace("a", ""))
+
+    @staticmethod
+    def get_symbol(value: int) -> str:
         if value == 0:
             return ""
         elif value == 1:
