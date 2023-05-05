@@ -78,27 +78,12 @@ class System:
                 current_index += 1
 
         N = current_index
-        adj_list = [[] for _ in range(N)]
-
-        for synapse in self.synapses:
-            adj_list[synapse.start].append((synapse.to, synapse.weight))
-
         net_gain = [0 for _ in range(N)]
 
-        inputs = set()
-        outputs = set()
-
-        for input_neuron in self.input_neurons:
-            inputs.add(input_neuron.id)
-        for output_neuron in self.output_neurons:
-            outputs.add(output_neuron.id)
-
         for neuron in self.neurons:
-            if neuron.id in inputs:
-                for input_neuron in self.input_neurons:
-                    if neuron.id == input_neuron.id:
-                        if time in input_neuron.spike_times:
-                            neuron.spikes += 1
+            if neuron.is_input:
+                if time in neuron.spike_times:
+                    neuron.spikes += 1
             i = to_index[neuron.id]
             possible_indices = []
             for index, rule in enumerate(neuron.rules):
@@ -110,12 +95,11 @@ class System:
                 chosen_index = random.choice(possible_indices)
                 rule = neuron.rules[chosen_index]
                 net_gain[i] -= rule.consumed
-                for j, w in adj_list[i]:
-                    net_gain[j] += rule.produced * w
-                if neuron.id in outputs:
-                    for output_neuron in self.output_neurons:
-                        if neuron.id == output_neuron.id:
-                            output_neuron.spike_times.append(time)
+                for synapse in neuron.synapses:
+                    to, w = synapse.to, synapse.weight
+                    net_gain[to_index[to]] += rule.produced * w
+                if neuron.is_output:
+                    neuron.spike_times.append(time)
                 neuron.downtime = rule.delay
 
         for neuron in self.neurons:
