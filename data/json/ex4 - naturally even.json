@@ -109,7 +109,7 @@
         }
       ],
       "isInput": false,
-      "isOutput": false,
+      "isOutput": true,
       "spikeTimes": []
     },
     {

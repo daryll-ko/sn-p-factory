@@ -41,7 +41,7 @@
         }
       ],
       "isInput": false,
-      "isOutput": false,
+      "isOutput": true,
       "spikeTimes": []
     },
     {
@@ -78,7 +78,7 @@
         }
       ],
       "isInput": false,
-      "isOutput": false,
+      "isOutput": true,
       "spikeTimes": []
     },
     {
@@ -117,7 +117,7 @@
         }
       ],
       "isInput": false,
-      "isOutput": false,
+      "isOutput": true,
       "spikeTimes": []
     }
   ]

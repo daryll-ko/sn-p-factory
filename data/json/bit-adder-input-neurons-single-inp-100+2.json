@@ -41,7 +41,7 @@
         }
       ],
       "isInput": false,
-      "isOutput": false,
+      "isOutput": true,
       "spikeTimes": []
     },
     {
@@ -80,7 +80,7 @@
         }
       ],
       "isInput": true,
-      "isOutput": false,
+      "isOutput": true,
       "spikeTimes": [
         1
       ]

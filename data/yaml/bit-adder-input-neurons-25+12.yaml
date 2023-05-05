@@ -24,7 +24,7 @@ neurons:
   - to: 3
     weight: 1
   isInput: true
-  isOutput: false
+  isOutput: true
   spikeTimes:
   - 2
   - 3

@@ -64,5 +64,5 @@ neurons:
   - to: 0
     weight: 4
   isInput: false
-  isOutput: false
+  isOutput: true
   spikeTimes: []

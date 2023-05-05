@@ -382,7 +382,7 @@ neurons:
   - to: 25
     weight: 1
   isInput: false
-  isOutput: false
+  isOutput: true
   spikeTimes: []
 - id: 21
   label: n17-UkgF5vtUA
@@ -404,7 +404,7 @@ neurons:
   - to: 25
     weight: 1
   isInput: false
-  isOutput: false
+  isOutput: true
   spikeTimes: []
 - id: 22
   label: n18-_tbVM0miN
@@ -428,7 +428,7 @@ neurons:
   - to: 26
     weight: 1
   isInput: false
-  isOutput: false
+  isOutput: true
   spikeTimes: []
 - id: 23
   label: n19-dT34Oq0o1
@@ -450,5 +450,5 @@ neurons:
   - to: 27
     weight: 1
   isInput: false
-  isOutput: false
+  isOutput: true
   spikeTimes: []
