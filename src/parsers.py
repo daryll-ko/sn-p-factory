@@ -70,12 +70,17 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
     output_neurons = set()
 
     for v in d.values():
-        if "isInput" in v and v["isInput"] and "outWeights" in v and "bitstring" in v:
+        if (
+            "isInput" in v
+            and v["isInput"] == "true"
+            and "outWeights" in v
+            and "bitstring" in v
+        ):
             for inner_k in v["outWeights"].keys():
                 input_neurons[to_id[inner_k]] = Neuron.compress_to_spike_times(
                     v["bitstring"]
                 )
-        if "isOutput" in v and v["isOutput"]:
+        if "isOutput" in v and v["isOutput"] == "true":
             environment_neurons.add(to_id[v["id"]])
 
     for v in d.values():
