@@ -1,0 +1,248 @@
+{
+  "name": "ex4 - naturally even",
+  "neurons": [
+    {
+      "id": 0,
+      "label": "n1",
+      "position": {
+        "x": 842,
+        "y": 58
+      },
+      "rules": [
+        {
+          "regex": "2a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 0,
+          "delay": 0
+        }
+      ],
+      "spikes": 2,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 1,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 1,
+      "label": "n2",
+      "position": {
+        "x": 593,
+        "y": 90
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 1
+        },
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 2,
+          "weight": 1
+        },
+        {
+          "to": 0,
+          "weight": 1
+        },
+        {
+          "to": 4,
+          "weight": 1
+        },
+        {
+          "to": 7,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 2,
+      "label": "n3",
+      "position": {
+        "x": 290,
+        "y": 318
+      },
+      "rules": [
+        {
+          "regex": "2a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "3a",
+          "consumed": 3,
+          "produced": 0,
+          "delay": 0
+        }
+      ],
+      "spikes": 2,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 3,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 4,
+      "label": "OU_Se5nmr",
+      "position": {
+        "x": 836,
+        "y": 318
+      },
+      "rules": [
+        {
+          "regex": "2a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 0,
+          "delay": 0
+        }
+      ],
+      "spikes": 2,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 5,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 5,
+      "label": "mfmDlx8Ls",
+      "position": {
+        "x": 608,
+        "y": 311
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 2,
+          "weight": 1
+        },
+        {
+          "to": 0,
+          "weight": 1
+        },
+        {
+          "to": 4,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 6,
+      "label": "rNZ8WUWST",
+      "position": {
+        "x": 623,
+        "y": 525
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 2,
+          "weight": 1
+        },
+        {
+          "to": 7,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 7,
+      "label": "ghsld1QG1",
+      "position": {
+        "x": 868,
+        "y": 529
+      },
+      "rules": [
+        {
+          "regex": "2a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 0,
+          "delay": 0
+        }
+      ],
+      "spikes": 2,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 6,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    }
+  ]
+}

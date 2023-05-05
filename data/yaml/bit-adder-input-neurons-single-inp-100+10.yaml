@@ -1,0 +1,58 @@
+name: bit-adder-input-neurons-single-inp-100+10
+neurons:
+- id: 1
+  label: n1-ItXCNFOva
+  position:
+    x: 117
+    y: 356
+  rules:
+  - regex: 100a
+    consumed: 1
+    produced: 1
+    delay: 2
+  - regex: 99a
+    consumed: 1
+    produced: 1
+    delay: 2
+  - regex: 98a
+    consumed: 1
+    produced: 1
+    delay: 0
+  spikes: 100
+  downtime: 0
+  synapses:
+  - to: 2
+    weight: 1
+  - to: 3
+    weight: 1
+  isInput: false
+  isOutput: false
+  spikeTimes: []
+- id: 2
+  label: n2-Tx5pOCJeb
+  position:
+    x: 479
+    y: 240
+  rules:
+  - regex: a
+    consumed: 1
+    produced: 1
+    delay: 0
+  - regex: 2a
+    consumed: 1
+    produced: 0
+    delay: 0
+  - regex: 3a
+    consumed: 2
+    produced: 1
+    delay: 0
+  spikes: 0
+  downtime: 0
+  synapses:
+  - to: 0
+    weight: 1
+  isInput: true
+  isOutput: false
+  spikeTimes:
+  - 1
+  - 3

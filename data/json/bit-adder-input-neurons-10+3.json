@@ -1,0 +1,47 @@
+{
+  "name": "bit-adder-input-neurons-10+3",
+  "neurons": [
+    {
+      "id": 0,
+      "label": "n2-Tx5pOCJeb",
+      "position": {
+        "x": 464,
+        "y": 306
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "2a",
+          "consumed": 1,
+          "produced": 0,
+          "delay": 0
+        },
+        {
+          "regex": "3a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 0
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 3,
+          "weight": 1
+        }
+      ],
+      "isInput": true,
+      "isOutput": false,
+      "spikeTimes": [
+        0,
+        1
+      ]
+    }
+  ]
+}

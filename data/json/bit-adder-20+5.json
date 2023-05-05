@@ -1,0 +1,118 @@
+{
+  "name": "bit-adder-20+5",
+  "neurons": [
+    {
+      "id": 1,
+      "label": "n0-phVoNyY4r",
+      "position": {
+        "x": 126,
+        "y": 151
+      },
+      "rules": [
+        {
+          "regex": "20a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 2
+        },
+        {
+          "regex": "19a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 1
+        }
+      ],
+      "spikes": 20,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 3,
+          "weight": 1
+        },
+        {
+          "to": 4,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 2,
+      "label": "n1-ItXCNFOva",
+      "position": {
+        "x": 117,
+        "y": 356
+      },
+      "rules": [
+        {
+          "regex": "5a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "4a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 1
+        }
+      ],
+      "spikes": 5,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 3,
+          "weight": 1
+        },
+        {
+          "to": 5,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 3,
+      "label": "n2-Tx5pOCJeb",
+      "position": {
+        "x": 498,
+        "y": 253
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "2a",
+          "consumed": 1,
+          "produced": 0,
+          "delay": 0
+        },
+        {
+          "regex": "3a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 0
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 0,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    }
+  ]
+}

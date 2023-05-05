@@ -1,0 +1,98 @@
+{
+  "name": "bit-adder-0+1",
+  "neurons": [
+    {
+      "id": 1,
+      "label": "n0-phVoNyY4r",
+      "position": {
+        "x": 122,
+        "y": 85
+      },
+      "rules": [
+        {
+          "regex": "2a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 1
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 3,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 2,
+      "label": "n1-ItXCNFOva",
+      "position": {
+        "x": 117,
+        "y": 356
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        }
+      ],
+      "spikes": 1,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 3,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 3,
+      "label": "n2-Tx5pOCJeb",
+      "position": {
+        "x": 462,
+        "y": 226
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "2a",
+          "consumed": 1,
+          "produced": 0,
+          "delay": 0
+        },
+        {
+          "regex": "3a",
+          "consumed": 2,
+          "produced": 1,
+          "delay": 0
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 0,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    }
+  ]
+}
