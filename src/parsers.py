@@ -19,7 +19,11 @@ def parse_rule_xmp(s: str) -> Rule:
 
 
 def parse_neuron_xmp(
-    d: dict[str, any], to_id: dict[str, int], spike_times: list[int], is_output: bool
+    d: dict[str, any],
+    to_id: dict[str, int],
+    spike_times: list[int],
+    is_output: bool,
+    environment_neurons: set[int],
 ) -> Neuron:
     id = to_id[d["id"]]
     label = d["id"]
@@ -37,7 +41,8 @@ def parse_neuron_xmp(
         for inner_k, inner_v in d["outWeights"].items():
             to = to_id[inner_k]
             weight = int(inner_v)
-            synapses.append(Synapse(to, weight))
+            if to not in environment_neurons:
+                synapses.append(Synapse(to, weight))
 
     return Neuron(
         id,
@@ -105,6 +110,7 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
             to_id,
             input_neurons[to_id[v["id"]]] if to_id[v["id"]] in input_neurons else [],
             to_id[v["id"]] in output_neurons,
+            environment_neurons,
         )
         for v in filtered_dicts
     ]
