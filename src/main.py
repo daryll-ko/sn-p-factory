@@ -26,10 +26,11 @@ def convert():
         try:
             dict_xmp = read_xmp(filename)
             system_xmp = parse_dict_xmp(dict_xmp, filename)
-            dict = system_xmp.to_dict()
 
-            write_json(dict, filename)
-            write_yaml(dict, filename)
+            dict_new = system_xmp.to_dict()
+
+            write_json(dict_new, filename)
+            write_yaml(dict_new, filename)
 
             dict_json = read_json(filename)
             system_json = parse_dict(dict_json)
@@ -61,7 +62,7 @@ def convert():
             print()
 
     print(
-        f"Successes: {success_count}"
+        f"Successes: {success_count} of {success_count + failure_count}"
         " "
         f"({round(100 * success_count / (success_count + failure_count), 1)}%)"
     )
@@ -69,7 +70,7 @@ def convert():
     print("\n".join(success_filenames))
     print()
     print(
-        f"Failures: {failure_count}"
+        f"Failures: {failure_count} of {success_count + failure_count}"
         " "
         f"({round(100 * failure_count / (success_count + failure_count), 1)}%)"
     )
@@ -117,6 +118,8 @@ def benchmark():
 
 def main():
     convert()
+    print("- " * 39 + "-")
+    print()
     benchmark()
 
 
