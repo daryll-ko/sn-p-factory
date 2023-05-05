@@ -124,5 +124,3 @@ class System:
             neuron.downtime = max(neuron.downtime - 1, 0)
 
         return any(value != 0 for value in net_gain)
-
-
