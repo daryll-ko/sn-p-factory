@@ -66,8 +66,8 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
             current_id += 1
 
     input_neurons = dict()
-    environment_neurons = set([])
-    output_neurons = set([])
+    environment_neurons = set()
+    output_neurons = set()
 
     for v in d.values():
         if "isInput" in v and v["isInput"] and "outWeights" in v and "bitstring" in v:
