@@ -86,7 +86,7 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
     for v in d.values():
         if "outWeights" in v:
             for inner_k in v["outWeights"].keys():
-                if inner_k in environment_neurons:
+                if to_id[inner_k] in environment_neurons:
                     output_neurons.add(to_id[v["id"]])
 
     filtered_dicts = list(
