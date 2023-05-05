@@ -34,10 +34,6 @@
         {
           "to": 3,
           "weight": 1
-        },
-        {
-          "to": 4,
-          "weight": 1
         }
       ],
       "isInput": false,
@@ -70,10 +66,6 @@
       "synapses": [
         {
           "to": 3,
-          "weight": 1
-        },
-        {
-          "to": 5,
           "weight": 1
         }
       ],
@@ -110,12 +102,7 @@
       ],
       "spikes": 0,
       "downtime": 0,
-      "synapses": [
-        {
-          "to": 0,
-          "weight": 1
-        }
-      ],
+      "synapses": [],
       "isInput": false,
       "isOutput": true,
       "spikeTimes": []

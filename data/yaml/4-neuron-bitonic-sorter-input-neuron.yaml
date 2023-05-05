@@ -376,11 +376,7 @@ neurons:
     delay: 0
   spikes: 0
   downtime: 0
-  synapses:
-  - to: 24
-    weight: 1
-  - to: 25
-    weight: 1
+  synapses: []
   isInput: false
   isOutput: true
   spikeTimes: []
@@ -400,9 +396,7 @@ neurons:
     delay: 0
   spikes: 0
   downtime: 0
-  synapses:
-  - to: 25
-    weight: 1
+  synapses: []
   isInput: false
   isOutput: true
   spikeTimes: []
@@ -422,11 +416,7 @@ neurons:
     delay: 0
   spikes: 0
   downtime: 0
-  synapses:
-  - to: 27
-    weight: 1
-  - to: 26
-    weight: 1
+  synapses: []
   isInput: false
   isOutput: true
   spikeTimes: []
@@ -446,9 +436,7 @@ neurons:
     delay: 0
   spikes: 0
   downtime: 0
-  synapses:
-  - to: 27
-    weight: 1
+  synapses: []
   isInput: false
   isOutput: true
   spikeTimes: []

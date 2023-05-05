@@ -72,12 +72,7 @@
       ],
       "spikes": 1,
       "downtime": 0,
-      "synapses": [
-        {
-          "to": 3,
-          "weight": 1
-        }
-      ],
+      "synapses": [],
       "isInput": false,
       "isOutput": true,
       "spikeTimes": []

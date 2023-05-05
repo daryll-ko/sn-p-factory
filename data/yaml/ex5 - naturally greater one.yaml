@@ -44,9 +44,7 @@ neurons:
     delay: 0
   spikes: 3
   downtime: 0
-  synapses:
-  - to: 2
-    weight: 1
+  synapses: []
   isInput: false
   isOutput: true
   spikeTimes: []

@@ -16,11 +16,7 @@ neurons:
     delay: 0
   spikes: 0
   downtime: 0
-  synapses:
-  - to: 1
-    weight: 1
-  - to: 3
-    weight: 1
+  synapses: []
   isInput: true
   isOutput: true
   spikeTimes:
@@ -141,9 +137,7 @@ neurons:
     delay: 0
   spikes: 0
   downtime: 0
-  synapses:
-  - to: 3
-    weight: 1
+  synapses: []
   isInput: true
   isOutput: true
   spikeTimes:
