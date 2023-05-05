@@ -46,11 +46,11 @@ class System:
 
             if neuron.is_input:
                 v["isInput"] = True
-                v["bitstring"] = Neuron.decompress_spike_train(neuron.spike_times)
+                v["bitstring"] = Neuron.decompress_spike_times(neuron.spike_times)
 
             if neuron.is_output:
                 v["isOutput"] = True
-                v["bitstring"] = Neuron.decompress_spike_train(neuron.spike_times)
+                v["bitstring"] = Neuron.decompress_spike_times(neuron.spike_times)
 
             for synapse in neuron.synapses:
                 if "out" not in v:
