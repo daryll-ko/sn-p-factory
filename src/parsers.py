@@ -1,34 +1,26 @@
 from src.classes.System import System
 from src.classes.Neuron import Neuron
 from src.classes.Synapse import Synapse
-from src.classes.Terminal import Terminal
 from src.classes.Position import Position
 from src.classes.Rule import Rule
 
 import re
 
 
-def get_symbol_value(s: str) -> int:
-    if s == "0":
-        return 0
-    elif s == "a":
-        return 1
-    else:
-        return int(s.replace("a", ""))
-
-
 def parse_rule_xmp(s: str) -> Rule:
     result = re.match("(.*)/(\d*a)->(\d*a|0);(\d+)", s)
     regex, consumed, produced, delay = result.groups()
 
-    consumed = int(get_symbol_value(consumed))
-    produced = int(get_symbol_value(produced))
+    consumed = int(Rule.get_value(consumed))
+    produced = int(Rule.get_value(produced))
     delay = int(delay)
 
     return Rule(regex, consumed, produced, delay)
 
 
-def parse_neuron_xmp(d: dict[str, any], to_id: dict[str, int]) -> Neuron:
+def parse_neuron_xmp(
+    d: dict[str, any], to_id: dict[str, int], spike_train: list[int], is_output: bool
+) -> Neuron:
     id = to_id[d["id"]]
     label = d["id"]
     position = Position(
@@ -37,8 +29,28 @@ def parse_neuron_xmp(d: dict[str, any], to_id: dict[str, int]) -> Neuron:
     rules = list(map(parse_rule_xmp, d["rules"].split())) if "rules" in d else []
     spikes = int(d["spikes"])
     downtime = int(d["delay"]) if "delay" in d else 0
+    is_input = len(spike_train) > 0
 
-    return Neuron(id, label, position, rules, spikes, downtime)
+    synapses = []
+
+    if "outWeights" in d:
+        for inner_k, inner_v in d["outWeights"].items():
+            to = to_id[inner_k]
+            weight = int(inner_v)
+            synapses.append(Synapse(to, weight))
+
+    return Neuron(
+        id,
+        label,
+        position,
+        rules,
+        spikes,
+        downtime,
+        synapses,
+        is_input,
+        is_output,
+        spike_train,
+    )
 
 
 def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
@@ -53,33 +65,46 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
             to_id[k] = current_id
             current_id += 1
 
-    neurons = []
-    synapses = []
-    input_neurons = []
-    output_neurons = []
+    input_neurons = dict()
+    environment_neurons = set([])
+    output_neurons = set([])
 
     for v in d.values():
-        neurons.append(parse_neuron_xmp(v, to_id))
+        if "isInput" in v and v["isInput"] and "outWeights" in v and "bitstring" in v:
+            for inner_k in v["outWeights"].keys():
+                input_neurons[to_id[inner_k]] = Neuron.compress_to_spike_train(
+                    v["bitstring"]
+                )
+        if "isOutput" in v and v["isOutput"]:
+            environment_neurons.add(to_id[v["id"]])
 
     for v in d.values():
-        id = to_id[v["id"]]
-
-        if "isInput" in v and v["isInput"] == "true":
-            s = v["bitstring"] if "bitstring" in v and v["bitstring"] else ""
-            input_neurons.append(Terminal(id, Terminal.compress(s)))
-
-        if "isOutput" in v and v["isOutput"] == "true":
-            s = v["bitstring"] if "bitstring" in v and v["bitstring"] else ""
-            output_neurons.append(Terminal(id, Terminal.compress(s)))
-
         if "outWeights" in v:
-            for inner_k, inner_v in v["outWeights"].items():
-                start = id
-                end = to_id[inner_k]
-                weight = int(inner_v)
-                synapses.append(Synapse(start, end, weight))
+            for inner_k in v["outWeights"].keys():
+                if inner_k in environment_neurons:
+                    output_neurons.add(to_id[v["id"]])
 
-    return System(filename, neurons, synapses, input_neurons, output_neurons)
+    filtered_dicts = list(
+        filter(
+            lambda dict: not (
+                ("isInput" in dict and dict["isInput"])
+                or ("isOutput" in dict and dict["isOutput"])
+            ),
+            d.values(),
+        )
+    )
+
+    neurons = [
+        parse_neuron_xmp(
+            v,
+            to_id,
+            input_neurons[to_id[v["id"]]] if to_id(v["id"]) in input_neurons else [],
+            to_id[v["id"]] in output_neurons,
+        )
+        for v in filtered_dicts
+    ]
+
+    return System(filename, neurons)
 
 
 def parse_position(d: dict[str, any]) -> Position:
@@ -117,20 +142,8 @@ def parse_synapse(d: dict[str, any]) -> Neuron:
     return Synapse(start, end, weight)
 
 
-def parse_terminal(d: dict[str, any]) -> Terminal:
-    id = int(d["id"])
-    spike_times = list(map(int, d["spikeTimes"]))
-
-    return Terminal(id, spike_times)
-
-
 def parse_dict(d: dict[str, any]) -> System:
     name = d["name"]
     neurons = [parse_neuron(neuron) for neuron in d["neurons"]]
-    synapses = [parse_synapse(synapse) for synapse in d["synapses"]]
-    input_neurons = [parse_terminal(input_neuron) for input_neuron in d["inputNeurons"]]
-    output_neurons = [
-        parse_terminal(output_neuron) for output_neuron in d["outputNeurons"]
-    ]
 
-    return System(name, neurons, synapses, input_neurons, output_neurons)
+    return System(name, neurons)
