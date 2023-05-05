@@ -1,13 +1,9 @@
+from src.globals import XMP_PATH, JSON_PATH, YAML_PATH
+
 import os
 import xmltodict
 import json
 import yaml
-
-INPUTS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-
-XMP_PATH = os.path.join(INPUTS_PATH, "xmp")
-JSON_PATH = os.path.join(INPUTS_PATH, "json")
-YAML_PATH = os.path.join(INPUTS_PATH, "yaml")
 
 
 def write_xmp(dict: dict[str, any], filename: str):
