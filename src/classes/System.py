@@ -125,8 +125,4 @@ class System:
 
         return any(value != 0 for value in net_gain)
 
-    def simulate_completely(self):
-        time = 0
-        while self.simulate_one_step(time) and time < 2 * 10**4:
-            time += 1
-        return
+
