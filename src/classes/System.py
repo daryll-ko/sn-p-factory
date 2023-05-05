@@ -65,6 +65,7 @@ class System:
         return {"content": dict(neuron_entries)}
 
     def simulate_one_step(self, time: int) -> bool:
+        print()
         print(f"Time: {time}")
         print()
         print(f"System: {self}")
