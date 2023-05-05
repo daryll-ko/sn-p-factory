@@ -30,3 +30,21 @@ class Neuron:
             "isOutput": self.is_output,
             "spikeTimes": self.spike_times,
         }
+
+    @staticmethod
+    def compress_to_spike_train(s: str) -> list[int]:
+        result = []
+        if len(s.strip()) == 0:
+            return result
+        stream = list(map(int, s.split(",")))
+        for index, bit in enumerate(stream):
+            if bit == 1:
+                result.append(index)
+        return result
+
+    @staticmethod
+    def decompress_spike_train(L: list[int]) -> str:
+        characters = ["0" for _ in range(L[-1] + 1)]
+        for index in L:
+            characters[index] = "1"
+        return ",".join(characters)
