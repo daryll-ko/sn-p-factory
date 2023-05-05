@@ -44,29 +44,21 @@ class System:
                 "spikes": neuron.spikes,
             }
 
-            for input_neuron in self.input_neurons:
-                if neuron.id == input_neuron.id:
-                    v["isInput"] = True
-                    v["bitstring"] = Neuron.decompress_spike_train(
-                        input_neuron.spike_times
-                    )
+            if neuron.is_input:
+                v["isInput"] = True
+                v["bitstring"] = Neuron.decompress_spike_train(neuron.spike_times)
 
-            for output_neuron in self.output_neurons:
-                if neuron.id == output_neuron.id:
-                    v["isOutput"] = True
-                    v["bitstring"] = Neuron.decompress_spike_train(
-                        output_neuron.spike_times
-                    )
+            if neuron.is_output:
+                v["isOutput"] = True
+                v["bitstring"] = Neuron.decompress_spike_train(neuron.spike_times)
 
-            for synapse in self.synapses:
-                if synapse.start == label_to_id[k]:
-                    if "out" not in v:
-                        v["out"] = []
-                    v["out"].append(id_to_label[synapse.to])
-                    if "outWeights" not in v:
-                        v["outWeights"] = {}
-                    v["outWeights"][id_to_label[synapse.to]] = synapse.weight
-                    break
+            for synapse in neuron.synapses:
+                if "out" not in v:
+                    v["out"] = []
+                if "outWeights" not in v:
+                    v["outWeights"] = {}
+                v["out"].append(id_to_label[synapse.to])
+                v["outWeights"][id_to_label[synapse.to]] = synapse.weight
 
             neuron_entries.append((k, v))
 
