@@ -5,8 +5,6 @@ from collections import defaultdict
 from dataclasses import dataclass
 from .Neuron import Neuron
 from .Rule import Rule
-from .Synapse import Synapse
-from .Terminal import Terminal
 
 
 @dataclass
@@ -49,12 +47,16 @@ class System:
             for input_neuron in self.input_neurons:
                 if neuron.id == input_neuron.id:
                     v["isInput"] = True
-                    v["bitstring"] = Terminal.decompress(input_neuron.spike_times)
+                    v["bitstring"] = Neuron.decompress_spike_train(
+                        input_neuron.spike_times
+                    )
 
             for output_neuron in self.output_neurons:
                 if neuron.id == output_neuron.id:
                     v["isOutput"] = True
-                    v["bitstring"] = Terminal.decompress(output_neuron.spike_times)
+                    v["bitstring"] = Neuron.decompress_spike_train(
+                        output_neuron.spike_times
+                    )
 
             for synapse in self.synapses:
                 if synapse.start == label_to_id[k]:
