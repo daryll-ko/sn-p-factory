@@ -55,4 +55,4 @@ class Rule:
 
     @staticmethod
     def xmp_to_python_regex(s: str) -> str:
-        pass
+        return re.sub(r"(\d+)a", r"a{\1}", s)
