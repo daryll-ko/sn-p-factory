@@ -43,7 +43,7 @@ class Rule:
             r"\\cup",
             "|",
             re.sub(
-                r"\^\{\+\}",
+                r"\^\{?\+\}?",
                 "+",
                 re.sub(
                     r"\^\{?\*\}?",
@@ -52,3 +52,7 @@ class Rule:
                 ),
             ),
         ).replace(" ", "")
+
+    @staticmethod
+    def xmp_to_python_regex(s: str) -> str:
+        pass
