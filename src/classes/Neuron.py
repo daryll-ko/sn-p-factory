@@ -1,3 +1,4 @@
+from collections import deque
 from dataclasses import dataclass
 from .Rule import Rule
 from .Position import Position
@@ -15,7 +16,7 @@ class Neuron:
     synapses: list[Synapse]
     is_input: bool
     is_output: bool
-    spike_times: list[int]
+    spike_times: deque[int]
 
     def to_dict(self) -> dict[str, any]:
         return {
@@ -28,11 +29,11 @@ class Neuron:
             "synapses": [synapse.to_dict() for synapse in self.synapses],
             "isInput": self.is_input,
             "isOutput": self.is_output,
-            "spikeTimes": self.spike_times,
+            "spikeTimes": list(self.spike_times),
         }
 
     @staticmethod
-    def compress_to_spike_times(s: str) -> list[int]:
+    def compress_to_spike_times(s: str) -> deque[int]:
         result = []
         if len(s.strip()) == 0:
             return result
@@ -40,10 +41,10 @@ class Neuron:
         for index, bit in enumerate(stream):
             if bit == 1:
                 result.append(index)
-        return result
+        return deque(result)
 
     @staticmethod
-    def decompress_spike_times(L: list[int]) -> str:
+    def decompress_spike_times(L: deque[int]) -> str:
         characters = ["0" for _ in range(L[-1] + 1)]
         for index in L:
             characters[index] = "1"
