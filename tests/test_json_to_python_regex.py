@@ -16,6 +16,9 @@ class TestJsonToPythonRegex(unittest.TestCase):
     def test_exponent_no_braces(self):
         self.assertEqual(Rule.json_to_python_regex(r"a^2"), r"a{2}")
 
+    def test_exponent_multiple_digits(self):
+        self.assertEqual(Rule.json_to_python_regex(r"a^{123}"), r"a{123}")
+
     def test_plus(self):
         self.assertEqual(Rule.json_to_python_regex(r"a^{+}"), r"a+")
 
