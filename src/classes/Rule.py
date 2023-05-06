@@ -20,13 +20,13 @@ class Rule:
         )
 
     @staticmethod
-    def get_value(s: str) -> int:
-        if s == "0":
+    def get_value(symbol: str) -> int:
+        if symbol == "0":
             return 0
-        elif s == "a":
+        elif symbol == "a":
             return 1
         else:
-            return int(s.replace("a", ""))
+            return int(symbol.replace("a", ""))
 
     @staticmethod
     def get_symbol(value: int) -> str:
