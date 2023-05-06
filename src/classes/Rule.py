@@ -41,7 +41,7 @@ class Rule:
     @staticmethod
     def get_symbol(value: int) -> str:
         if value == 0:
-            return ""
+            return "0"
         elif value == 1:
             return "a"
         else:
@@ -67,7 +67,7 @@ class Rule:
     def python_to_json_regex(s: str) -> str:
         return re.sub(
             r"\|",
-            r" \cup ",
+            r" \\cup ",
             re.sub(
                 r"\+",
                 r"^{+}",
