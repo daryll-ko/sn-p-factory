@@ -18,7 +18,7 @@ class TestXmpRuleParser(unittest.TestCase):
         self.assertEqual(parse_rule_xmp("a/2a->2a;0"), Rule("a", 2, 2, 0))
 
     def test_complex_regex(self):
-        self.assertEqual(parse_rule_xmp("aU(2a)+/a->a;0"), Rule("aU(2a)+", 1, 1, 0))
+        self.assertEqual(parse_rule_xmp("a(2a)*/a->a;0"), Rule(r"a(a{2})*", 1, 1, 0))
 
     def test_nonzero_delay(self):
         self.assertEqual(parse_rule_xmp("a/a->a;1"), Rule("a", 1, 1, 1))
