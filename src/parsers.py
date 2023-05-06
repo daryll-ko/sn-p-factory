@@ -1,4 +1,3 @@
-from collections import deque
 from src.classes.System import System
 from src.classes.Neuron import Neuron
 from src.classes.Synapse import Synapse
@@ -22,7 +21,7 @@ def parse_rule_xmp(s: str) -> Rule:
 def parse_neuron_xmp(
     d: dict[str, any],
     to_id: dict[str, int],
-    spike_times: deque[int],
+    spike_times: list[int],
     is_output: bool,
     environment_neurons: set[int],
 ) -> Neuron:
@@ -56,7 +55,6 @@ def parse_neuron_xmp(
         is_input,
         is_output,
         spike_times,
-        [],
     )
 
 
@@ -110,9 +108,9 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
         parse_neuron_xmp(
             v,
             to_id,
-            deque(input_neurons[to_id[v["id"]]])
+            list(input_neurons[to_id[v["id"]]])
             if to_id[v["id"]] in input_neurons
-            else deque([]),
+            else [],
             to_id[v["id"]] in output_neurons,
             environment_neurons,
         )
@@ -148,7 +146,7 @@ def parse_neuron(d: dict[str, any]) -> Neuron:
     synapses = [parse_synapse(synapse) for synapse in d["synapses"]]
     is_input = bool(d["isInput"])
     is_output = bool(d["isOutput"])
-    spike_times = deque(map(int, d["spikeTimes"]))
+    spike_times = list(map(int, d["spikeTimes"]))
 
     return Neuron(
         id,
