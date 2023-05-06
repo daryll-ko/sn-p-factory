@@ -38,7 +38,7 @@ class Rule:
             return f"{value}a"
 
     @staticmethod
-    def get_python_regex(s: str) -> str:
+    def json_to_python_regex(s: str) -> str:
         return re.sub(
             r"\\cup",
             "|",

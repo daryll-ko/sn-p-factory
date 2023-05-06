@@ -102,7 +102,7 @@ class System:
                     possible_indices = []
 
                     for index, rule in enumerate(neuron.rules):
-                        python_regex = Rule.get_python_regex(rule.regex)
+                        python_regex = Rule.json_to_python_regex(rule.regex)
                         result = re.match(python_regex, "a" * neuron.spikes)
                         if result:
                             possible_indices.append(index)
