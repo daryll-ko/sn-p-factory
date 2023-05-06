@@ -11,12 +11,22 @@ class Rule:
     delay: int
 
     def to_dict(self) -> dict[str, any]:
-        return vars(self)
+        return {
+            "regex": Rule.python_to_json_regex(self.regex),
+            "consumed": self.consumed,
+            "produced": self.produced,
+            "delay": self.delay,
+        }
 
     def form_rule_xmp(self) -> str:
         return (
-            f"{self.regex}/{Rule.get_symbol(self.consumed)}"
-            f"->{Rule.get_symbol(self.produced)};{self.delay}"
+            f"{Rule.python_to_xmp_regex(self.regex)}"
+            "/"
+            f"{Rule.get_symbol(self.consumed)}"
+            "->"
+            f"{Rule.get_symbol(self.produced)}"
+            ";"
+            f"{self.delay}"
         )
 
     @staticmethod
@@ -54,5 +64,21 @@ class Rule:
         ).replace(" ", "")
 
     @staticmethod
+    def python_to_json_regex(s: str) -> str:
+        return re.sub(
+            r"\|",
+            r" \cup ",
+            re.sub(
+                r"\+",
+                r"^{+}",
+                re.sub(r"\*", r"^{*}", re.sub(r"\{(\d+)\}", r"^{\1}", s)),
+            ),
+        )
+
+    @staticmethod
     def xmp_to_python_regex(s: str) -> str:
         return re.sub(r"(\d+)a", r"a{\1}", s)
+
+    @staticmethod
+    def python_to_xmp_regex(s: str) -> str:
+        return re.sub(r"a\{(\d+)\}", r"\1a", s)
