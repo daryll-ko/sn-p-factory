@@ -17,6 +17,7 @@ class Neuron:
     is_input: bool
     is_output: bool
     spike_times: deque[int]
+    incoming_spikes: list[tuple[int, int]]
 
     def to_dict(self) -> dict[str, any]:
         return {
@@ -30,6 +31,7 @@ class Neuron:
             "isInput": self.is_input,
             "isOutput": self.is_output,
             "spikeTimes": list(self.spike_times),
+            "incomingSpikes": self.incoming_spikes,
         }
 
     @staticmethod
