@@ -11,6 +11,7 @@ def parse_rule_xmp(s: str) -> Rule:
     result = re.match("(.*)/(\d*a)->(\d*a|0);(\d+)", s)
     regex, consumed, produced, delay = result.groups()
 
+    regex = Rule.xmp_to_python_regex(regex)
     consumed = int(Rule.get_value(consumed))
     produced = int(Rule.get_value(produced))
     delay = int(delay)
@@ -128,7 +129,7 @@ def parse_position(d: dict[str, any]) -> Position:
 
 
 def parse_rule(d: dict[str, any]) -> Rule:
-    regex = d["regex"]
+    regex = Rule.json_to_python_regex(d["regex"])
     consumed = int(d["consumed"])
     produced = int(d["produced"])
     delay = int(d["delay"])
