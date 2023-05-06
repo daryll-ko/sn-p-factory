@@ -56,6 +56,7 @@ def parse_neuron_xmp(
         is_input,
         is_output,
         spike_times,
+        [],
     )
 
 
