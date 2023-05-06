@@ -6,11 +6,11 @@ neurons:
     x: 112
     y: 197
   rules:
-  - regex: 10a
+  - regex: a^{10}
     consumed: 1
     produced: 1
     delay: 1
-  - regex: 9a
+  - regex: a^{9}
     consumed: 1
     produced: 1
     delay: 1
@@ -28,15 +28,15 @@ neurons:
     x: 117
     y: 356
   rules:
-  - regex: 11a
+  - regex: a^{11}
     consumed: 1
     produced: 1
     delay: 0
-  - regex: 10a
+  - regex: a^{10}
     consumed: 1
     produced: 1
     delay: 0
-  - regex: 9a
+  - regex: a^{9}
     consumed: 1
     produced: 1
     delay: 1
@@ -58,11 +58,11 @@ neurons:
     consumed: 1
     produced: 1
     delay: 0
-  - regex: 2a
+  - regex: a^{2}
     consumed: 1
     produced: 0
     delay: 0
-  - regex: 3a
+  - regex: a^{3}
     consumed: 2
     produced: 1
     delay: 0

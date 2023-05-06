@@ -10,13 +10,13 @@
       },
       "rules": [
         {
-          "regex": "5a",
+          "regex": "a^{5}",
           "consumed": 2,
           "produced": 1,
           "delay": 0
         },
         {
-          "regex": "3a",
+          "regex": "a^{3}",
           "consumed": 3,
           "produced": 1,
           "delay": 1
@@ -43,13 +43,13 @@
       },
       "rules": [
         {
-          "regex": "9a",
+          "regex": "a^{9}",
           "consumed": 4,
           "produced": 1,
           "delay": 0
         },
         {
-          "regex": "5a",
+          "regex": "a^{5}",
           "consumed": 5,
           "produced": 1,
           "delay": 2
@@ -82,13 +82,13 @@
           "delay": 0
         },
         {
-          "regex": "2a",
+          "regex": "a^{2}",
           "consumed": 1,
           "produced": 0,
           "delay": 0
         },
         {
-          "regex": "3a",
+          "regex": "a^{3}",
           "consumed": 2,
           "produced": 1,
           "delay": 0

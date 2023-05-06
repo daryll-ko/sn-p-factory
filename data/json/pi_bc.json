@@ -10,13 +10,13 @@
       },
       "rules": [
         {
-          "regex": "(2a)*",
+          "regex": "(a^{2})^{*}",
           "consumed": 1,
           "produced": 1,
           "delay": 0
         },
         {
-          "regex": "(2a)*",
+          "regex": "(a^{2})^{*}",
           "consumed": 1,
           "produced": 2,
           "delay": 0
@@ -51,13 +51,13 @@
       },
       "rules": [
         {
-          "regex": "(2a)*",
+          "regex": "(a^{2})^{*}",
           "consumed": 1,
           "produced": 1,
           "delay": 0
         },
         {
-          "regex": "(2a)*",
+          "regex": "(a^{2})^{*}",
           "consumed": 1,
           "produced": 2,
           "delay": 0
@@ -92,13 +92,13 @@
       },
       "rules": [
         {
-          "regex": "(2a)*",
+          "regex": "(a^{2})^{*}",
           "consumed": 1,
           "produced": 1,
           "delay": 0
         },
         {
-          "regex": "(2a)*",
+          "regex": "(a^{2})^{*}",
           "consumed": 1,
           "produced": 2,
           "delay": 0
@@ -133,13 +133,13 @@
       },
       "rules": [
         {
-          "regex": "(2a)*",
+          "regex": "(a^{2})^{*}",
           "consumed": 1,
           "produced": 1,
           "delay": 0
         },
         {
-          "regex": "(2a)*",
+          "regex": "(a^{2})^{*}",
           "consumed": 1,
           "produced": 2,
           "delay": 0

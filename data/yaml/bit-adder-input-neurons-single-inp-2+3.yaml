@@ -6,7 +6,7 @@ neurons:
     x: 122
     y: 85
   rules:
-  - regex: 2a
+  - regex: a^{2}
     consumed: 2
     produced: 1
     delay: 1
@@ -28,11 +28,11 @@ neurons:
     consumed: 1
     produced: 1
     delay: 0
-  - regex: 2a
+  - regex: a^{2}
     consumed: 1
     produced: 0
     delay: 0
-  - regex: 3a
+  - regex: a^{3}
     consumed: 2
     produced: 1
     delay: 0

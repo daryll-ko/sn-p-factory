@@ -10,7 +10,7 @@
       },
       "rules": [
         {
-          "regex": "a+",
+          "regex": "a^{+}",
           "consumed": 1,
           "produced": 1,
           "delay": 2
