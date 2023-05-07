@@ -89,7 +89,7 @@ class System:
                 for t in neuron.spike_times:
                     heappush(incoming_spikes[to_index[neuron.id]], (t, 1))
 
-        while not done and time <= 2 * 10**2:
+        while not done and time < 10**3:
             for neuron in self.neurons:
                 heap = incoming_spikes[to_index[neuron.id]]
                 if neuron.downtime == 0:
