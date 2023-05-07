@@ -4,6 +4,7 @@ import random
 from heapq import heappush, heappop
 from collections import defaultdict
 from dataclasses import dataclass
+from src.writes import write_json
 from .Neuron import Neuron
 from .Rule import Rule
 
@@ -66,9 +67,8 @@ class System:
         return {"content": dict(neuron_entries)}
 
     def log(self, time: int):
-        print()
-        print(f"System (t = {time}):")
-        print(self)
+        dict_new = self.to_dict()
+        write_json(dict_new, f"{self.name}@{str(time).zfill(3)}", True)
 
     def simulate(self) -> bool:
         to_index = defaultdict(int)
@@ -89,7 +89,7 @@ class System:
                 for t in neuron.spike_times:
                     heappush(incoming_spikes[to_index[neuron.id]], (t, 1))
 
-        while not done and time <= 2 * 10**1:
+        while not done and time <= 2 * 10**2:
             for neuron in self.neurons:
                 heap = incoming_spikes[to_index[neuron.id]]
                 if neuron.downtime == 0:
