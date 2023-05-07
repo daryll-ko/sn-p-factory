@@ -65,6 +65,11 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
+    def log(self, time: int):
+        print()
+        print(f"System (t = {time}):")
+        print(self)
+
     def simulate(self) -> bool:
         to_index = defaultdict(int)
         current_index = 0
@@ -93,9 +98,7 @@ class System:
                         heappop(heap)
                 neuron.downtime = max(neuron.downtime - 1, 0)
 
-            print()
-            print(f"System (t = {time}):")
-            print(self)
+            self.log(time)
 
             for neuron in self.neurons:
                 if neuron.downtime == 0:
@@ -118,12 +121,8 @@ class System:
                                 (time + rule.delay + 1, rule.produced * weight),
                             )
                         if neuron.is_output:
-                            print(f"{neuron.label} -> env")
-                            print()
                             neuron.spike_times.append(time + rule.delay)
                         neuron.downtime = rule.delay
-
-            print("- " * 5 + "-")
 
             done = all([len(heap) == 0 for heap in incoming_spikes])
             time += 1
