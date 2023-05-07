@@ -1,0 +1,83 @@
+{
+  "name": "ex1 - 3k+3",
+  "neurons": [
+    {
+      "id": 0,
+      "label": "n1",
+      "position": {
+        "x": 50,
+        "y": 50
+      },
+      "rules": [
+        {
+          "regex": "a^{+}",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 2
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 1,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 1,
+      "label": "n2",
+      "position": {
+        "x": 200,
+        "y": 50
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 1
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 2,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "isOutput": false,
+      "spikeTimes": []
+    },
+    {
+      "id": 2,
+      "label": "n3",
+      "position": {
+        "x": 400,
+        "y": 50
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        }
+      ],
+      "spikes": 0,
+      "downtime": 0,
+      "synapses": [],
+      "isInput": false,
+      "isOutput": true,
+      "spikeTimes": [
+        0
+      ]
+    }
+  ]
+}
