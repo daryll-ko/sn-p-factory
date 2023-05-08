@@ -4,7 +4,7 @@ from src.parsers import parse_rule_xmp
 import unittest
 
 
-class TestXmpRuleParser(unittest.TestCase):
+class TestParseRuleXmp(unittest.TestCase):
     def test_basic(self):
         self.assertEqual(parse_rule_xmp("a/a->a;0"), Rule("a", 1, 1, 0))
 
