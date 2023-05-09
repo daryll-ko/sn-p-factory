@@ -126,11 +126,3 @@ class System:
 
             done = all([len(heap) == 0 for heap in incoming_spikes])
             time += 1
-
-    def __str__(self) -> str:
-        nl = "\n"
-        return f"""
-{nl.join(list(map(
-    lambda neuron: f"{neuron.label}: {neuron.spikes}/{neuron.downtime}", self.neurons
-)))}
-"""
