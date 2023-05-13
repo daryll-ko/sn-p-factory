@@ -2,7 +2,6 @@ import re
 import random
 
 from heapq import heappush, heappop
-from collections import defaultdict
 from dataclasses import dataclass
 from src.writes import write_json
 from .Neuron import Neuron
@@ -48,11 +47,11 @@ class System:
 
             if neuron.is_input:
                 v["isInput"] = True
-                v["bitstring"] = Neuron.decompress_spike_times(neuron.spike_times)
+                v["bitstring"] = Neuron.decompress_log(neuron.spike_times)
 
             if neuron.is_output:
                 v["isOutput"] = True
-                v["bitstring"] = Neuron.decompress_spike_times(neuron.spike_times)
+                v["bitstring"] = Neuron.decompress_log(neuron.spike_times)
 
             for synapse in neuron.synapses:
                 if "out" not in v:
@@ -71,23 +70,22 @@ class System:
         write_json(dict_new, f"{self.name}@{str(time).zfill(3)}", True)
 
     def simulate(self) -> bool:
-        to_index = defaultdict(int)
-        current_index = 0
+        to_index = {}
+        for i, neuron in enumerate(self.neurons):
+            to_index[neuron.id] = i
 
-        for neuron in self.neurons:
-            if neuron.id not in to_index:
-                to_index[neuron.id] = current_index
-                current_index += 1
-
-        incoming_spikes = [[] for _ in range(current_index)]  # @start of timestep
+        incoming_spikes = [[] for _ in range(len(self.neurons))]  # @start of timestep
 
         time = 0
         done = False
 
         for neuron in self.neurons:
             if neuron.is_input:
-                for t in neuron.spike_times:
-                    heappush(incoming_spikes[to_index[neuron.id]], (t, 1))
+                for record in neuron.input_log:
+                    heappush(
+                        incoming_spikes[to_index[neuron.id]],
+                        (record.time, record.spikes),
+                    )
 
         while not done and time < 10**3:
             for neuron in self.neurons:
@@ -121,8 +119,48 @@ class System:
                                 (time + rule.delay + 1, rule.produced * weight),
                             )
                         if neuron.is_output:
-                            neuron.spike_times.append(time + rule.delay)
+                            neuron.output_log.append(
+                                (time + rule.delay, rule.produced * weight)
+                            )
                         neuron.downtime = rule.delay
 
             done = all([len(heap) == 0 for heap in incoming_spikes])
+            time += 1
+
+    def simulate_using_matrices(self):
+        to_index = {}
+        for j, neuron in enumerate(self.neurons):
+            to_index[neuron.id] = j
+
+        N = sum([len(neuron.rules) for neuron in self.neurons])
+        M = len(self.neurons)
+
+        P = [[0 for _ in range(M)] for _ in range(N)]  # production matrix (N×M)
+        C = [[0 for _ in range(M)] for _ in range(N)]  # consumption matrix (N×M)
+
+        offset = 0
+        for j, neuron in enumerate(self.neurons):
+            adjacent_indices = [to_index[synapse.to] for synapse in neuron.synapses]
+            for i, rule in enumerate(neuron.rules):
+                for adjacent_index in adjacent_indices:
+                    P[offset + i][adjacent_index] = rule.produced
+                C[offset + i][j] = rule.consumed
+            offset += len(neuron.rules)
+
+        time = 0
+
+        while time < 10**3:
+            # S = [0 for _ in range(M)]  # status vector (1×M)
+            # I = [0 for _ in range(N)]  # indicator vector (1×N)
+
+            # SP  # spiking vector (1×N)
+            # G = I • P  # gain vector (1×N • N×M = 1×M)
+            # L = SP • C  # loss vector (1×N • N×M = 1×M)
+
+            # NG = S × (G - L) (1×M)
+            # C_{k+1} - C_{k} = S × (G - L)
+            # C_{k+1} = C_{k} + S × [(I • P) - (Sp • C)]
+
+            # what's the difference between I and SP?
+
             time += 1
