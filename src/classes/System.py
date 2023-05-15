@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from src.writes import write_json
 from .Neuron import Neuron
 from .Rule import Rule
+from .Record import Record
 
 
 @dataclass
@@ -120,7 +121,7 @@ class System:
                             )
                         if neuron.is_output:
                             neuron.output_log.append(
-                                (time + rule.delay, rule.produced * weight)
+                                Record(time + rule.delay, rule.produced * weight)
                             )
                         neuron.downtime = rule.delay
 
