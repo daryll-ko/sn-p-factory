@@ -113,16 +113,17 @@ class System:
                         chosen_index = random.choice(possible_indices)
                         rule = neuron.rules[chosen_index]
                         neuron.spikes -= rule.consumed
-                        for synapse in neuron.synapses:
-                            to, weight = synapse.to, synapse.weight
-                            heappush(
-                                incoming_spikes[to_index[to]],
-                                (time + rule.delay + 1, rule.produced * weight),
-                            )
-                        if neuron.is_output:
-                            neuron.output_log.append(
-                                Record(time + rule.delay, rule.produced * weight)
-                            )
+                        if rule.produced > 0:
+                            for synapse in neuron.synapses:
+                                to, weight = synapse.to, synapse.weight
+                                heappush(
+                                    incoming_spikes[to_index[to]],
+                                    (time + rule.delay + 1, rule.produced * weight),
+                                )
+                            if neuron.is_output:
+                                neuron.output_log.append(
+                                    Record(time + rule.delay, rule.produced * weight)
+                                )
                         neuron.downtime = rule.delay
 
             done = all([len(heap) == 0 for heap in incoming_spikes])
