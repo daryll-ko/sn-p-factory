@@ -29,8 +29,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 1,
@@ -57,8 +58,9 @@
       "downtime": 0,
       "synapses": [],
       "isInput": false,
+      "inputLog": [],
       "isOutput": true,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 3,
@@ -88,8 +90,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 4,
@@ -116,8 +119,9 @@
       "downtime": 0,
       "synapses": [],
       "isInput": false,
+      "inputLog": [],
       "isOutput": true,
-      "spikeTimes": []
+      "outputLog": []
     }
   ]
 }

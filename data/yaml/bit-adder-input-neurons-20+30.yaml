@@ -22,9 +22,14 @@ neurons:
   downtime: 0
   synapses: []
   isInput: true
+  inputLog:
+  - time: 1
+    spikes: 1
+  - time: 2
+    spikes: 1
+  - time: 3
+    spikes: 1
+  - time: 4
+    spikes: 1
   isOutput: true
-  spikeTimes:
-  - 1
-  - 2
-  - 3
-  - 4
+  outputLog: []

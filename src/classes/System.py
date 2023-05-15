@@ -29,39 +29,39 @@ class System:
 
         neuron_entries = []
 
-        for neuron in self.neurons:
-            k = neuron.label
-            v = {
-                "id": neuron.label,
-                "position": {
-                    "x": neuron.position[0],
-                    "y": neuron.position[1],
-                },
-                "rules": " ".join(
-                    list(map(lambda rule: rule.form_rule_xmp(), neuron.rules))
-                ),
-                "startingSpikes": neuron.spikes,
-                "delay": neuron.downtime,
-                "spikes": neuron.spikes,
-            }
+        # for neuron in self.neurons:
+        #     k = neuron.label
+        #     v = {
+        #         "id": neuron.label,
+        #         "position": {
+        #             "x": neuron.position[0],
+        #             "y": neuron.position[1],
+        #         },
+        #         "rules": " ".join(
+        #             list(map(lambda rule: rule.form_rule_xmp(), neuron.rules))
+        #         ),
+        #         "startingSpikes": neuron.spikes,
+        #         "delay": neuron.downtime,
+        #         "spikes": neuron.spikes,
+        #     }
 
-            if neuron.is_input:
-                v["isInput"] = True
-                v["bitstring"] = Neuron.decompress_log(neuron.spike_times)
+        #     if neuron.is_input:
+        #         v["isInput"] = True
+        #         v["bitstring"] = Neuron.decompress_log(neuron.spike_times)
 
-            if neuron.is_output:
-                v["isOutput"] = True
-                v["bitstring"] = Neuron.decompress_log(neuron.spike_times)
+        #     if neuron.is_output:
+        #         v["isOutput"] = True
+        #         v["bitstring"] = Neuron.decompress_log(neuron.spike_times)
 
-            for synapse in neuron.synapses:
-                if "out" not in v:
-                    v["out"] = []
-                if "outWeights" not in v:
-                    v["outWeights"] = {}
-                v["out"].append(id_to_label[synapse.to])
-                v["outWeights"][id_to_label[synapse.to]] = synapse.weight
+        #     for synapse in neuron.synapses:
+        #         if "out" not in v:
+        #             v["out"] = []
+        #         if "outWeights" not in v:
+        #             v["outWeights"] = {}
+        #         v["out"].append(id_to_label[synapse.to])
+        #         v["outWeights"][id_to_label[synapse.to]] = synapse.weight
 
-            neuron_entries.append((k, v))
+        #     neuron_entries.append((k, v))
 
         return {"content": dict(neuron_entries)}
 

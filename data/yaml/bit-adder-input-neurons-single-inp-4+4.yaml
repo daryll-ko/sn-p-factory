@@ -16,8 +16,9 @@ neurons:
   - to: 2
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 2
   label: n2-Tx5pOCJeb
   position:
@@ -40,6 +41,8 @@ neurons:
   downtime: 0
   synapses: []
   isInput: true
+  inputLog:
+  - time: 2
+    spikes: 1
   isOutput: true
-  spikeTimes:
-  - 2
+  outputLog: []

@@ -22,13 +22,19 @@ neurons:
   - to: 9
     weight: 1
   isInput: true
+  inputLog:
+  - time: 0
+    spikes: 1
+  - time: 1
+    spikes: 1
+  - time: 2
+    spikes: 1
+  - time: 3
+    spikes: 1
+  - time: 4
+    spikes: 1
   isOutput: false
-  spikeTimes:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
+  outputLog: []
 - id: 5
   label: n1-ax4qP_Rxv
   position:
@@ -49,13 +55,19 @@ neurons:
   - to: 9
     weight: 1
   isInput: true
+  inputLog:
+  - time: 0
+    spikes: 1
+  - time: 1
+    spikes: 1
+  - time: 2
+    spikes: 1
+  - time: 3
+    spikes: 1
+  - time: 4
+    spikes: 1
   isOutput: false
-  spikeTimes:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
+  outputLog: []
 - id: 6
   label: n2-dq3Gt-3Tv
   position:
@@ -78,11 +90,15 @@ neurons:
   - to: 11
     weight: 1
   isInput: true
+  inputLog:
+  - time: 0
+    spikes: 1
+  - time: 1
+    spikes: 1
+  - time: 2
+    spikes: 1
   isOutput: false
-  spikeTimes:
-  - 0
-  - 1
-  - 2
+  outputLog: []
 - id: 7
   label: n3-VaS88thhD
   position:
@@ -103,11 +119,15 @@ neurons:
   - to: 11
     weight: 1
   isInput: true
+  inputLog:
+  - time: 0
+    spikes: 1
+  - time: 1
+    spikes: 1
+  - time: 2
+    spikes: 1
   isOutput: false
-  spikeTimes:
-  - 0
-  - 1
-  - 2
+  outputLog: []
 - id: 8
   label: n4-W_p4MAiN8
   position:
@@ -126,8 +146,9 @@ neurons:
   - to: 13
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 9
   label: n5-O0GjncyuZ
   position:
@@ -146,8 +167,9 @@ neurons:
   - to: 15
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 10
   label: n6-9Yoae12dW
   position:
@@ -166,8 +188,9 @@ neurons:
   - to: 13
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 11
   label: n7-rAUEwdsad
   position:
@@ -186,8 +209,9 @@ neurons:
   - to: 15
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 12
   label: n8-yk_3vfSwm
   position:
@@ -210,8 +234,9 @@ neurons:
   - to: 17
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 13
   label: n9-na0v1OgRk
   position:
@@ -232,8 +257,9 @@ neurons:
   - to: 17
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 14
   label: n10-ld9AXsRWj
   position:
@@ -256,8 +282,9 @@ neurons:
   - to: 18
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 15
   label: n11-PeGaGyovx
   position:
@@ -278,8 +305,9 @@ neurons:
   - to: 19
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 16
   label: n12-20sHByaHg
   position:
@@ -298,8 +326,9 @@ neurons:
   - to: 21
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 17
   label: n13-DT2CjmVrB
   position:
@@ -318,8 +347,9 @@ neurons:
   - to: 23
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 18
   label: n14-WsfCqtoa5
   position:
@@ -338,8 +368,9 @@ neurons:
   - to: 20
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 19
   label: n15-YaArKZJoZ
   position:
@@ -358,8 +389,9 @@ neurons:
   - to: 23
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 20
   label: n16-Tof0-El8d
   position:
@@ -378,8 +410,9 @@ neurons:
   downtime: 0
   synapses: []
   isInput: false
+  inputLog: []
   isOutput: true
-  spikeTimes: []
+  outputLog: []
 - id: 21
   label: n17-UkgF5vtUA
   position:
@@ -398,8 +431,9 @@ neurons:
   downtime: 0
   synapses: []
   isInput: false
+  inputLog: []
   isOutput: true
-  spikeTimes: []
+  outputLog: []
 - id: 22
   label: n18-_tbVM0miN
   position:
@@ -418,8 +452,9 @@ neurons:
   downtime: 0
   synapses: []
   isInput: false
+  inputLog: []
   isOutput: true
-  spikeTimes: []
+  outputLog: []
 - id: 23
   label: n19-dT34Oq0o1
   position:
@@ -438,5 +473,6 @@ neurons:
   downtime: 0
   synapses: []
   isInput: false
+  inputLog: []
   isOutput: true
-  spikeTimes: []
+  outputLog: []

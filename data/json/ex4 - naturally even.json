@@ -31,8 +31,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 1,
@@ -76,8 +77,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 2,
@@ -104,8 +106,9 @@
       "downtime": 0,
       "synapses": [],
       "isInput": false,
+      "inputLog": [],
       "isOutput": true,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 4,
@@ -137,8 +140,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 5,
@@ -172,8 +176,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 6,
@@ -203,8 +208,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 7,
@@ -236,8 +242,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     }
   ]
 }

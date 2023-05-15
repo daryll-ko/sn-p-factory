@@ -37,8 +37,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": true,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 2,
@@ -71,12 +72,22 @@
       "downtime": 0,
       "synapses": [],
       "isInput": true,
+      "inputLog": [
+        {
+          "time": 0,
+          "spikes": 1
+        },
+        {
+          "time": 2,
+          "spikes": 1
+        },
+        {
+          "time": 3,
+          "spikes": 1
+        }
+      ],
       "isOutput": true,
-      "spikeTimes": [
-        0,
-        2,
-        3
-      ]
+      "outputLog": []
     }
   ]
 }

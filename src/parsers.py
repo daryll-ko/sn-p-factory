@@ -2,6 +2,7 @@ from src.classes.System import System
 from src.classes.Neuron import Neuron
 from src.classes.Synapse import Synapse
 from src.classes.Position import Position
+from src.classes.Record import Record
 from src.classes.Rule import Rule
 
 import re
@@ -22,7 +23,7 @@ def parse_rule_xmp(s: str) -> Rule:
 def parse_neuron_xmp(
     d: dict[str, any],
     to_id: dict[str, int],
-    spike_times: list[int],
+    input_log: list[Record],
     is_output: bool,
     environment_neurons: set[int],
 ) -> Neuron:
@@ -34,7 +35,7 @@ def parse_neuron_xmp(
     rules = list(map(parse_rule_xmp, d["rules"].split())) if "rules" in d else []
     spikes = int(d["spikes"])
     downtime = int(d["delay"]) if "delay" in d else 0
-    is_input = len(spike_times) > 0
+    is_input = len(input_log) > 0
 
     synapses = []
 
@@ -54,8 +55,9 @@ def parse_neuron_xmp(
         downtime,
         synapses,
         is_input,
+        input_log,
         is_output,
-        spike_times,
+        [],
     )
 
 
@@ -83,9 +85,7 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
             and "bitstring" in v
         ):
             for inner_k in v["outWeights"].keys():
-                input_neurons[to_id[inner_k]] = Neuron.compress_to_spike_times(
-                    v["bitstring"]
-                )
+                input_neurons[to_id[inner_k]] = Neuron.compress_log(v["bitstring"])
         if "isOutput" in v and v["isOutput"] == "true":
             environment_neurons.add(to_id[v["id"]])
 
@@ -109,9 +109,7 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
         parse_neuron_xmp(
             v,
             to_id,
-            list(input_neurons[to_id[v["id"]]])
-            if to_id[v["id"]] in input_neurons
-            else [],
+            input_neurons[to_id[v["id"]]] if to_id[v["id"]] in input_neurons else [],
             to_id[v["id"]] in output_neurons,
             environment_neurons,
         )
@@ -126,6 +124,13 @@ def parse_position(d: dict[str, any]) -> Position:
     y = int(d["y"])
 
     return Position(x, y)
+
+
+def parse_record(d: dict[str, any]) -> Record:
+    time = int(d["time"])
+    spikes = int(d["spikes"])
+
+    return Record(time, spikes)
 
 
 def parse_rule(d: dict[str, any]) -> Rule:
@@ -146,8 +151,9 @@ def parse_neuron(d: dict[str, any]) -> Neuron:
     downtime = int(d["downtime"])
     synapses = [parse_synapse(synapse) for synapse in d["synapses"]]
     is_input = bool(d["isInput"])
+    input_log = [parse_record(record) for record in d["inputLog"]]
     is_output = bool(d["isOutput"])
-    spike_times = list(map(int, d["spikeTimes"]))
+    output_log = [parse_record(record) for record in d["outputLog"]]
 
     return Neuron(
         id,
@@ -158,8 +164,9 @@ def parse_neuron(d: dict[str, any]) -> Neuron:
         downtime,
         synapses,
         is_input,
+        input_log,
         is_output,
-        spike_times,
+        output_log,
     )
 
 

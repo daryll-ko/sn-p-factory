@@ -18,13 +18,19 @@ neurons:
   downtime: 0
   synapses: []
   isInput: true
+  inputLog:
+  - time: 0
+    spikes: 1
+  - time: 1
+    spikes: 1
+  - time: 2
+    spikes: 1
+  - time: 3
+    spikes: 1
+  - time: 4
+    spikes: 1
   isOutput: true
-  spikeTimes:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
+  outputLog: []
 - id: 2
   label: n5-4RzUmMqzL
   position:
@@ -43,10 +49,16 @@ neurons:
   downtime: 0
   synapses: []
   isInput: true
+  inputLog:
+  - time: 0
+    spikes: 1
+  - time: 1
+    spikes: 1
+  - time: 2
+    spikes: 1
+  - time: 3
+    spikes: 1
+  - time: 4
+    spikes: 1
   isOutput: true
-  spikeTimes:
-  - 0
-  - 1
-  - 2
-  - 3
-  - 4
+  outputLog: []

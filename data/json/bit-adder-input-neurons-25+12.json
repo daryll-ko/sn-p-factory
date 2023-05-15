@@ -32,11 +32,18 @@
       "downtime": 0,
       "synapses": [],
       "isInput": true,
+      "inputLog": [
+        {
+          "time": 2,
+          "spikes": 1
+        },
+        {
+          "time": 3,
+          "spikes": 1
+        }
+      ],
       "isOutput": true,
-      "spikeTimes": [
-        2,
-        3
-      ]
+      "outputLog": []
     }
   ]
 }

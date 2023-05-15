@@ -20,8 +20,9 @@ neurons:
   - to: 1
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 1
   label: n2
   position:
@@ -48,8 +49,9 @@ neurons:
   - to: 7
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 2
   label: n3
   position:
@@ -68,8 +70,9 @@ neurons:
   downtime: 0
   synapses: []
   isInput: false
+  inputLog: []
   isOutput: true
-  spikeTimes: []
+  outputLog: []
 - id: 4
   label: OU_Se5nmr
   position:
@@ -90,8 +93,9 @@ neurons:
   - to: 5
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 5
   label: mfmDlx8Ls
   position:
@@ -112,8 +116,9 @@ neurons:
   - to: 4
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 6
   label: rNZ8WUWST
   position:
@@ -132,8 +137,9 @@ neurons:
   - to: 7
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 7
   label: ghsld1QG1
   position:
@@ -154,5 +160,6 @@ neurons:
   - to: 6
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []

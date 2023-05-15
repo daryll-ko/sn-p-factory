@@ -33,8 +33,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 1,
@@ -68,8 +69,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 2,
@@ -103,8 +105,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     },
     {
       "id": 3,
@@ -138,8 +141,9 @@
         }
       ],
       "isInput": false,
+      "inputLog": [],
       "isOutput": false,
-      "spikeTimes": []
+      "outputLog": []
     }
   ]
 }

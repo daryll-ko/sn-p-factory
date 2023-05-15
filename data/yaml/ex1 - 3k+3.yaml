@@ -16,8 +16,9 @@ neurons:
   - to: 1
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 1
   label: n2
   position:
@@ -34,8 +35,9 @@ neurons:
   - to: 2
     weight: 1
   isInput: false
+  inputLog: []
   isOutput: false
-  spikeTimes: []
+  outputLog: []
 - id: 2
   label: n3
   position:
@@ -50,5 +52,6 @@ neurons:
   downtime: 0
   synapses: []
   isInput: false
+  inputLog: []
   isOutput: true
-  spikeTimes: []
+  outputLog: []
