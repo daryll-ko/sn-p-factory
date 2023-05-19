@@ -211,40 +211,40 @@ class System:
             done = all([len(heap) == 0 for heap in incoming_spikes])
             time += 1
 
-    def simulate_using_matrices(self):
-        to_index = {}
-        for j, neuron in enumerate(self.neurons):
-            to_index[neuron.id] = j
+    # def simulate_using_matrices(self):
+    #     to_index = {}
+    #     for j, neuron in enumerate(self.neurons):
+    #         to_index[neuron.id] = j
 
-        N = sum([len(neuron.rules) for neuron in self.neurons])
-        M = len(self.neurons)
+    #     N = sum([len(neuron.rules) for neuron in self.neurons])
+    #     M = len(self.neurons)
 
-        P = [[0 for _ in range(M)] for _ in range(N)]  # production matrix (N×M)
-        C = [[0 for _ in range(M)] for _ in range(N)]  # consumption matrix (N×M)
+    #     P = [[0 for _ in range(M)] for _ in range(N)]  # production matrix (N×M)
+    #     C = [[0 for _ in range(M)] for _ in range(N)]  # consumption matrix (N×M)
 
-        offset = 0
-        for j, neuron in enumerate(self.neurons):
-            adjacent_indices = [to_index[synapse.to] for synapse in neuron.synapses]
-            for i, rule in enumerate(neuron.rules):
-                for adjacent_index in adjacent_indices:
-                    P[offset + i][adjacent_index] = rule.produced
-                C[offset + i][j] = rule.consumed
-            offset += len(neuron.rules)
+    #     offset = 0
+    #     for j, neuron in enumerate(self.neurons):
+    #         adjacent_indices = [to_index[synapse.to] for synapse in neuron.synapses]
+    #         for i, rule in enumerate(neuron.rules):
+    #             for adjacent_index in adjacent_indices:
+    #                 P[offset + i][adjacent_index] = rule.produced
+    #             C[offset + i][j] = rule.consumed
+    #         offset += len(neuron.rules)
 
-        time = 0
+    #     time = 0
 
-        while time < 10**3:
-            # S = [0 for _ in range(M)]  # status vector (1×M)
-            # I = [0 for _ in range(N)]  # indicator vector (1×N)
+    #     while time < 10**3:
+    #         S = [0 for _ in range(M)]  # status vector (1×M)
+    #         I = [0 for _ in range(N)]  # indicator vector (1×N)
 
-            # SP  # spiking vector (1×N)
-            # G = I • P  # gain vector (1×N • N×M = 1×M)
-            # L = SP • C  # loss vector (1×N • N×M = 1×M)
+    #         SP  # spiking vector (1×N)
+    #         G = I • P  # gain vector (1×N • N×M = 1×M)
+    #         L = SP • C  # loss vector (1×N • N×M = 1×M)
 
-            # NG = S × (G - L) (1×M)
-            # C_{k+1} - C_{k} = S × (G - L)
-            # C_{k+1} = C_{k} + S × [(I • P) - (Sp • C)]
+    #         NG = S × (G - L) (1×M)
+    #         C_{k+1} - C_{k} = S × (G - L)
+    #         C_{k+1} = C_{k} + S × [(I • P) - (Sp • C)]
 
-            # what's the difference between I and SP?
+    #         what's the difference between I and SP?
 
-            time += 1
+    #         time += 1
