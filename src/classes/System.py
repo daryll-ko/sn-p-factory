@@ -90,6 +90,7 @@ class System:
                     )
 
         print_buffer = []
+        start, end = -1, -1
 
         while not done and time < 10:
             print("- " * 15, end="")
@@ -110,7 +111,7 @@ class System:
                         heappop(heap)
 
             for k, v in incoming_updates.items():
-                print_buffer.append(f">> {k}: +{v}")
+                print_buffer.append(f">> {k}: {v}")
 
             if len(print_buffer) > 0:
                 print("\n".join(print_buffer))
@@ -179,12 +180,15 @@ class System:
             print("> phase 4: detecting outputs")
             print()
 
+            output_detected = False
+
             for neuron in self.neurons:
                 if (
                     neuron.is_output
                     and len(neuron.output_log) > 0
                     and neuron.output_log[-1].time == time
                 ):
+                    output_detected = True
                     print_buffer.append(
                         f">> {neuron.id}: {neuron.output_log[-1].spikes}"
                     )
@@ -195,6 +199,15 @@ class System:
             else:
                 print(">> no events during phase 4")
             print()
+
+            if output_detected:
+                if start == -1:
+                    start = time
+                    print(">> detected first output spike")
+                else:
+                    end = time
+                    print(">> detected second output spike, wrapping up...")
+                    break
 
             print("> phase 5: showing in-between state")
             print()
@@ -210,6 +223,11 @@ class System:
 
             done = all([len(heap) == 0 for heap in incoming_spikes])
             time += 1
+
+        if end == -1:
+            return -1
+        else:
+            return end - start
 
     # def simulate_using_matrices(self):
     #     to_index = {}
