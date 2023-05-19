@@ -66,7 +66,7 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
-    def log(self, time: int):
+    def log_json(self, time: int):
         dict_new = self.to_dict()
         write_json(
             dict_new, f"{self.name.replace(' ', '_')}@{str(time).zfill(3)}", True
@@ -99,7 +99,7 @@ class System:
                         heappop(heap)
                 neuron.downtime = max(neuron.downtime - 1, 0)
 
-            self.log(time)
+            self.log_json(time)
 
             for neuron in self.neurons:
                 if neuron.downtime == 0:
