@@ -3,6 +3,7 @@ import random
 
 from heapq import heappush, heappop
 from dataclasses import dataclass
+from collections import defaultdict
 from src.writes import write_json
 from .Neuron import Neuron
 from .Rule import Rule
@@ -66,11 +67,9 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
-    def log_json(self, time: int):
+    def log_json(self, filename: str):
         dict_new = self.to_dict()
-        write_json(
-            dict_new, f"{self.name.replace(' ', '_')}@{str(time).zfill(3)}", True
-        )
+        write_json(dict_new, filename, True)
 
     def simulate(self) -> bool:
         to_index = {}
@@ -90,16 +89,57 @@ class System:
                         (record.time, record.spikes),
                     )
 
-        while not done and time < 10**3:
+        print_buffer = []
+
+        while not done and time < 10:
+            print("- " * 15, end="")
+            print(f"time: {time}", end=" ")
+            print("- " * 15)
+            print()
+            print("> phase 1: incoming spikes")
+            print()
+
+            incoming_updates = defaultdict(int)
+
             for neuron in self.neurons:
                 heap = incoming_spikes[to_index[neuron.id]]
                 if neuron.downtime == 0:
                     while len(heap) > 0 and heap[0][0] == time:
+                        incoming_updates[neuron.id] += heap[0][1]
                         neuron.spikes += heap[0][1]
                         heappop(heap)
                 neuron.downtime = max(neuron.downtime - 1, 0)
 
-            self.log_json(time)
+            for k, v in incoming_updates.items():
+                print_buffer.append(f">> {k}: +{v}")
+
+            if len(print_buffer) > 0:
+                print("\n".join(print_buffer))
+                print()
+                print_buffer.clear()
+            else:
+                print(">> no events during phase 1")
+                print()
+
+            print("> phase 2: logging state")
+            print()
+
+            for neuron in self.neurons:
+                print_buffer.append(
+                    f">> {neuron.id}: <{neuron.spikes}/{neuron.downtime}>"
+                )
+
+            print("\n".join(print_buffer))
+            print()
+            print_buffer.clear()
+
+            log_filename = f"{self.name.replace(' ', '_')}@{str(time).zfill(3)}"
+            print(f">> logged to json file ({log_filename}.json)")
+            print()
+            self.log_json(log_filename)
+
+            print("> phase 3: selecting rules")
+            print()
 
             for neuron in self.neurons:
                 if neuron.downtime == 0:
@@ -114,6 +154,7 @@ class System:
                     if len(possible_indices) > 0:
                         chosen_index = random.choice(possible_indices)
                         rule = neuron.rules[chosen_index]
+                        print_buffer.append(f">> {neuron.id}: {rule}")
                         neuron.spikes -= rule.consumed
                         if rule.produced > 0:
                             for synapse in neuron.synapses:
@@ -127,6 +168,26 @@ class System:
                                     Record(time + rule.delay, rule.produced * weight)
                                 )
                         neuron.downtime = rule.delay
+
+            if len(print_buffer) > 0:
+                print("\n".join(print_buffer))
+                print()
+                print_buffer.clear()
+            else:
+                print(">> no events during phase 3")
+                print()
+
+            print("> phase 4: showing in-between state")
+            print()
+
+            for neuron in self.neurons:
+                print_buffer.append(
+                    f">> {neuron.id}: <{neuron.spikes}/{neuron.downtime}>"
+                )
+
+            print("\n".join(print_buffer))
+            print()
+            print_buffer.clear()
 
             done = all([len(heap) == 0 for heap in incoming_spikes])
             time += 1
