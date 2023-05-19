@@ -71,7 +71,7 @@ class System:
         dict_new = self.to_dict()
         write_json(dict_new, filename, True)
 
-    def simulate(self) -> bool:
+    def simulate(self):
         to_index = {}
         for i, neuron in enumerate(self.neurons):
             to_index[neuron.id] = i
