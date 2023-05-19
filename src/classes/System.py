@@ -68,7 +68,9 @@ class System:
 
     def log(self, time: int):
         dict_new = self.to_dict()
-        write_json(dict_new, f"{self.name}@{str(time).zfill(3)}", True)
+        write_json(
+            dict_new, f"{self.name.replace(' ', '_')}@{str(time).zfill(3)}", True
+        )
 
     def simulate(self) -> bool:
         to_index = {}
