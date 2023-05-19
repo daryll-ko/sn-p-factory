@@ -114,11 +114,10 @@ class System:
 
             if len(print_buffer) > 0:
                 print("\n".join(print_buffer))
-                print()
                 print_buffer.clear()
             else:
                 print(">> no events during phase 1")
-                print()
+            print()
 
             print("> phase 2: logging state")
             print()
@@ -172,13 +171,32 @@ class System:
 
             if len(print_buffer) > 0:
                 print("\n".join(print_buffer))
-                print()
                 print_buffer.clear()
             else:
                 print(">> no events during phase 3")
-                print()
+            print()
 
-            print("> phase 4: showing in-between state")
+            print("> phase 4: detecting outputs")
+            print()
+
+            for neuron in self.neurons:
+                if (
+                    neuron.is_output
+                    and len(neuron.output_log) > 0
+                    and neuron.output_log[-1].time == time
+                ):
+                    print_buffer.append(
+                        f">> {neuron.id}: {neuron.output_log[-1].spikes}"
+                    )
+
+            if len(print_buffer) > 0:
+                print("\n".join(print_buffer))
+                print_buffer.clear()
+            else:
+                print(">> no events during phase 4")
+            print()
+
+            print("> phase 5: showing in-between state")
             print()
 
             for neuron in self.neurons:
