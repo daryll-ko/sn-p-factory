@@ -92,7 +92,7 @@ class System:
         print_buffer = []
         start, end = -1, -1
 
-        while not done and time < 10:
+        while not done and time < 10**3:
             print("- " * 15, end="")
             print(f"time: {time}", end=" ")
             print("- " * 15)
