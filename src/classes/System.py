@@ -204,9 +204,11 @@ class System:
                 if start == -1:
                     start = time
                     print(">> detected first output spike")
+                    print()
                 else:
                     end = time
                     print(">> detected second output spike, wrapping up...")
+                    print()
                     break
 
             print("> phase 5: showing in-between state")
