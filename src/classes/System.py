@@ -108,7 +108,6 @@ class System:
                         incoming_updates[neuron.id] += heap[0][1]
                         neuron.spikes += heap[0][1]
                         heappop(heap)
-                neuron.downtime = max(neuron.downtime - 1, 0)
 
             for k, v in incoming_updates.items():
                 print_buffer.append(f">> {k}: +{v}")
@@ -168,6 +167,8 @@ class System:
                                     Record(time + rule.delay, rule.produced * weight)
                                 )
                         neuron.downtime = rule.delay
+                else:
+                    neuron.downtime -= 1
 
             if len(print_buffer) > 0:
                 print("\n".join(print_buffer))
