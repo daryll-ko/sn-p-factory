@@ -49,7 +49,7 @@ class Rule:
 
     @staticmethod
     def json_to_python_regex(s: str) -> str:
-        return re.sub(
+        substituted = re.sub(
             r"\\cup",
             "|",
             re.sub(
@@ -62,6 +62,7 @@ class Rule:
                 ),
             ),
         ).replace(" ", "")
+        return f"^{substituted}$"
 
     @staticmethod
     def python_to_json_regex(s: str) -> str:
@@ -71,14 +72,15 @@ class Rule:
             re.sub(
                 r"\+",
                 r"^{+}",
-                re.sub(r"\*", r"^{*}", re.sub(r"\{(\d+)\}", r"^{\1}", s)),
+                re.sub(r"\*", r"^{*}", re.sub(r"\{(\d+)\}", r"^{\1}", s[1:-1])),
             ),
         )
 
     @staticmethod
     def xmp_to_python_regex(s: str) -> str:
-        return re.sub(r"(\d+)a", r"a{\1}", s)
+        substituted = re.sub(r"(\d+)a", r"a{\1}", s)
+        return f"^{substituted}$"
 
     @staticmethod
     def python_to_xmp_regex(s: str) -> str:
-        return re.sub(r"a\{(\d+)\}", r"\1a", s)
+        return re.sub(r"a\{(\d+)\}", r"\1a", s[1:-1])
