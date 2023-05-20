@@ -102,6 +102,7 @@ class System:
         print_buffer = []
 
         start, end = -1, -1
+        # output_at_3 = False
 
         while not done and time < 10**3:
             simulation_log.append(f"{'- ' * 15}time: {time} {'- '*15}\n")
@@ -213,7 +214,9 @@ class System:
             simulation_log.append("\n")
 
             # if time == 3:
-            #     return 1 if output_detected else 0
+            #     output_at_3 = 1 if output_detected else 0
+            # elif time == 4:
+            #     return output_at_3
 
             if output_detected:
                 if start == -1:
