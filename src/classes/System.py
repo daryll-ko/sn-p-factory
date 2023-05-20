@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from collections import defaultdict
 from src.writes import write_json
 from .Neuron import Neuron
-from .Rule import Rule
 from .Record import Record
 
 
@@ -147,8 +146,7 @@ class System:
                     possible_indices = []
 
                     for index, rule in enumerate(neuron.rules):
-                        python_regex = Rule.json_to_python_regex(rule.regex)
-                        result = re.match(python_regex, "a" * neuron.spikes)
+                        result = re.match(rule.regex, "a" * neuron.spikes)
                         if result:
                             possible_indices.append(index)
 
