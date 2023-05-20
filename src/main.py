@@ -1,14 +1,10 @@
+from collections import defaultdict
+from src.globals import XMP_PATH, JSON_PATH, YAML_PATH
 from src.reads import read_xmp, read_json, read_yaml
 from src.writes import write_json, write_yaml
 from src.parsers import parse_dict_xmp, parse_dict
 
 import os
-
-INPUTS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-
-XMP_PATH = os.path.join(INPUTS_PATH, "xmp")
-JSON_PATH = os.path.join(INPUTS_PATH, "json")
-YAML_PATH = os.path.join(INPUTS_PATH, "yaml")
 
 
 def convert():
@@ -28,7 +24,7 @@ def convert():
 
             dict_new = system_xmp.to_dict()
 
-            write_json(dict_new, filename)
+            write_json(dict_new, filename, simulating=False)
             write_yaml(dict_new, filename)
 
             dict_json = read_json(filename)
@@ -60,18 +56,20 @@ def convert():
             print(f"Conversion failed: [{type(ex).__name__} - {ex}]...")
             print()
 
+    total_count = success_count + failure_count
+
     print(
-        f"Successes: {success_count} of {success_count + failure_count}"
+        f"Successes: {success_count} of {total_count}"
         " "
-        f"({round(100 * success_count / (success_count + failure_count), 1)}%)"
+        f"({round(100 * success_count / (total_count), 1)}%)"
     )
     print()
     print("\n".join(success_filenames))
     print()
     print(
-        f"Failures: {failure_count} of {success_count + failure_count}"
+        f"Failures: {failure_count} of {total_count}"
         " "
-        f"({round(100 * failure_count / (success_count + failure_count), 1)}%)"
+        f"({round(100 * failure_count / (total_count), 1)}%)"
     )
     print()
     print("\n".join(failure_filenames))
@@ -116,10 +114,20 @@ def benchmark():
 
 
 def main():
-    convert()
-    print("- " * 39 + "-")
-    print()
-    benchmark()
+    # convert()
+    # print("- " * 19 + "-")
+    # print()
+    # benchmark()
+
+    # fix system -> xmp
+    # subset sum
+
+    counter = defaultdict(int)
+    for _ in range(10**4):
+        system = parse_dict(read_json("even_natural_number_generator"))
+        value = system.simulate(verbose=False)
+        counter[value] += 1
+    print(sorted(list(counter.items())))
 
 
 if __name__ == "__main__":

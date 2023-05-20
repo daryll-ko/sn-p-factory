@@ -1,3 +1,3 @@
-# `sn-p-gen`
+# `sn-p-factory`
 
-Test case generator for SN P system-related projects.
+Test case generator and simulator for Spiking Neural P (SN P) system simulation or analysis projects.
