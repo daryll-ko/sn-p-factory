@@ -68,7 +68,7 @@ class System:
 
     def log_json(self, filename: str):
         dict_new = self.to_dict()
-        write_json(dict_new, filename, True)
+        write_json(dict_new, filename, simulating=True)
 
     def simulate(self, verbose: bool):
         to_index = {}
