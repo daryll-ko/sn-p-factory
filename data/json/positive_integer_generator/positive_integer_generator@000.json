@@ -1,0 +1,116 @@
+{
+  "name": "positive integer generator",
+  "neurons": [
+    {
+      "id": 1,
+      "label": "1",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rules": [
+        {
+          "regex": "a^{2}",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 0,
+          "delay": 0
+        }
+      ],
+      "spikes": 2,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 2,
+          "weight": 1
+        },
+        {
+          "to": 3,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "inputLog": [],
+      "isOutput": false,
+      "outputLog": []
+    },
+    {
+      "id": 2,
+      "label": "2",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rules": [
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 1
+        }
+      ],
+      "spikes": 1,
+      "downtime": 0,
+      "synapses": [
+        {
+          "to": 1,
+          "weight": 1
+        },
+        {
+          "to": 3,
+          "weight": 1
+        }
+      ],
+      "isInput": false,
+      "inputLog": [],
+      "isOutput": false,
+      "outputLog": []
+    },
+    {
+      "id": 3,
+      "label": "3",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "rules": [
+        {
+          "regex": "a^{3}",
+          "consumed": 3,
+          "produced": 1,
+          "delay": 0
+        },
+        {
+          "regex": "a",
+          "consumed": 1,
+          "produced": 1,
+          "delay": 1
+        },
+        {
+          "regex": "a^{2}",
+          "consumed": 2,
+          "produced": 0,
+          "delay": 0
+        }
+      ],
+      "spikes": 3,
+      "downtime": 0,
+      "synapses": [],
+      "isInput": false,
+      "inputLog": [],
+      "isOutput": true,
+      "outputLog": []
+    }
+  ]
+}
