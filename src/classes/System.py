@@ -1,9 +1,12 @@
+import os
 import re
 import random
+import shutil
 
 from heapq import heappush, heappop
 from dataclasses import dataclass
 from collections import defaultdict
+from src.globals import JSON_PATH
 from src.writes import write_json
 from .Neuron import Neuron
 from .Record import Record
@@ -71,6 +74,12 @@ class System:
         write_json(dict_new, filename, simulating=True)
 
     def simulate(self, verbose: bool):
+        log_folder_name = self.name.replace(' ', '_')
+        log_folder_path = os.path.join(JSON_PATH, log_folder_name)
+
+        if os.path.isdir(log_folder_path):
+            shutil.rmtree(log_folder_path)
+
         to_index = {}
         for i, neuron in enumerate(self.neurons):
             to_index[neuron.id] = i
