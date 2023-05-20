@@ -71,7 +71,7 @@ class System:
         dict_new = self.to_dict()
         write_json(dict_new, filename, True)
 
-    def simulate(self):
+    def simulate(self, verbose: bool):
         to_index = {}
         for i, neuron in enumerate(self.neurons):
             to_index[neuron.id] = i
@@ -89,16 +89,16 @@ class System:
                         (record.time, record.spikes),
                     )
 
+        simulation_log = []
         print_buffer = []
+
         start, end = -1, -1
 
         while not done and time < 10**3:
-            print("- " * 15, end="")
-            print(f"time: {time}", end=" ")
-            print("- " * 15)
-            print()
-            print("> phase 1: incoming spikes")
-            print()
+            simulation_log.append(f"{'- ' * 15}time: {time} {'- '*15}\n")
+            simulation_log.append("\n")
+            simulation_log.append("> phase 1: incoming spikes\n")
+            simulation_log.append("\n")
 
             incoming_updates = defaultdict(int)
 
@@ -114,31 +114,33 @@ class System:
                 print_buffer.append(f">> {k}: {v}")
 
             if len(print_buffer) > 0:
-                print("\n".join(print_buffer))
+                for line in print_buffer:
+                    simulation_log.append(f"{line}\n")
                 print_buffer.clear()
             else:
-                print(">> no events during phase 1")
-            print()
+                simulation_log.append(">> no events during phase 1\n")
+            simulation_log.append("\n")
 
-            print("> phase 2: logging state")
-            print()
+            simulation_log.append("> phase 2: logging state\n")
+            simulation_log.append("\n")
 
             for neuron in self.neurons:
                 print_buffer.append(
                     f">> {neuron.id}: <{neuron.spikes}/{neuron.downtime}>"
                 )
 
-            print("\n".join(print_buffer))
-            print()
+            for line in print_buffer:
+                simulation_log.append(f"{line}\n")
             print_buffer.clear()
+            simulation_log.append("\n")
 
             log_filename = f"{self.name.replace(' ', '_')}@{str(time).zfill(3)}"
-            print(f">> logged to json file ({log_filename}.json)")
-            print()
+            simulation_log.append(f">> logged to json file ({log_filename}.json)\n")
+            simulation_log.append("\n")
             self.log_json(log_filename)
 
-            print("> phase 3: selecting rules")
-            print()
+            simulation_log.append("> phase 3: selecting rules\n")
+            simulation_log.append("\n")
 
             for neuron in self.neurons:
                 if neuron.downtime == 0:
@@ -171,14 +173,15 @@ class System:
                     neuron.downtime -= 1
 
             if len(print_buffer) > 0:
-                print("\n".join(print_buffer))
+                for line in print_buffer:
+                    simulation_log.append(f"{line}\n")
                 print_buffer.clear()
             else:
-                print(">> no events during phase 3")
-            print()
+                simulation_log.append(">> no events during phase 3\n")
+            simulation_log.append("\n")
 
-            print("> phase 4: detecting outputs")
-            print()
+            simulation_log.append("> phase 4: detecting outputs\n")
+            simulation_log.append("\n")
 
             output_detected = False
 
@@ -194,37 +197,45 @@ class System:
                     )
 
             if len(print_buffer) > 0:
-                print("\n".join(print_buffer))
+                for line in print_buffer:
+                    simulation_log.append(f"{line}\n")
                 print_buffer.clear()
             else:
-                print(">> no events during phase 4")
-            print()
+                simulation_log.append(">> no events during phase 4\n")
+            simulation_log.append("\n")
 
             if output_detected:
                 if start == -1:
                     start = time
-                    print(">> detected first output spike")
-                    print()
+                    simulation_log.append(">> detected first output spike\n")
+                    simulation_log.append("\n")
                 else:
                     end = time
-                    print(">> detected second output spike, wrapping up...")
-                    print()
+                    simulation_log.append(
+                        ">> detected second output spike, wrapping up...\n"
+                    )
+                    simulation_log.append("\n")
                     break
 
-            print("> phase 5: showing in-between state")
-            print()
+            simulation_log.append("> phase 5: showing in-between state\n")
+            simulation_log.append("\n")
 
             for neuron in self.neurons:
                 print_buffer.append(
                     f">> {neuron.id}: <{neuron.spikes}/{neuron.downtime}>"
                 )
 
-            print("\n".join(print_buffer))
-            print()
+            for line in print_buffer:
+                simulation_log.append(f"{line}\n")
             print_buffer.clear()
+            simulation_log.append("\n")
 
             done = all([len(heap) == 0 for heap in incoming_spikes])
             time += 1
+
+        if verbose:
+            for line in simulation_log:
+                print(line, end="")
 
         if end == -1:
             return -1
