@@ -6,8 +6,8 @@ import shutil
 from heapq import heappush, heappop
 from dataclasses import dataclass
 from collections import defaultdict
-from src.globals import JSON_PATH
-from src.writes import write_json
+from src.globals import FORMATS
+from src.writes import write
 from .Neuron import Neuron
 from .Record import Record
 
@@ -69,13 +69,12 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
-    def log_json(self, filename: str):
-        dict_new = self.to_dict()
-        write_json(dict_new, filename, simulating=True)
+    def log_json(self, filename: str, format: str):
+        write(self.to_dict(), filename, format, simulating=True)
 
-    def simulate(self, verbose: bool):
+    def simulate(self, format: str, verbose: bool):
         log_folder_name = self.name.replace(" ", "_")
-        log_folder_path = os.path.join(JSON_PATH, log_folder_name)
+        log_folder_path = os.path.join(FORMATS[format].path, log_folder_name)
 
         if os.path.isdir(log_folder_path):
             shutil.rmtree(log_folder_path)
@@ -147,7 +146,7 @@ class System:
             log_filename = f"{self.name.replace(' ', '_')}|{str(time).zfill(3)}"
             simulation_log.append(f">> logged to json file ({log_filename}.json)\n")
             simulation_log.append("\n")
-            self.log_json(log_filename)
+            self.log_json(log_filename, format)
 
             simulation_log.append("> phase 3: selecting rules\n")
             simulation_log.append("\n")
