@@ -92,10 +92,11 @@ class System:
         for neuron in self.neurons:
             if neuron.is_input:
                 for record in neuron.input_log:
-                    heappush(
-                        incoming_spikes[to_index[neuron.id]],
-                        (record.time, record.spikes),
-                    )
+                    if record.spikes > 0:
+                        heappush(
+                            incoming_spikes[to_index[neuron.id]],
+                            (record.time, record.spikes),
+                        )
 
         simulation_log = []
         print_buffer = []
