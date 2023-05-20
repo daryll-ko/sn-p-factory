@@ -74,7 +74,7 @@ class System:
         write_json(dict_new, filename, simulating=True)
 
     def simulate(self, verbose: bool):
-        log_folder_name = self.name.replace(' ', '_')
+        log_folder_name = self.name.replace(" ", "_")
         log_folder_path = os.path.join(JSON_PATH, log_folder_name)
 
         if os.path.isdir(log_folder_path):
