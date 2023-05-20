@@ -143,7 +143,7 @@ class System:
             print_buffer.clear()
             simulation_log.append("\n")
 
-            log_filename = f"{self.name.replace(' ', '_')}@{str(time).zfill(3)}"
+            log_filename = f"{self.name.replace(' ', '_')}|{str(time).zfill(3)}"
             simulation_log.append(f">> logged to json file ({log_filename}.json)\n")
             simulation_log.append("\n")
             self.log_json(log_filename)
@@ -211,6 +211,9 @@ class System:
             else:
                 simulation_log.append(">> no events during phase 4\n")
             simulation_log.append("\n")
+
+            # if time == 3:
+            #     return 1 if output_detected else 0
 
             if output_detected:
                 if start == -1:

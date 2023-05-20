@@ -15,7 +15,7 @@ def write_xmp(d: dict[str, any], filename: str):
 
 def write_json(d: dict[str, any], filename: str, simulating: bool):
     if simulating:
-        directory_path = os.path.join(JSON_PATH, filename.split("@")[0])
+        directory_path = os.path.join(JSON_PATH, "|".join(filename.split("|")[:-1]))
         if not os.path.exists(directory_path):
             os.mkdir(directory_path)
         with open(
