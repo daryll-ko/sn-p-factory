@@ -6,10 +6,10 @@ import shutil
 from heapq import heappush, heappop
 from dataclasses import dataclass
 from collections import defaultdict
-from src.globals import FORMATS
 from src.writes import write
 from .Neuron import Neuron
 from .Record import Record
+from .Format import Format
 
 
 @dataclass
@@ -72,9 +72,9 @@ class System:
     def log_json(self, filename: str, format: str):
         write(self.to_dict(), filename, format, simulating=True)
 
-    def simulate(self, format: str, verbose: bool):
+    def simulate(self, format: Format, verbose: bool):
         log_folder_name = self.name.replace(" ", "_")
-        log_folder_path = os.path.join(FORMATS[format].path, log_folder_name)
+        log_folder_path = os.path.join(format.path, log_folder_name)
 
         if os.path.isdir(log_folder_path):
             shutil.rmtree(log_folder_path)

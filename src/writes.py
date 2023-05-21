@@ -1,17 +1,14 @@
-from src.globals import FORMATS
+from src.classes.Format import Format
 
 import os
 
 
-def write(d: dict[str, any], filename: str, format: str, simulating: bool) -> None:
-    format_data = FORMATS[format]
+def write(d: dict[str, any], filename: str, format: Format, simulating: bool) -> None:
     if simulating:
-        directory_path = os.path.join(
-            format_data.path, "|".join(filename.split("|")[:-1])
-        )
+        directory_path = os.path.join(format.path, "|".join(filename.split("|")[:-1]))
         if not os.path.exists(directory_path):
             os.mkdir(directory_path)
         with open(
-            os.path.join(directory_path, f"{filename}.{format_data.extension}"), "w"
+            os.path.join(directory_path, f"{filename}.{format.extension}"), "w"
         ) as output_file:
-            output_file.write(format_data.write_function(d))
+            output_file.write(format.write_function(d))

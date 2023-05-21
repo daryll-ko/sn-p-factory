@@ -1,11 +1,10 @@
-from src.globals import FORMATS
+from src.classes.Format import Format
 
 import os
 
 
-def read(filename: str, format: str) -> dict[str, any]:
-    format_data = FORMATS[format]
+def read(filename: str, format: Format) -> dict[str, any]:
     with open(
-        os.path.join(format_data.path, f"{filename}.{format_data.extension}"), "r"
+        os.path.join(format.path, f"{filename}.{format.extension}"), "r"
     ) as input_file:
-        return format_data.read_function(input_file.read())
+        return format.read_function(input_file.read())
