@@ -13,3 +13,8 @@ def write(d: dict[str, Any], filename: str, format: Format, simulating: bool) ->
             os.path.join(directory_path, f"{filename}.{format.extension}"), "w"
         ) as output_file:
             output_file.write(format.write_function(d))
+    else:
+        with open(
+            os.path.join(format.path, f"{filename}.{format.extension}"), "w"
+        ) as output_file:
+            output_file.write(format.write_function(d))
