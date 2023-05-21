@@ -5,7 +5,8 @@ import shutil
 
 from heapq import heappush, heappop
 from dataclasses import dataclass
-from collections import defaultdict
+from typing import Any
+from collections import Counter
 from src.writes import write
 from .Neuron import Neuron
 from .Record import Record
@@ -17,13 +18,13 @@ class System:
     name: str
     neurons: list[Neuron]
 
-    def to_dict(self) -> dict[str, any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "neurons": [neuron.to_dict() for neuron in self.neurons],
         }
 
-    def to_dict_xmp(self) -> dict[str, any]:
+    def to_dict_xmp(self) -> dict[str, Any]:
         id_to_label = {}
         label_to_id = {}
 
@@ -31,7 +32,7 @@ class System:
             id_to_label[neuron.id] = neuron.label
             label_to_id[neuron.label] = neuron.id
 
-        neuron_entries = []
+        neuron_entries: list[tuple[str, dict[str, Any]]] = []
 
         # for neuron in self.neurons:
         #     k = neuron.label
@@ -80,7 +81,9 @@ class System:
         for i, neuron in enumerate(self.neurons):
             to_index[neuron.id] = i
 
-        incoming_spikes = [[] for _ in range(len(self.neurons))]  # @start of timestep
+        incoming_spikes: list[list[tuple[int, int]]] = [
+            [] for _ in range(len(self.neurons))
+        ]  # at start of timestep
 
         time = 0
         done = False
@@ -106,7 +109,7 @@ class System:
             simulation_log.append("> phase 1: incoming spikes\n")
             simulation_log.append("\n")
 
-            incoming_updates = defaultdict(int)
+            incoming_updates: Counter[int] = Counter()
 
             for neuron in self.neurons:
                 heap = incoming_spikes[to_index[neuron.id]]
