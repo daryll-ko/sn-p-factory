@@ -144,7 +144,9 @@ class System:
             simulation_log.append("\n")
 
             log_filename = f"{self.name.replace(' ', '_')}|{str(time).zfill(3)}"
-            simulation_log.append(f">> logged to json file ({log_filename}.json)\n")
+            simulation_log.append(
+                f">> logged to file ({log_filename}.{format.extension})\n"
+            )
             simulation_log.append("\n")
             write(self.to_dict(), log_filename, format, simulating=True)
 
