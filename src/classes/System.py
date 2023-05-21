@@ -69,9 +69,6 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
-    def log_json(self, filename: str, format: str):
-        write(self.to_dict(), filename, format, simulating=True)
-
     def simulate(self, format: Format, verbose: bool):
         log_folder_name = self.name.replace(" ", "_")
         log_folder_path = os.path.join(format.path, log_folder_name)
@@ -146,7 +143,7 @@ class System:
             log_filename = f"{self.name.replace(' ', '_')}|{str(time).zfill(3)}"
             simulation_log.append(f">> logged to json file ({log_filename}.json)\n")
             simulation_log.append("\n")
-            self.log_json(log_filename, format)
+            write(self.to_dict(), log_filename, format, simulating=True)
 
             simulation_log.append("> phase 3: selecting rules\n")
             simulation_log.append("\n")
