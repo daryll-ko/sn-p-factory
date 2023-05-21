@@ -23,7 +23,6 @@ JSON = Format(
     write_function=lambda d: json.dumps(d, indent=2),
 )
 
-
 YAML = Format(
     path=os.path.join(INPUTS_PATH, "yaml"),
     extension="yaml",
