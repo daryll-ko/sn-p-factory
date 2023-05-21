@@ -4,13 +4,16 @@ from src.classes.Synapse import Synapse
 from src.classes.Position import Position
 from src.classes.Record import Record
 from src.classes.Rule import Rule
+from typing import Any
 
 import re
 
 
 def parse_rule_xmp(s: str) -> Rule:
     result = re.match("(.*)/(\d*a)->(\d*a|0);(\d+)", s)
-    regex, consumed, produced, delay = result.groups()
+
+    if result:
+        regex, consumed, produced, delay = result.groups()
 
     regex = Rule.xmp_to_python_regex(regex)
     consumed = int(Rule.get_value(consumed))
@@ -21,7 +24,7 @@ def parse_rule_xmp(s: str) -> Rule:
 
 
 def parse_neuron_xmp(
-    d: dict[str, any],
+    d: dict[str, Any],
     to_id: dict[str, int],
     input_log: list[Record],
     is_output: bool,
@@ -61,7 +64,7 @@ def parse_neuron_xmp(
     )
 
 
-def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
+def parse_dict_xmp(d: dict[str, Any], filename: str) -> System:
     to_id = {}
     current_id = 0
 
@@ -119,21 +122,21 @@ def parse_dict_xmp(d: dict[str, any], filename: str) -> System:
     return System(filename, neurons)
 
 
-def parse_position(d: dict[str, any]) -> Position:
+def parse_position(d: dict[str, Any]) -> Position:
     x = int(d["x"])
     y = int(d["y"])
 
     return Position(x, y)
 
 
-def parse_record(d: dict[str, any]) -> Record:
+def parse_record(d: dict[str, Any]) -> Record:
     time = int(d["time"])
     spikes = int(d["spikes"])
 
     return Record(time, spikes)
 
 
-def parse_rule(d: dict[str, any]) -> Rule:
+def parse_rule(d: dict[str, Any]) -> Rule:
     regex = Rule.json_to_python_regex(d["regex"])
     consumed = int(d["consumed"])
     produced = int(d["produced"])
@@ -142,7 +145,7 @@ def parse_rule(d: dict[str, any]) -> Rule:
     return Rule(regex, consumed, produced, delay)
 
 
-def parse_neuron(d: dict[str, any]) -> Neuron:
+def parse_neuron(d: dict[str, Any]) -> Neuron:
     id = int(d["id"])
     label = d["label"]
     position = parse_position(d["position"])
@@ -170,14 +173,14 @@ def parse_neuron(d: dict[str, any]) -> Neuron:
     )
 
 
-def parse_synapse(d: dict[str, any]) -> Neuron:
+def parse_synapse(d: dict[str, Any]) -> Synapse:
     to = int(d["to"])
     weight = int(d["weight"])
 
     return Synapse(to, weight)
 
 
-def parse_dict(d: dict[str, any]) -> System:
+def parse_dict(d: dict[str, Any]) -> System:
     name = d["name"]
     neurons = [parse_neuron(neuron) for neuron in d["neurons"]]
 
