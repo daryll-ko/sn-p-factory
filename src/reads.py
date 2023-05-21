@@ -1,9 +1,10 @@
+from typing import Any
 from src.classes.Format import Format
 
 import os
 
 
-def read(filename: str, format: Format) -> dict[str, any]:
+def read(filename: str, format: Format) -> dict[str, Any]:
     with open(
         os.path.join(format.path, f"{filename}.{format.extension}"), "r"
     ) as input_file:

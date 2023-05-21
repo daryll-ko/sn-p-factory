@@ -1,9 +1,10 @@
+from typing import Any
 from src.classes.Format import Format
 
 import os
 
 
-def write(d: dict[str, any], filename: str, format: Format, simulating: bool) -> None:
+def write(d: dict[str, Any], filename: str, format: Format, simulating: bool) -> None:
     if simulating:
         directory_path = os.path.join(format.path, "|".join(filename.split("|")[:-1]))
         if not os.path.exists(directory_path):
