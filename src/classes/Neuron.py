@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Any
 from .Rule import Rule
 from .Position import Position
 from .Synapse import Synapse
@@ -19,7 +20,7 @@ class Neuron:
     is_output: bool
     output_log: list[Record]
 
-    def to_dict(self) -> dict[str, any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
             "label": self.label,
@@ -36,7 +37,7 @@ class Neuron:
 
     @staticmethod
     def compress_log(s: str) -> list[Record]:
-        result = []
+        result: list[Record] = []
         if len(s.strip()) == 0:
             return result
         stream = list(map(int, s.split(",")))

@@ -1,6 +1,7 @@
 import re
 
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass
@@ -10,7 +11,7 @@ class Rule:
     produced: int
     delay: int
 
-    def to_dict(self) -> dict[str, any]:
+    def to_dict(self) -> dict[str, Any]:
         return {
             "regex": Rule.python_to_json_regex(self.regex),
             "consumed": self.consumed,
