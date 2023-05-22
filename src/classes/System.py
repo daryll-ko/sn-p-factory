@@ -7,7 +7,7 @@ from heapq import heappush, heappop
 from dataclasses import dataclass
 from typing import Any
 from collections import Counter
-from src.writes import write
+from src.utils import write
 from .Neuron import Neuron
 from .Record import Record
 from .Format import Format
@@ -16,24 +16,23 @@ from .TestName import TestName
 
 @dataclass
 class System:
-    name: str
     neurons: list[Neuron]
 
     def to_dict(self) -> dict[str, Any]:
         return {
-            "name": self.name,
             "neurons": [neuron.to_dict() for neuron in self.neurons],
         }
 
     def to_dict_xmp(self) -> dict[str, Any]:
-        id_to_label = {}
-        label_to_id = {}
+        return {}
+        # id_to_label = {}
+        # label_to_id = {}
 
-        for neuron in self.neurons:
-            id_to_label[neuron.id] = neuron.label
-            label_to_id[neuron.label] = neuron.id
+        # for neuron in self.neurons:
+        #     id_to_label[neuron.id] = neuron.label
+        #     label_to_id[neuron.label] = neuron.id
 
-        neuron_entries: list[tuple[str, dict[str, Any]]] = []
+        # neuron_entries: list[tuple[str, dict[str, Any]]] = []
 
         # for neuron in self.neurons:
         #     k = neuron.label
@@ -69,16 +68,16 @@ class System:
 
         #     neuron_entries.append((k, v))
 
-        return {"content": dict(neuron_entries)}
+        # return {"content": dict(neuron_entries)}
 
-    def simulate(self, format: Format, verbose: bool):
-        log_folder_name = self.name.replace(" ", "_")
+    def simulate(self, filename: str, format: Format, verbose: bool):
+        log_folder_name = filename.replace(" ", "_")
         log_folder_path = os.path.join(format.path, log_folder_name)
 
         if os.path.isdir(log_folder_path):
             shutil.rmtree(log_folder_path)
 
-        to_index = {}
+        to_index: dict[str, int] = {}
         for i, neuron in enumerate(self.neurons):
             to_index[neuron.id] = i
 
@@ -110,7 +109,7 @@ class System:
             simulation_log.append("> phase 1: incoming spikes\n")
             simulation_log.append("\n")
 
-            incoming_updates: Counter[int] = Counter()
+            incoming_updates: Counter[str] = Counter()
 
             for neuron in self.neurons:
                 heap = incoming_spikes[to_index[neuron.id]]
@@ -144,7 +143,7 @@ class System:
             print_buffer.clear()
             simulation_log.append("\n")
 
-            log_testname = TestName(self.name, time)
+            log_testname = TestName(filename, time)
             log_filename = log_testname.make_filename()
 
             simulation_log.append(
