@@ -18,7 +18,7 @@ class Neuron:
             "id": self.id,
             "type": self.type_,
             "position": self.position.to_dict(),
-            "rules": [rule.stringify(in_xmp=False) for rule in self.rules],
+            "rules": [rule.stringify(in_xml=False) for rule in self.rules],
             "content": self.content,
         }
 

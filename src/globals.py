@@ -7,9 +7,9 @@ from src.classes.Format import Format
 
 INPUTS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
-XMP = Format(
-    path=os.path.join(INPUTS_PATH, "xmp"),
-    extension="xmp",
+XML = Format(
+    path=os.path.join(INPUTS_PATH, "xml"),
+    extension="xml",
     read_function=lambda s: xmltodict.parse(s)["content"],
     write_function=lambda d: xmltodict.unparse(
         d, pretty=True, newl="\n", indent=" " * 4
