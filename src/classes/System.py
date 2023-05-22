@@ -10,7 +10,6 @@ from collections import Counter
 from src.utils import write
 from .Neuron import Neuron
 from .Synapse import Synapse
-from .Record import Record
 from .Format import Format
 from .TestName import TestName
 
@@ -92,7 +91,7 @@ class System:
 
         incoming_spikes: list[list[tuple[int, int]]] = [
             [] for _ in range(len(self.neurons))
-        ]  # at start of timestep
+        ]
 
         downtime = [0 for _ in range(len(self.neurons))]
 
@@ -101,11 +100,12 @@ class System:
 
         for i, neuron in enumerate(self.neurons):
             if neuron.type_ == "input":
-                for record in neuron.input_log:
-                    if record.spikes > 0:
+                assert isinstance(neuron.content, list)
+                for index, record in enumerate(neuron.content):
+                    if record > 0:
                         heappush(
                             incoming_spikes[i],
-                            (record.time, record.spikes),
+                            (index, record),
                         )
 
         simulation_log = []
@@ -127,8 +127,10 @@ class System:
                 if downtime[i] == 0:
                     while len(heap) > 0 and heap[0][0] == time:
                         incoming_updates[neuron.id] += heap[0][1]
-                        neuron.spikes += heap[0][1]
                         heappop(heap)
+                    if neuron.type_ == "regular":
+                        assert isinstance(neuron.content, int)
+                        neuron.content += incoming_updates[neuron.id]
 
             for k, v in incoming_updates.items():
                 print_buffer.append(f">> {k}: {v}")
@@ -145,7 +147,7 @@ class System:
             simulation_log.append("\n")
 
             for neuron in self.neurons:
-                print_buffer.append(f">> {neuron.id}: <{neuron.spikes}/{downtime[i]}>")
+                print_buffer.append(f">> {neuron.id}: <{neuron.content}/{downtime[i]}>")
 
             for line in print_buffer:
                 simulation_log.append(f"{line}\n")
@@ -165,33 +167,45 @@ class System:
             simulation_log.append("\n")
 
             for i, neuron in enumerate(self.neurons):
-                if downtime[i] == 0:
-                    possible_indices = []
+                if neuron.type_ == "regular":
+                    assert isinstance(neuron.content, int)
+                    if downtime[i] == 0:
+                        possible_indices = []
 
-                    for index, rule in enumerate(neuron.rules):
-                        result = re.match(rule.regex, "a" * neuron.spikes)
-                        if result:
-                            possible_indices.append(index)
+                        for index, rule in enumerate(neuron.rules):
+                            result = re.match(rule.regex, "a" * neuron.content)
+                            if result:
+                                possible_indices.append(index)
 
-                    if len(possible_indices) > 0:
-                        chosen_index = random.choice(possible_indices)
-                        rule = neuron.rules[chosen_index]
-                        print_buffer.append(f">> {neuron.id}: {rule}")
-                        neuron.spikes -= rule.consumed
-                        if rule.produced > 0:
-                            for synapse in self.get_synapses_from(neuron.id):
-                                to, weight = synapse.to, synapse.weight
-                                heappush(
-                                    incoming_spikes[to_index[to]],
-                                    (time + rule.delay + 1, rule.produced * weight),
-                                )
-                            if neuron.type_ == "output":
-                                neuron.output_log.append(
-                                    Record(time + rule.delay, rule.produced * weight)
-                                )
-                        downtime[i] = rule.delay
-                else:
-                    downtime[i] -= 1
+                        if len(possible_indices) > 0:
+                            chosen_index = random.choice(possible_indices)
+                            rule = neuron.rules[chosen_index]
+                            print_buffer.append(f">> {neuron.id}: {rule}")
+
+                            neuron.content -= rule.consumed
+                            if rule.produced > 0:
+                                for synapse in self.get_synapses_from(neuron.id):
+                                    to, weight = synapse.to, synapse.weight
+                                    j = to_index[to]
+                                    heappush(
+                                        incoming_spikes[j],
+                                        (
+                                            time + rule.delay + 1
+                                            if self.neurons[j].type_ != "output"
+                                            else 0,
+                                            rule.produced * weight,
+                                        ),
+                                    )
+                                # if neuron.type_ == "output":
+                                #     neuron.output_log.append(
+                                #         Record(
+                                #             time + rule.delay, rule.produced * weight
+                                #         )
+                                #     )
+
+                            downtime[i] = rule.delay
+                    else:
+                        downtime[i] -= 1
 
             if len(print_buffer) > 0:
                 for line in print_buffer:
@@ -206,16 +220,27 @@ class System:
 
             output_detected = False
 
-            for neuron in self.neurons:
-                if (
-                    neuron.type_ == "output"
-                    and len(neuron.output_log) > 0
-                    and neuron.output_log[-1].time == time
-                ):
-                    output_detected = True
-                    print_buffer.append(
-                        f">> {neuron.id}: {neuron.output_log[-1].spikes}"
-                    )
+            for i, neuron in enumerate(self.neurons):
+                heap = incoming_spikes[i]
+                if downtime[i] == 0:
+                    while len(heap) > 0 and heap[0][0] == time:
+                        incoming_updates[neuron.id] += heap[0][1]
+                        heappop(heap)
+                    if neuron.type_ == "output":
+                        assert isinstance(neuron.content, list)
+                        neuron.content.append(incoming_updates[neuron.id])
+                        output_detected |= incoming_updates[neuron.id] > 0
+
+            # for i, neuron in enumerate(self.neurons):
+            #     if (
+            #         neuron.type_ == "output"
+            #         and len(neuron.output_log) > 0
+            #         and neuron.output_log[-1].time == time
+            #     ):
+            #         output_detected = True
+            #         print_buffer.append(
+            #             f">> {neuron.id}: {neuron.output_log[-1].spikes}"
+            #         )
 
             if len(print_buffer) > 0:
                 for line in print_buffer:
@@ -247,7 +272,7 @@ class System:
             simulation_log.append("\n")
 
             for i, neuron in enumerate(self.neurons):
-                print_buffer.append(f">> {neuron.id}: <{neuron.spikes}/{downtime[i]}>")
+                print_buffer.append(f">> {neuron.id}: <{neuron.content}/{downtime[i]}>")
 
             for line in print_buffer:
                 simulation_log.append(f"{line}\n")
