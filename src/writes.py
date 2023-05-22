@@ -13,12 +13,11 @@ def write(
         directory_path = os.path.join(format.path, testname.name)
         if not os.path.exists(directory_path):
             os.mkdir(directory_path)
-        with open(
-            os.path.join(directory_path, f"{filename}.{format.extension}"), "w"
-        ) as output_file:
-            output_file.write(format.write_function(d))
-    else:
-        with open(
-            os.path.join(format.path, f"{filename}.{format.extension}"), "w"
-        ) as output_file:
-            output_file.write(format.write_function(d))
+    with open(
+        os.path.join(
+            directory_path if simulating else format.path,
+            f"{filename}.{format.extension}",
+        ),
+        "w",
+    ) as output_file:
+        output_file.write(format.write_function(d))
