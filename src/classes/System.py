@@ -94,15 +94,17 @@ class System:
             [] for _ in range(len(self.neurons))
         ]  # at start of timestep
 
+        downtime = [0 for _ in range(len(self.neurons))]
+
         time = 0
         done = False
 
-        for neuron in self.neurons:
+        for i, neuron in enumerate(self.neurons):
             if neuron.is_input:
                 for record in neuron.input_log:
                     if record.spikes > 0:
                         heappush(
-                            incoming_spikes[to_index[neuron.id]],
+                            incoming_spikes[i],
                             (record.time, record.spikes),
                         )
 
@@ -120,9 +122,9 @@ class System:
 
             incoming_updates: Counter[str] = Counter()
 
-            for neuron in self.neurons:
-                heap = incoming_spikes[to_index[neuron.id]]
-                if neuron.downtime == 0:
+            for i, neuron in enumerate(self.neurons):
+                heap = incoming_spikes[i]
+                if downtime[i] == 0:
                     while len(heap) > 0 and heap[0][0] == time:
                         incoming_updates[neuron.id] += heap[0][1]
                         neuron.spikes += heap[0][1]
@@ -143,9 +145,7 @@ class System:
             simulation_log.append("\n")
 
             for neuron in self.neurons:
-                print_buffer.append(
-                    f">> {neuron.id}: <{neuron.spikes}/{neuron.downtime}>"
-                )
+                print_buffer.append(f">> {neuron.id}: <{neuron.spikes}/{downtime[i]}>")
 
             for line in print_buffer:
                 simulation_log.append(f"{line}\n")
@@ -164,8 +164,8 @@ class System:
             simulation_log.append("> phase 3: selecting rules\n")
             simulation_log.append("\n")
 
-            for neuron in self.neurons:
-                if neuron.downtime == 0:
+            for i, neuron in enumerate(self.neurons):
+                if downtime[i] == 0:
                     possible_indices = []
 
                     for index, rule in enumerate(neuron.rules):
@@ -189,9 +189,9 @@ class System:
                                 neuron.output_log.append(
                                     Record(time + rule.delay, rule.produced * weight)
                                 )
-                        neuron.downtime = rule.delay
+                        downtime[i] = rule.delay
                 else:
-                    neuron.downtime -= 1
+                    downtime[i] -= 1
 
             if len(print_buffer) > 0:
                 for line in print_buffer:
@@ -246,10 +246,8 @@ class System:
             simulation_log.append("> phase 5: showing in-between state\n")
             simulation_log.append("\n")
 
-            for neuron in self.neurons:
-                print_buffer.append(
-                    f">> {neuron.id}: <{neuron.spikes}/{neuron.downtime}>"
-                )
+            for i, neuron in enumerate(self.neurons):
+                print_buffer.append(f">> {neuron.id}: <{neuron.spikes}/{downtime[i]}>")
 
             for line in print_buffer:
                 simulation_log.append(f"{line}\n")
