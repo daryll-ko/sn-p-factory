@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 from .Rule import Rule
 from .Position import Position
 from .Record import Record
@@ -8,24 +8,20 @@ from .Record import Record
 @dataclass
 class Neuron:
     id: str
+    type_: Literal["regular", "input", "output"]
     position: Position
     rules: list[Rule]
     spikes: int
-    is_input: bool
     input_log: list[Record]
-    is_output: bool
     output_log: list[Record]
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
+            "type": self.type_,
             "position": self.position.to_dict(),
             "rules": [rule.stringify(in_xmp=False) for rule in self.rules],
             "spikes": self.spikes,
-            "isInput": self.is_input,
-            "inputLog": [record.to_dict() for record in self.input_log],
-            "isOutput": self.is_output,
-            "outputLog": [record.to_dict() for record in self.output_log],
         }
 
     @staticmethod

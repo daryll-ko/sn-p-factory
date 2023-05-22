@@ -100,7 +100,7 @@ class System:
         done = False
 
         for i, neuron in enumerate(self.neurons):
-            if neuron.is_input:
+            if neuron.type_ == "input":
                 for record in neuron.input_log:
                     if record.spikes > 0:
                         heappush(
@@ -185,7 +185,7 @@ class System:
                                     incoming_spikes[to_index[to]],
                                     (time + rule.delay + 1, rule.produced * weight),
                                 )
-                            if neuron.is_output:
+                            if neuron.type_ == "output":
                                 neuron.output_log.append(
                                     Record(time + rule.delay, rule.produced * weight)
                                 )
@@ -208,7 +208,7 @@ class System:
 
             for neuron in self.neurons:
                 if (
-                    neuron.is_output
+                    neuron.type_ == "output"
                     and len(neuron.output_log) > 0
                     and neuron.output_log[-1].time == time
                 ):
