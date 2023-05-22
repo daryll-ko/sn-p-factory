@@ -9,6 +9,7 @@ from typing import Any
 from collections import Counter
 from src.utils import write
 from .Neuron import Neuron
+from .Synapse import Synapse
 from .Record import Record
 from .Format import Format
 from .TestName import TestName
@@ -17,11 +18,19 @@ from .TestName import TestName
 @dataclass
 class System:
     neurons: list[Neuron]
+    synapses: list[Synapse]
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "neurons": [neuron.to_dict() for neuron in self.neurons],
+            "synapses": [synapse.to_dict() for synapse in self.synapses],
         }
+
+    def get_synapses_from(self, from_: str) -> list[Synapse]:
+        return list(filter(lambda synapse: synapse.from_ == from_, self.synapses))
+
+    def get_synapses_to(self, to: str) -> list[Synapse]:
+        return list(filter(lambda synapse: synapse.to == to, self.synapses))
 
     def to_dict_xmp(self) -> dict[str, Any]:
         return {}
@@ -170,7 +179,7 @@ class System:
                         print_buffer.append(f">> {neuron.id}: {rule}")
                         neuron.spikes -= rule.consumed
                         if rule.produced > 0:
-                            for synapse in neuron.synapses:
+                            for synapse in self.get_synapses_from(neuron.id):
                                 to, weight = synapse.to, synapse.weight
                                 heappush(
                                     incoming_spikes[to_index[to]],
