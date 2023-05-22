@@ -20,7 +20,7 @@ class Neuron:
         return {
             "id": self.id,
             "position": self.position.to_dict(),
-            "rules": [rule.to_dict() for rule in self.rules],
+            "rules": [rule.stringify(in_xmp=False) for rule in self.rules],
             "spikes": self.spikes,
             "isInput": self.is_input,
             "inputLog": [record.to_dict() for record in self.input_log],

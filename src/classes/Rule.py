@@ -1,7 +1,6 @@
 import re
 
 from dataclasses import dataclass
-from typing import Any
 
 
 @dataclass
@@ -11,23 +10,16 @@ class Rule:
     produced: int
     delay: int
 
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "regex": Rule.python_to_json_regex(self.regex),
-            "consumed": self.consumed,
-            "produced": self.produced,
-            "delay": self.delay,
-        }
-
-    def form_rule_xmp(self) -> str:
+    def stringify(self, in_xmp: bool) -> str:
         return (
             f"{Rule.python_to_xmp_regex(self.regex)}"
+            if in_xmp
+            else f"{Rule.python_to_json_regex(self.regex)}"
             "/"
-            f"{Rule.get_symbol(self.consumed)}"
+            f"{Rule.get_symbol(self.consumed, in_xmp)}"
             "->"
-            f"{Rule.get_symbol(self.produced)}"
-            ";"
-            f"{self.delay}"
+            if in_xmp
+            else "\\to " f"{Rule.get_symbol(self.produced, in_xmp)}" ";" f"{self.delay}"
         )
 
     @staticmethod
@@ -40,13 +32,13 @@ class Rule:
             return int(symbol.replace("a", ""))
 
     @staticmethod
-    def get_symbol(value: int) -> str:
+    def get_symbol(value: int, in_xmp: bool) -> str:
         if value == 0:
-            return "0"
+            return "0" if in_xmp else "\\lambda"
         elif value == 1:
             return "a"
         else:
-            return f"{value}a"
+            return f"{value}a" if in_xmp else f"a^{{{value}}}"
 
     @staticmethod
     def json_to_python_regex(s: str) -> str:
