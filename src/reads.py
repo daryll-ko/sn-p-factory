@@ -6,7 +6,9 @@ import os
 
 def read(filename: str, format: Format, simulating: bool) -> dict[str, Any]:
     if simulating:
-        directory_path = os.path.join(format.path, filename.split("[")[0])
+        directory_path = os.path.join(
+            format.path, f"{filename.split('[')[0]}.{format.extension}"
+        )
         if not os.path.exists(directory_path):
             os.mkdir(directory_path)
     with open(
