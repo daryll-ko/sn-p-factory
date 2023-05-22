@@ -8,8 +8,7 @@ from .Record import Record
 
 @dataclass
 class Neuron:
-    id: int
-    label: str
+    id: str
     position: Position
     rules: list[Rule]
     spikes: int
@@ -23,7 +22,6 @@ class Neuron:
     def to_dict(self) -> dict[str, Any]:
         return {
             "id": self.id,
-            "label": self.label,
             "position": self.position.to_dict(),
             "rules": [rule.to_dict() for rule in self.rules],
             "spikes": self.spikes,
