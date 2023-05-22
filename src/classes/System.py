@@ -151,7 +151,7 @@ class System:
                 f">> logged to file ({log_filename}.{format.extension})\n"
             )
             simulation_log.append("\n")
-            write(self.to_dict(), log_filename, format, simulating=True)
+            write(self.to_dict(), log_testname, format, simulating=True)
 
             simulation_log.append("> phase 3: selecting rules\n")
             simulation_log.append("\n")
