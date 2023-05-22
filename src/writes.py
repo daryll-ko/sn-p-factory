@@ -1,12 +1,16 @@
 from typing import Any
 from src.classes.Format import Format
+from src.classes.TestName import TestName
 
 import os
 
 
-def write(d: dict[str, Any], filename: str, format: Format, simulating: bool) -> None:
+def write(
+    d: dict[str, Any], testname: TestName, format: Format, simulating: bool
+) -> None:
+    filename = testname.make_filename()
     if simulating:
-        directory_path = os.path.join(format.path, "|".join(filename.split("|")[:-1]))
+        directory_path = os.path.join(format.path, testname.name)
         if not os.path.exists(directory_path):
             os.mkdir(directory_path)
         with open(
