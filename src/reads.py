@@ -14,6 +14,6 @@ def read(filename: str, format: Format, simulating: bool) -> dict[str, Any]:
             directory_path if simulating else format.path,
             f"{filename}.{format.extension}",
         ),
-        "w",
+        "r",
     ) as input_file:
         return format.read_function(input_file.read())
