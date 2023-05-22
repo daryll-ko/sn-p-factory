@@ -31,52 +31,54 @@ class System:
     def get_synapses_to(self, to: str) -> list[Synapse]:
         return list(filter(lambda synapse: synapse.to == to, self.synapses))
 
-    def to_dict_xmp(self) -> dict[str, Any]:
-        return {}
-        # id_to_label = {}
-        # label_to_id = {}
+    @staticmethod
+    def make_valid_xml_tag(s: str) -> str:
+        return f"_{re.sub(',', '', re.sub('}', '', re.sub('{', '', s)))}"
 
-        # for neuron in self.neurons:
-        #     id_to_label[neuron.id] = neuron.label
-        #     label_to_id[neuron.label] = neuron.id
+    def to_dict_xml(self) -> dict[str, Any]:
+        neuron_entries: list[tuple[str, dict[str, Any]]] = []
 
-        # neuron_entries: list[tuple[str, dict[str, Any]]] = []
+        for neuron in self.neurons:
+            k = System.make_valid_xml_tag(neuron.id)
+            v: dict[str, Any] = {
+                "id": System.make_valid_xml_tag(neuron.id),
+                "position": {
+                    "x": neuron.position.x,
+                    "y": neuron.position.y,
+                },
+            }
 
-        # for neuron in self.neurons:
-        #     k = neuron.label
-        #     v = {
-        #         "id": neuron.label,
-        #         "position": {
-        #             "x": neuron.position[0],
-        #             "y": neuron.position[1],
-        #         },
-        #         "rules": " ".join(
-        #             list(map(lambda rule: rule.form_rule_xmp(), neuron.rules))
-        #         ),
-        #         "startingSpikes": neuron.spikes,
-        #         "delay": neuron.downtime,
-        #         "spikes": neuron.spikes,
-        #     }
+            if len(neuron.rules) > 0:
+                v["rules"] = " ".join(
+                    list(map(lambda rule: rule.stringify(in_xml=True), neuron.rules))
+                )
 
-        #     if neuron.is_input:
-        #         v["isInput"] = True
-        #         v["bitstring"] = Neuron.decompress_log(neuron.spike_times)
+            if isinstance(neuron.content, int):
+                v["spikes"] = neuron.content
+            else:
+                v["bitstring"] = ",".join(map(str, neuron.content))
 
-        #     if neuron.is_output:
-        #         v["isOutput"] = True
-        #         v["bitstring"] = Neuron.decompress_log(neuron.spike_times)
+            if neuron.type_ == "input":
+                assert isinstance(neuron.content, list)
+                v["isInput"] = True
 
-        #     for synapse in neuron.synapses:
-        #         if "out" not in v:
-        #             v["out"] = []
-        #         if "outWeights" not in v:
-        #             v["outWeights"] = {}
-        #         v["out"].append(id_to_label[synapse.to])
-        #         v["outWeights"][id_to_label[synapse.to]] = synapse.weight
+            if neuron.type_ == "output":
+                v["isOutput"] = True
 
-        #     neuron_entries.append((k, v))
+            for synapse in self.synapses:
+                if synapse.from_ == neuron.id:
+                    if "out" not in v:
+                        v["out"] = []
+                    if "outWeights" not in v:
+                        v["outWeights"] = {}
+                    v["out"].append(System.make_valid_xml_tag(synapse.to))
+                    v["outWeights"][
+                        System.make_valid_xml_tag(synapse.to)
+                    ] = synapse.weight
 
-        # return {"content": dict(neuron_entries)}
+            neuron_entries.append((k, v))
+
+        return {"content": dict(neuron_entries)}
 
     def simulate(self, filename: str, format: Format, verbose: bool):
         log_folder_name = filename.replace(" ", "_")
