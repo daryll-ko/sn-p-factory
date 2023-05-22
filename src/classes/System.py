@@ -114,7 +114,7 @@ class System:
         start, end = -1, -1
         # output_at_3 = False
 
-        while not done and time < 10**3:
+        while not done and time < 10:
             simulation_log.append(f"{'- ' * 15}time: {time} {'- '*15}\n")
             simulation_log.append("\n")
             simulation_log.append("> phase 1: incoming spikes\n")
@@ -147,7 +147,12 @@ class System:
             simulation_log.append("\n")
 
             for neuron in self.neurons:
-                print_buffer.append(f">> {neuron.id}: <{neuron.content}/{downtime[i]}>")
+                if neuron.type_ == "regular":
+                    print_buffer.append(
+                        f">> {neuron.id}: <{neuron.content}/{downtime[i]}>"
+                    )
+                else:
+                    print_buffer.append(f">> {neuron.id}: {neuron.content}")
 
             for line in print_buffer:
                 simulation_log.append(f"{line}\n")
@@ -190,9 +195,13 @@ class System:
                                     heappush(
                                         incoming_spikes[j],
                                         (
-                                            time + rule.delay + 1
-                                            if self.neurons[j].type_ != "output"
-                                            else 0,
+                                            time
+                                            + rule.delay
+                                            + (
+                                                1
+                                                if self.neurons[j].type_ != "output"
+                                                else 0
+                                            ),
                                             rule.produced * weight,
                                         ),
                                     )
@@ -271,8 +280,13 @@ class System:
             simulation_log.append("> phase 5: showing in-between state\n")
             simulation_log.append("\n")
 
-            for i, neuron in enumerate(self.neurons):
-                print_buffer.append(f">> {neuron.id}: <{neuron.content}/{downtime[i]}>")
+            for neuron in self.neurons:
+                if neuron.type_ == "regular":
+                    print_buffer.append(
+                        f">> {neuron.id}: <{neuron.content}/{downtime[i]}>"
+                    )
+                else:
+                    print_buffer.append(f">> {neuron.id}: {neuron.content}")
 
             for line in print_buffer:
                 simulation_log.append(f"{line}\n")
