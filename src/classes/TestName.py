@@ -5,14 +5,8 @@ from typing import Optional
 @dataclass
 class TestName:
     name: str
-    inputs: Optional[list[int]] = None
     time: Optional[int] = None
 
     def make_filename(self) -> str:
-        inputs_part = (
-            f"({','.join(map(lambda i: str(i).zfill(3), self.inputs))})"
-            if self.inputs is not None
-            else ""
-        )
         time_part = f"[{str(self.time).zfill(3)}]" if self.time else ""
-        return f"{self.name}{inputs_part}{time_part}"
+        return f"{self.name}{time_part}"
