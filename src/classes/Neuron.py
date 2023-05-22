@@ -11,7 +11,6 @@ class Neuron:
     position: Position
     rules: list[Rule]
     spikes: int
-    downtime: int
     is_input: bool
     input_log: list[Record]
     is_output: bool
@@ -23,7 +22,6 @@ class Neuron:
             "position": self.position.to_dict(),
             "rules": [rule.to_dict() for rule in self.rules],
             "spikes": self.spikes,
-            "downtime": self.downtime,
             "isInput": self.is_input,
             "inputLog": [record.to_dict() for record in self.input_log],
             "isOutput": self.is_output,
