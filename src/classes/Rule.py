@@ -11,16 +11,16 @@ class Rule:
     delay: int
 
     def stringify(self, in_xmp: bool) -> str:
-        return (
-            f"{Rule.python_to_xmp_regex(self.regex)}"
+        regex_ = (
+            Rule.python_to_xmp_regex(self.regex)
             if in_xmp
-            else f"{Rule.python_to_json_regex(self.regex)}"
-            "/"
-            f"{Rule.get_symbol(self.consumed, in_xmp)}"
-            "->"
-            if in_xmp
-            else "\\to " f"{Rule.get_symbol(self.produced, in_xmp)}" ";" f"{self.delay}"
+            else Rule.python_to_json_regex(self.regex)
         )
+        consumed_ = Rule.get_symbol(self.consumed, in_xmp)
+        produced_ = Rule.get_symbol(self.produced, in_xmp)
+        to_ = "->" if in_xmp else "\\to "
+        head_ = f"{regex_}/{consumed_}" if regex_ != consumed_ else f"{regex_}"
+        return f"{head_}{to_}{produced_};{self.delay}"
 
     @staticmethod
     def get_value(symbol: str, in_xmp: bool) -> int:
