@@ -12,8 +12,6 @@ class Neuron:
     position: Position
     rules: list[Rule]
     content: Union[int, list[int]]
-    input_log: list[Record]
-    output_log: list[Record]
 
     def to_dict(self) -> dict[str, Any]:
         return {
