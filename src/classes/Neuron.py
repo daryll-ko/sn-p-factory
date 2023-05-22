@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Any
 from .Rule import Rule
 from .Position import Position
-from .Synapse import Synapse
 from .Record import Record
 
 
@@ -13,7 +12,6 @@ class Neuron:
     rules: list[Rule]
     spikes: int
     downtime: int
-    synapses: list[Synapse]
     is_input: bool
     input_log: list[Record]
     is_output: bool
@@ -26,7 +24,6 @@ class Neuron:
             "rules": [rule.to_dict() for rule in self.rules],
             "spikes": self.spikes,
             "downtime": self.downtime,
-            "synapses": [synapse.to_dict() for synapse in self.synapses],
             "isInput": self.is_input,
             "inputLog": [record.to_dict() for record in self.input_log],
             "isOutput": self.is_output,
