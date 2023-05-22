@@ -8,5 +8,6 @@ class TestName:
     time: Optional[int] = None
 
     def make_filename(self) -> str:
+        name_part = self.name.replace(" ", "_")
         time_part = f"[{str(self.time).zfill(3)}]" if self.time else ""
-        return f"{self.name}{time_part}"
+        return f"{name_part}{time_part}"
