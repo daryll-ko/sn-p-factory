@@ -9,5 +9,5 @@ class TestName:
 
     def make_filename(self) -> str:
         name_part = self.name.replace(" ", "_")
-        time_part = f"[{str(self.time).zfill(3)}]" if self.time else ""
+        time_part = f"[{str(self.time).zfill(3)}]" if self.time is not None else ""
         return f"{name_part}{time_part}"
