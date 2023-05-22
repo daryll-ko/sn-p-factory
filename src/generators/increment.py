@@ -11,7 +11,10 @@ def generate_increment_system(initial_value: int) -> System:
             id="L_{i}",
             type_="regular",
             position=Position(0, 0),
-            rules=[Rule(regex="^a{2}$", consumed=2, produced=1, delay=0)],
+            rules=[
+                Rule(regex="^a{2}$", consumed=2, produced=1, delay=0),
+                Rule(regex="^a$", consumed=1, produced=0, delay=0),
+            ],
             content=2,
         ),
         Neuron(
@@ -35,18 +38,14 @@ def generate_increment_system(initial_value: int) -> System:
             id="L_{i,3}",
             type_="regular",
             position=Position(0, 0),
-            rules=[
-                Rule(regex="^a$", consumed=1, produced=1, delay=0),
-            ],
+            rules=[Rule(regex="^a$", consumed=1, produced=1, delay=0)],
             content=0,
         ),
         Neuron(
             id="L_{i,4}",
             type_="regular",
             position=Position(0, 0),
-            rules=[
-                Rule(regex="^a$", consumed=1, produced=1, delay=0),
-            ],
+            rules=[Rule(regex="^a$", consumed=1, produced=1, delay=0)],
             content=0,
         ),
         Neuron(
