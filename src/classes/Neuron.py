@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Literal
+from typing import Any, Literal, Union
 from .Rule import Rule
 from .Position import Position
 from .Record import Record
@@ -11,7 +11,7 @@ class Neuron:
     type_: Literal["regular", "input", "output"]
     position: Position
     rules: list[Rule]
-    spikes: int
+    content: Union[int, list[int]]
     input_log: list[Record]
     output_log: list[Record]
 
@@ -21,7 +21,7 @@ class Neuron:
             "type": self.type_,
             "position": self.position.to_dict(),
             "rules": [rule.stringify(in_xmp=False) for rule in self.rules],
-            "spikes": self.spikes,
+            "content": self.content,
         }
 
     @staticmethod
