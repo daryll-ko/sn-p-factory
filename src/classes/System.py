@@ -11,6 +11,7 @@ from src.writes import write
 from .Neuron import Neuron
 from .Record import Record
 from .Format import Format
+from .TestName import TestName
 
 
 @dataclass
@@ -143,7 +144,9 @@ class System:
             print_buffer.clear()
             simulation_log.append("\n")
 
-            log_filename = f"{self.name.replace(' ', '_')}|{str(time).zfill(3)}"
+            log_testname = TestName(self.name, time)
+            log_filename = log_testname.make_filename()
+
             simulation_log.append(
                 f">> logged to file ({log_filename}.{format.extension})\n"
             )
