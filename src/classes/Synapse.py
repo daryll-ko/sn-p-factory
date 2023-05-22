@@ -4,8 +4,9 @@ from typing import Any
 
 @dataclass
 class Synapse:
-    to: int
+    from_: str
+    to: str
     weight: int
 
     def to_dict(self) -> dict[str, Any]:
-        return vars(self)
+        return {"from": self.from_, "to": self.to, "weight": self.weight}
