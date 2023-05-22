@@ -23,13 +23,22 @@ class Rule:
         )
 
     @staticmethod
-    def get_value(symbol: str) -> int:
-        if symbol == "0":
-            return 0
-        elif symbol == "a":
-            return 1
+    def get_value(symbol: str, in_xmp: bool) -> int:
+        if in_xmp:
+            if symbol == "0":
+                return 0
+            elif symbol == "a":
+                return 1
+            else:
+                return int(symbol.replace("a", ""))
         else:
-            return int(symbol.replace("a", ""))
+            if symbol == "\\lambda":
+                return 0
+            elif symbol == "a":
+                return 1
+            else:
+                result = re.match(r"a\^\{?(\d+)\}?", symbol)
+                return int(result.groups()[0]) if result is not None else -1
 
     @staticmethod
     def get_symbol(value: int, in_xmp: bool) -> str:
