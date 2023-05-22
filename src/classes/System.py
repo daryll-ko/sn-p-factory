@@ -103,10 +103,13 @@ class System:
                 assert isinstance(neuron.content, list)
                 for index, record in enumerate(neuron.content):
                     if record > 0:
-                        heappush(
-                            incoming_spikes[i],
-                            (index, record),
-                        )
+                        for synapse in self.get_synapses_from(neuron.id):
+                            to, weight = synapse.to, synapse.weight
+                            j = to_index[to]
+                            heappush(
+                                incoming_spikes[j],
+                                (index, record),
+                            )
 
         simulation_log = []
         print_buffer = []
@@ -260,7 +263,7 @@ class System:
             simulation_log.append("\n")
 
             # if time == 3:
-            #     output_at_3 = 1 if output_detected else 0
+            #     output_at_3 = output_detected
             # elif time == 4:
             #     return output_at_3
 
