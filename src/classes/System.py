@@ -34,7 +34,11 @@ class System:
 
     @staticmethod
     def make_valid_xml_tag(s: str) -> str:
-        return f"_{re.sub(',', '', re.sub('}', '', re.sub('{', '', s)))}"
+        cleaned = re.sub(",", "", re.sub("}", "", re.sub("{", "", s)))
+        if re.match("^\d+", s):
+            return f"n_{cleaned}"
+        else:
+            return f"{cleaned}"
 
     def to_dict_xml(self) -> dict[str, Any]:
         neuron_entries: list[tuple[str, dict[str, Any]]] = []
