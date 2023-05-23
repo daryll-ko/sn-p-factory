@@ -60,7 +60,7 @@ def parse_dict_xml(d: dict[str, Any]) -> System:
     for v in d.values():
         if "outWeights" in v:
             for k_, v_ in v["outWeights"].items():
-                synapses.append(Synapse(v["id"], k_, v_))
+                synapses.append(Synapse(v["id"], k_, int(v_)))
 
     return System(neurons, synapses)
 
