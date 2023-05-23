@@ -47,6 +47,7 @@ class System:
                     "x": neuron.position.x,
                     "y": neuron.position.y,
                 },
+                "delay": 0,
             }
 
             if len(neuron.rules) > 0:
