@@ -4,7 +4,7 @@ from src.classes.Synapse import Synapse
 from src.classes.Position import Position
 from src.classes.Record import Record
 from src.classes.Rule import Rule
-from typing import Any, Literal
+from typing import Any, Literal, Union
 
 import re
 
@@ -38,7 +38,13 @@ def parse_neuron_xml(d: dict[str, Any]) -> Neuron:
         round(float(d["position"]["x"])), round(float(d["position"]["y"]))
     )
     rules = list(map(parse_rule_xml, d["rules"].split())) if "rules" in d else []
-    content = int(d["spikes"]) if type_ == "regular" else d["bitstring"]
+    content: Union[int, list[int]] = (
+        int(d["spikes"])
+        if type_ == "regular"
+        else list(map(int, d["bitstring"].split(",")))
+        if d["bitstring"] is not None
+        else []
+    )
 
     return Neuron(
         id,

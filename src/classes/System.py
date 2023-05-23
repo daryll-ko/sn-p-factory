@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from typing import Any
 from collections import Counter
 from src.utils import write
+from src.globals import XML
 from .Neuron import Neuron
 from .Synapse import Synapse
 from .Format import Format
@@ -56,7 +57,11 @@ class System:
             if isinstance(neuron.content, int):
                 v["spikes"] = neuron.content
             else:
-                v["bitstring"] = ",".join(map(str, neuron.content))
+                v["bitstring"] = (
+                    ",".join(map(str, neuron.content))
+                    if neuron.content is not None
+                    else ""
+                )
 
             if neuron.type_ == "input":
                 assert isinstance(neuron.content, list)
@@ -171,7 +176,8 @@ class System:
                 f">> logged to file ({log_filename}.{format.extension})\n"
             )
             simulation_log.append("\n")
-            write(self.to_dict(), log_filename, format, simulating=True)
+            d = self.to_dict_xml() if format == XML else self.to_dict()
+            write(d, log_filename, format, simulating=True)
 
             simulation_log.append("> phase 3: selecting rules\n")
             simulation_log.append("\n")
