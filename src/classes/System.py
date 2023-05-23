@@ -47,7 +47,6 @@ class System:
                     "x": neuron.position.x,
                     "y": neuron.position.y,
                 },
-                "delay": 0,
             }
 
             if len(neuron.rules) > 0:
@@ -57,6 +56,7 @@ class System:
 
             if isinstance(neuron.content, int):
                 v["spikes"] = neuron.content
+                v["delay"] = 0
             else:
                 v["bitstring"] = (
                     ",".join(map(str, neuron.content))
