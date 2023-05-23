@@ -17,9 +17,11 @@ class Rule:
             else Rule.python_to_json_regex(self.regex)
         )
         consumed_ = Rule.get_symbol(self.consumed, in_xml)
-        produced_ = Rule.get_symbol(self.produced, in_xml)
         to_ = "->" if in_xml else "\\to "
-        head_ = f"{regex_}/{consumed_}" if regex_ != consumed_ else f"{regex_}"
+        produced_ = Rule.get_symbol(self.produced, in_xml)
+        head_ = (
+            f"{regex_}/{consumed_}" if in_xml or regex_ != consumed_ else f"{regex_}"
+        )
         return f"{head_}{to_}{produced_};{self.delay}"
 
     @staticmethod
