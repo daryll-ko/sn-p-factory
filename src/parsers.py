@@ -118,7 +118,14 @@ def parse_neuron(d: dict[str, Any]) -> Neuron:
     type_ = d["type"]
     position = parse_position(d["position"])
     rules = [parse_rule(rule) for rule in d["rules"]]
-    content = d["content"]
+
+    content: Union[int, list[int]] = (
+        int(d["content"])
+        if type_ == "regular"
+        else list(map(int, d["content"].split(",")))
+        if len(d["content"]) > 0
+        else []
+    )
 
     return Neuron(id, type_, position, rules, content)
 

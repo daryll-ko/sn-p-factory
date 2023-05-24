@@ -19,7 +19,9 @@ class Neuron:
             "type": self.type_,
             "position": self.position.to_dict(),
             "rules": [rule.stringify(in_xml=False) for rule in self.rules],
-            "content": self.content,
+            "content": self.content
+            if isinstance(self.content, int)
+            else ",".join(map(str, self.content)),
         }
 
     @staticmethod
