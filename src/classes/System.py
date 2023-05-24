@@ -82,9 +82,7 @@ class System:
                     if "outWeights" not in v:
                         v["outWeights"] = {}
                     v["out"].append(System.clean_xml_tag(synapse.to))
-                    v["outWeights"][
-                        System.clean_xml_tag(synapse.to)
-                    ] = synapse.weight
+                    v["outWeights"][System.clean_xml_tag(synapse.to)] = synapse.weight
 
             neuron_entries.append((k, v))
 
