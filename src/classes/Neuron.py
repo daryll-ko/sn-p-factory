@@ -14,15 +14,17 @@ class Neuron:
     content: Union[int, list[int]]
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        d = {
             "id": self.id,
             "type": self.type_,
             "position": self.position.to_dict(),
-            "rules": [rule.stringify(in_xml=False) for rule in self.rules],
             "content": self.content
             if isinstance(self.content, int)
             else ",".join(map(str, self.content)),
         }
+        if self.type_ == "regular":
+            d["rules"] = [rule.stringify(in_xml=False) for rule in self.rules]
+        return d
 
     @staticmethod
     def compress_log(s: str) -> list[Record]:
