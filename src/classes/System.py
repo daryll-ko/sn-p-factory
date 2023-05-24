@@ -33,7 +33,7 @@ class System:
         return list(filter(lambda synapse: synapse.to == to, self.synapses))
 
     @staticmethod
-    def make_valid_xml_tag(s: str) -> str:
+    def clean_xml_tag(s: str) -> str:
         cleaned = re.sub(",", "", re.sub("}", "", re.sub("{", "", s)))
         if re.match("^\d+", s):
             return f"n_{cleaned}"
@@ -44,9 +44,9 @@ class System:
         neuron_entries: list[tuple[str, dict[str, Any]]] = []
 
         for neuron in self.neurons:
-            k = System.make_valid_xml_tag(neuron.id)
+            k = System.clean_xml_tag(neuron.id)
             v: dict[str, Any] = {
-                "id": System.make_valid_xml_tag(neuron.id),
+                "id": System.clean_xml_tag(neuron.id),
                 "position": {
                     "x": neuron.position.x,
                     "y": neuron.position.y,
@@ -81,9 +81,9 @@ class System:
                         v["out"] = []
                     if "outWeights" not in v:
                         v["outWeights"] = {}
-                    v["out"].append(System.make_valid_xml_tag(synapse.to))
+                    v["out"].append(System.clean_xml_tag(synapse.to))
                     v["outWeights"][
-                        System.make_valid_xml_tag(synapse.to)
+                        System.clean_xml_tag(synapse.to)
                     ] = synapse.weight
 
             neuron_entries.append((k, v))
