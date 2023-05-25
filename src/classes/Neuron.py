@@ -20,7 +20,7 @@ class Neuron:
             "position": self.position.to_dict(),
             "content": self.content
             if isinstance(self.content, int)
-            else ",".join(map(str, self.content)),
+            else "".join(map(str, self.content)),
         }
         if self.type_ == "regular":
             d["rules"] = [rule.stringify(in_xml=False) for rule in self.rules]

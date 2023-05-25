@@ -148,7 +148,7 @@ def parse_neuron(d: dict[str, Any]) -> Neuron:
     content: Union[int, list[int]] = (
         int(d["content"])
         if type_ == "regular"
-        else list(map(int, d["content"].split(",")))
+        else list(map(int, list(d["content"])))
         if len(d["content"]) > 0
         else []
     )
