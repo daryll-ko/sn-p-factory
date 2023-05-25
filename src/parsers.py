@@ -87,6 +87,9 @@ def parse_record(d: dict[str, Any]) -> Record:
 
 def parse_rule(s: str) -> Rule:
     result = re.match(r"^(.+)\s*/\s*(.+)\s*\\to\s+(.+)\s*;\s*(\d+)$", s)
+    result_no_regex = re.match(r"^(.+)\s*\\to\s+(.+)\s*;\s*(\d+)$", s)
+    result_no_delay = re.match(r"^(.+)\s*/(.+)\s*\\to\s*(.+)$", s)
+    result_both = re.match(r"^(.+)\s*\\to\s*(.+)\s*$", s)
 
     if result is not None:
         regex, consumed, produced, delay = result.groups()
@@ -97,20 +100,43 @@ def parse_rule(s: str) -> Rule:
         delay = int(delay)
 
         return Rule(regex, consumed, produced, delay)
+
+    elif result_no_regex is not None:
+        consumed, produced, delay = result_no_regex.groups()
+
+        regex = Rule.json_to_python_regex(consumed)
+        consumed = Rule.get_value(consumed, in_xml=False)
+        produced = Rule.get_value(produced, in_xml=False)
+        delay = int(delay)
+
+        return Rule(regex, consumed, produced, delay)
+
+    elif result_no_delay is not None:
+        regex, consumed, produced = result_no_delay.groups()
+
+        regex = Rule.json_to_python_regex(regex)
+        consumed = Rule.get_value(consumed, in_xml=False)
+        produced = Rule.get_value(produced, in_xml=False)
+        delay = 0
+
+        assert produced == 0
+
+        return Rule(regex, consumed, produced, delay)
+
+    elif result_both is not None:
+        consumed, produced = result_both.groups()
+
+        regex = Rule.json_to_python_regex(consumed)
+        consumed = Rule.get_value(consumed, in_xml=False)
+        produced = Rule.get_value(produced, in_xml=False)
+        delay = 0
+
+        assert produced == 0
+
+        return Rule(regex, consumed, produced, delay)
+
     else:
-        result = re.match(r"^(.+)\s*\\to\s+(.+)\s*;\s*(\d+)$", s)
-
-        if result is not None:
-            consumed, produced, delay = result.groups()
-
-            regex = Rule.json_to_python_regex(consumed)
-            consumed = Rule.get_value(consumed, in_xml=False)
-            produced = Rule.get_value(produced, in_xml=False)
-            delay = int(delay)
-
-            return Rule(regex, consumed, produced, delay)
-        else:
-            return Rule("", -1, -1, -1)
+        return Rule("", -1, -1, -1)
 
 
 def parse_neuron(d: dict[str, Any]) -> Neuron:
