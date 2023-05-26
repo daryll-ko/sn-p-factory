@@ -12,7 +12,6 @@ from src.globals import XML
 from .Neuron import Neuron
 from .Synapse import Synapse
 from .Format import Format
-from .TestName import TestName
 
 
 @dataclass
@@ -99,6 +98,10 @@ class System:
         for i, neuron in enumerate(self.neurons):
             to_index[neuron.id] = i
 
+        adjacency_list: list[list[Synapse]] = [[] for _ in range(len(self.neurons))]
+        for i, neuron in enumerate(self.neurons):
+            adjacency_list[i] = self.get_synapses_from(neuron.id)
+
         incoming_spikes: list[list[tuple[int, int]]] = [
             [] for _ in range(len(self.neurons))
         ]
@@ -113,7 +116,7 @@ class System:
                 assert isinstance(neuron.content, list)
                 for index, record in enumerate(neuron.content):
                     if record > 0:
-                        for synapse in self.get_synapses_from(neuron.id):
+                        for synapse in adjacency_list[to_index[neuron.id]]:
                             to, weight = synapse.to, synapse.weight
                             j = to_index[to]
                             heappush(
@@ -172,9 +175,7 @@ class System:
             print_buffer.clear()
             simulation_log.append("\n")
 
-            log_testname = TestName(filename, time)
-            log_filename = log_testname.make_filename()
-
+            log_filename = f"{filename}[{str(time).zfill(3)}]"
             simulation_log.append(
                 f">> logged to file ({log_filename}.{format.extension})\n"
             )
@@ -203,7 +204,7 @@ class System:
 
                             neuron.content -= rule.consumed
                             if rule.produced > 0:
-                                for synapse in self.get_synapses_from(neuron.id):
+                                for synapse in adjacency_list[to_index[neuron.id]]:
                                     to, weight = synapse.to, synapse.weight
                                     j = to_index[to]
                                     heappush(
