@@ -5,7 +5,7 @@ from src.classes.System import System
 from src.classes.Synapse import Synapse
 
 
-def generate_multiple_generator(n: int) -> System:
+def generate_multiples_of_system(n: int) -> System:
     neurons = [
         Neuron(
             id="1",
