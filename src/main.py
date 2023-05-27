@@ -16,6 +16,7 @@ from src.parsers import parse_dict_xml, parse_dict
 
 import os
 import time
+import re
 
 
 def convert(
@@ -57,8 +58,10 @@ def benchmark():
     def benchmark_file(file: str, inside_folder: bool) -> None:
         global total_xml_size, total_json_size, total_yaml_size
 
-        folder_name = os.path.splitext(file)[0].split("[")[0]
         filename = os.path.splitext(file)[0]
+
+        match = re.match(r"(.+)\[\d{3}\]", filename)
+        folder_name = match.groups()[0] if match else ""
 
         xml_size = os.path.getsize(
             os.path.join(XML.path, folder_name, f"{filename}.xml")
@@ -207,18 +210,13 @@ def do_subset_sum(inputs: list[tuple[list[int], int]]) -> None:
             format=JSON,
             simulating=False,
         )
-        counter = Counter[int]()
         for _ in range(10**2):
             result = simulate(filename, format=JSON, verbose=False)
-            counter[result] += 1
-        for k, v in sorted(list(counter.items())):
-            print(f"{k} => {v}")
-        print()
+            if result != 10**2:
+                break
 
 
 def main():
-    pass
-
     # --- TO DO ---
     # - split snapshots to A/B parts
     # - add SAT test cases
@@ -243,6 +241,8 @@ def main():
     # batch_convert(from_format=JSON, to_format=XML)
 
     # benchmark()
+
+    pass
 
 
 if __name__ == "__main__":
