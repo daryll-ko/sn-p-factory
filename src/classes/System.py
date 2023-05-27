@@ -130,7 +130,7 @@ class System:
         start, end = -1, -1
         # output_at_3 = False
 
-        while not done and time < 10**2:
+        while not done and time < 5 * 10**2:
             simulation_log.append(f"{'- ' * 15}time: {time} {'- '*15}\n")
             simulation_log.append("\n")
             simulation_log.append("> phase 1: incoming spikes\n")
@@ -324,7 +324,7 @@ class System:
             for line in simulation_log:
                 print(line, end="")
 
-        # return time
+        return time
 
         if end == -1:
             return -1
