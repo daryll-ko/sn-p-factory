@@ -1,13 +1,15 @@
 from collections import Counter
 from typing import Callable
 
-from src.classes.Format import Format
 from src.generators.increment import generate_increment_system
 from src.generators.decrement import generate_decrement_system
 from src.generators.boolean_triple_sum_not_2 import (
     generate_boolean_triple_sum_not_2_system,
 )
 from src.generators.multiples_of import generate_multiples_of_system
+from src.generators.subset_sum import generate_subset_sum_system
+
+from src.classes.Format import Format
 from src.globals import XML, JSON, YAML
 from src.utils import read, write
 from src.parsers import parse_dict_xml, parse_dict
@@ -195,12 +197,31 @@ def do_boolean_triple_sum_not_2() -> None:
                 print()
 
 
+def do_subset_sum(inputs: list[tuple[list[int], int]]) -> None:
+    for L, s in inputs:
+        system = generate_subset_sum_system(L, s)
+        filename = f"subset_sum([{','.join(map(str, L))}],{s})"
+        write(
+            system.to_dict(),
+            filename,
+            format=JSON,
+            simulating=False,
+        )
+        counter = Counter[int]()
+        for _ in range(10**2):
+            result = simulate(filename, format=JSON, verbose=False)
+            counter[result] += 1
+        for k, v in sorted(list(counter.items())):
+            print(f"{k} => {v}")
+        print()
+
+
 def main():
     pass
 
     # --- TO DO ---
     # - split snapshots to A/B parts
-    # - add SAT & Subset-Sum test cases
+    # - add SAT test cases
 
     # round_trip(filename="positive_integer_generator", format=JSON, simulating=False)
 
@@ -214,6 +235,9 @@ def main():
     # do_inc_dec(inc_dec_initial_values)
 
     # do_boolean_triple_sum_not_2()
+
+    # subset_sum_inputs = [([1, 2, 3], 5), ([1, 3, 5], 2)]
+    # do_subset_sum(subset_sum_inputs)
 
     # batch_convert(from_format=JSON, to_format=YAML)
     # batch_convert(from_format=JSON, to_format=XML)

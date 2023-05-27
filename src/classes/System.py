@@ -315,6 +315,8 @@ class System:
             for line in simulation_log:
                 print(line, end="")
 
+        # return time
+
         if end == -1:
             return -1
         else:
