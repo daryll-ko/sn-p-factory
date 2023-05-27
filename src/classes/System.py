@@ -186,6 +186,8 @@ class System:
             simulation_log.append("> phase 3: selecting rules\n")
             simulation_log.append("\n")
 
+            some_rule_selected = False
+
             for i, neuron in enumerate(self.neurons):
                 if neuron.type_ == "regular":
                     assert isinstance(neuron.content, int)
@@ -198,6 +200,7 @@ class System:
                                 possible_indices.append(index)
 
                         if len(possible_indices) > 0:
+                            some_rule_selected = True
                             chosen_index = random.choice(possible_indices)
                             rule = neuron.rules[chosen_index]
                             print_buffer.append(f">> {neuron.id}: {rule}")
@@ -239,7 +242,14 @@ class System:
                 simulation_log.append(">> no events during phase 3\n")
             simulation_log.append("\n")
 
-            simulation_log.append("> phase 4: detecting outputs\n")
+            done = (
+                all([len(heap) == 0 for heap in incoming_spikes])
+                and not some_rule_selected
+            )
+
+            simulation_log.append(
+                "> phase 4: accumulating updates, detecting outputs\n"
+            )
             simulation_log.append("\n")
 
             output_detected = False
@@ -279,18 +289,18 @@ class System:
             # elif time == 4:
             #     return output_at_3
 
-            if output_detected:
-                if start == -1:
-                    start = time
-                    simulation_log.append(">> detected first output spike\n")
-                    simulation_log.append("\n")
-                else:
-                    end = time
-                    simulation_log.append(
-                        ">> detected second output spike, wrapping up...\n"
-                    )
-                    simulation_log.append("\n")
-                    break
+            # if output_detected:
+            #     if start == -1:
+            #         start = time
+            #         simulation_log.append(">> detected first output spike\n")
+            #         simulation_log.append("\n")
+            #     else:
+            #         end = time
+            #         simulation_log.append(
+            #             ">> detected second output spike, wrapping up...\n"
+            #         )
+            #         simulation_log.append("\n")
+            #         break
 
             simulation_log.append("> phase 5: showing in-between state\n")
             simulation_log.append("\n")
@@ -308,14 +318,13 @@ class System:
             print_buffer.clear()
             simulation_log.append("\n")
 
-            done = all([len(heap) == 0 for heap in incoming_spikes])
             time += 1
 
         if verbose:
             for line in simulation_log:
                 print(line, end="")
 
-        return time
+        # return time
 
         if end == -1:
             return -1
