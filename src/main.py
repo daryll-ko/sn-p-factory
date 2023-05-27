@@ -179,10 +179,6 @@ def do_boolean_function(
 
 
 def main():
-    # --- TO DO ---
-    # - use logfiles instead of snapshots
-    # - add sanity checker
-
     # round_trip(filename="even_positive_integer_generator")
     # simulate("even_positive_integer_generator")
 
