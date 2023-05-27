@@ -13,7 +13,7 @@ def reversed_bits(x: int) -> list[int]:
     return L
 
 
-def generate_bit_adder(L: list[int]) -> System:
+def generate_bit_adder_system(L: list[int]) -> System:
     n = len(L)
 
     in_ = [
