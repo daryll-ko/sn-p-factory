@@ -7,8 +7,7 @@ from heapq import heappush, heappop
 from dataclasses import dataclass
 from typing import Any
 from collections import Counter
-from src.utils import write
-from src.globals import XML
+from src.globals import JSON, LOG
 from .Neuron import Neuron
 from .Synapse import Synapse
 from .Format import Format
@@ -87,7 +86,7 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
-    def simulate(self, filename: str, format: Format, verbose: bool):
+    def simulate(self, filename: str, format: Format = JSON, make_log: bool = True):
         log_folder_name = filename.replace(" ", "_")
         log_folder_path = os.path.join(format.path, log_folder_name)
 
@@ -128,7 +127,7 @@ class System:
         print_buffer = []
 
         start, end = -1, -1
-        # output_at_3 = False
+        output_at_3 = False
 
         while not done and time < 5 * 10**2:
             simulation_log.append(f"{'- ' * 15}time: {time} {'- '*15}\n")
@@ -159,7 +158,7 @@ class System:
                 simulation_log.append(">> no events during phase 1\n")
             simulation_log.append("\n")
 
-            simulation_log.append("> phase 2: logging state\n")
+            simulation_log.append("> phase 2: showing starting state\n")
             simulation_log.append("\n")
 
             for neuron in self.neurons:
@@ -175,14 +174,6 @@ class System:
             print_buffer.clear()
             simulation_log.append("\n")
 
-            log_filename = f"{filename}[{str(time).zfill(3)}]"
-            simulation_log.append(
-                f">> logged to file ({log_filename}.{format.extension})\n"
-            )
-            simulation_log.append("\n")
-            d = self.to_dict_xml() if format == XML else self.to_dict()
-            write(d, log_filename, format, simulating=True)
-
             simulation_log.append("> phase 3: selecting rules\n")
             simulation_log.append("\n")
 
@@ -191,6 +182,7 @@ class System:
             for i, neuron in enumerate(self.neurons):
                 if neuron.type_ == "regular":
                     assert isinstance(neuron.content, int)
+
                     if downtime[i] == 0:
                         possible_indices = []
 
@@ -223,13 +215,6 @@ class System:
                                             rule.produced * weight,
                                         ),
                                     )
-                                # if neuron.type_ == "output":
-                                #     neuron.output_log.append(
-                                #         Record(
-                                #             time + rule.delay, rule.produced * weight
-                                #         )
-                                #     )
-
                             downtime[i] = rule.delay
                     else:
                         downtime[i] -= 1
@@ -265,17 +250,6 @@ class System:
                         neuron.content.append(incoming_updates[neuron.id])
                         output_detected |= incoming_updates[neuron.id] > 0
 
-            # for i, neuron in enumerate(self.neurons):
-            #     if (
-            #         neuron.type_ == "output"
-            #         and len(neuron.output_log) > 0
-            #         and neuron.output_log[-1].time == time
-            #     ):
-            #         output_detected = True
-            #         print_buffer.append(
-            #             f">> {neuron.id}: {neuron.output_log[-1].spikes}"
-            #         )
-
             if len(print_buffer) > 0:
                 for line in print_buffer:
                     simulation_log.append(f"{line}\n")
@@ -284,10 +258,10 @@ class System:
                 simulation_log.append(">> no events during phase 4\n")
             simulation_log.append("\n")
 
-            # if time == 3:
-            #     output_at_3 = output_detected
-            # elif time == 4:
-            #     return output_at_3
+            if time == 3:
+                output_at_3 = output_detected
+            elif time == 4:
+                return output_at_3
 
             # if output_detected:
             #     if start == -1:
@@ -320,9 +294,11 @@ class System:
 
             time += 1
 
-        if verbose:
-            for line in simulation_log:
-                print(line, end="")
+        if make_log:
+            with open(
+                os.path.join(LOG.path, f"{filename}.{LOG.extension}"), "w"
+            ) as log_file:
+                log_file.writelines(simulation_log)
 
         return time
 

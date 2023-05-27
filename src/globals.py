@@ -5,10 +5,10 @@ import yaml
 
 from src.classes.Format import Format
 
-INPUTS_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 
 XML = Format(
-    path=os.path.join(INPUTS_PATH, "xml"),
+    path=os.path.join(DATA_PATH, "xml"),
     extension="xml",
     read_function=lambda s: xmltodict.parse(s)["content"],
     write_function=lambda d: xmltodict.unparse(
@@ -17,15 +17,22 @@ XML = Format(
 )
 
 JSON = Format(
-    path=os.path.join(INPUTS_PATH, "json"),
+    path=os.path.join(DATA_PATH, "json"),
     extension="json",
     read_function=lambda s: json.loads(s),
     write_function=lambda d: json.dumps(d, indent=2),
 )
 
 YAML = Format(
-    path=os.path.join(INPUTS_PATH, "yaml"),
+    path=os.path.join(DATA_PATH, "yaml"),
     extension="yaml",
     read_function=lambda s: yaml.load(s, Loader=yaml.Loader),
     write_function=lambda d: yaml.dump(d, sort_keys=False, indent=2),
+)
+
+LOG = Format(
+    path=os.path.join(DATA_PATH, "log"),
+    extension="log",
+    read_function=lambda _: {},
+    write_function=lambda _: "",
 )

@@ -3,11 +3,11 @@ from typing import Callable
 
 from src.generators.increment import generate_increment_system
 from src.generators.decrement import generate_decrement_system
-from src.generators.boolean_triple_sum_not_2 import (
-    generate_boolean_triple_sum_not_2_system,
-)
 from src.generators.multiples_of import generate_multiples_of_system
 from src.generators.subset_sum import generate_subset_sum_system
+from src.generators.bit_adder import generate_bit_adder_system
+from src.generators.comparator import generate_comparator_system
+from src.generators.boolean_function import generate_boolean_function_system
 
 from src.classes.Format import Format
 from src.globals import XML, JSON, YAML
@@ -16,37 +16,31 @@ from src.parsers import parse_dict_xml, parse_dict
 
 import os
 import time
-import re
+import functools
+import operator
 
 
-def convert(
-    filename: str, from_format: Format, to_format: Format, simulating: bool
-) -> None:
-    d = read(filename, from_format, simulating)
+def convert(filename: str, from_format: Format, to_format: Format) -> None:
+    d = read(filename, from_format)
     system = parse_dict_xml(d) if from_format == XML else parse_dict(d)
     d = system.to_dict_xml() if to_format == XML else system.to_dict()
-    write(d, filename, to_format, simulating)
+    write(d, filename, to_format)
 
 
-def simulate(filename: str, format: Format, verbose: bool) -> int:
+def simulate(filename: str, format: Format = JSON, make_log: bool = True) -> int:
     system = (
-        parse_dict_xml(read(filename, format, simulating=False))
+        parse_dict_xml(read(filename, format))
         if format == XML
-        else parse_dict(read(filename, format, simulating=False))
+        else parse_dict(read(filename, format))
     )
-    return system.simulate(filename, format, verbose)
+    return system.simulate(filename, format, make_log)
 
 
-def search_through_folder(
-    format: Format, outer_f: Callable[[str], None], inner_f: Callable[[str], None]
-) -> None:
+def search_through_folder(format: Format, f: Callable[[str], None]) -> None:
     for file in os.listdir(format.path):
         filepath = os.path.join(format.path, file)
         if os.path.isfile(filepath):
-            outer_f(file)
-        else:
-            for inner_file in os.listdir(filepath):
-                inner_f(inner_file)
+            f(file)
 
 
 total_xml_size = 0
@@ -55,29 +49,14 @@ total_yaml_size = 0
 
 
 def benchmark():
-    def benchmark_file(file: str, inside_folder: bool) -> None:
+    def benchmark_size(file: str) -> None:
         global total_xml_size, total_json_size, total_yaml_size
 
         filename = os.path.splitext(file)[0]
 
-        match = re.match(r"(.+)\[\d{3}\]", filename)
-        folder_name = match.groups()[0] if match else ""
-
-        xml_size = os.path.getsize(
-            os.path.join(XML.path, folder_name, f"{filename}.xml")
-            if inside_folder
-            else os.path.join(XML.path, f"{filename}.xml")
-        )
-        json_size = os.path.getsize(
-            os.path.join(JSON.path, folder_name, f"{filename}.json")
-            if inside_folder
-            else os.path.join(JSON.path, f"{filename}.json")
-        )
-        yaml_size = os.path.getsize(
-            os.path.join(YAML.path, folder_name, f"{filename}.yaml")
-            if inside_folder
-            else os.path.join(YAML.path, f"{filename}.yaml")
-        )
+        xml_size = os.path.getsize(os.path.join(XML.path, f"{filename}.xml"))
+        json_size = os.path.getsize(os.path.join(JSON.path, f"{filename}.json"))
+        yaml_size = os.path.getsize(os.path.join(YAML.path, f"{filename}.yaml"))
 
         total_xml_size += xml_size
         total_json_size += json_size
@@ -93,11 +72,7 @@ def benchmark():
         print(f"yaml: {yaml_size} ({xml_to_yaml}% of xml)")
         print()
 
-    search_through_folder(
-        format=JSON,
-        outer_f=lambda file: benchmark_file(file, inside_folder=False),
-        inner_f=lambda file: benchmark_file(file, inside_folder=True),
-    )
+    search_through_folder(format=JSON, f=benchmark_size)
 
     total_xml_to_json = round(total_json_size / total_xml_size * 100, 1)
     total_xml_to_yaml = round(total_yaml_size / total_xml_size * 100, 1)
@@ -113,40 +88,23 @@ def benchmark():
 def batch_convert(from_format: Format, to_format: Format) -> None:
     search_through_folder(
         format=from_format,
-        outer_f=lambda file: convert(
-            os.path.splitext(file)[0], from_format, to_format, simulating=False
-        ),
-        inner_f=lambda inner_file: convert(
-            os.path.splitext(inner_file)[0], from_format, to_format, simulating=True
-        ),
+        f=lambda file: convert(os.path.splitext(file)[0], from_format, to_format),
     )
 
 
-def round_trip(filename: str, format: Format, simulating: bool) -> None:
-    system = parse_dict(read(filename, format, simulating))
-    write(
-        system.to_dict(),
-        filename,
-        format,
-        simulating,
-    )
+def round_trip(filename: str, format: Format = JSON) -> None:
+    system = parse_dict(read(filename, format))
+    write(system.to_dict(), filename, format)
 
 
-def do_multiples_of(initial_values: list[int]) -> None:
-    for n in initial_values:
+def do_multiples_of(inputs: list[int]) -> None:
+    for n in inputs:
         system = generate_multiples_of_system(n)
-        write(
-            system.to_dict(),
-            f"multiples_of({str(n).zfill(3)})",
-            format=JSON,
-            simulating=False,
-        )
+        write(system.to_dict(), f"multiples_of({str(n).zfill(3)})")
         counter = Counter[int]()
         t1 = time.time()
-        for _ in range(10**3):
-            value = simulate(
-                f"multiples_of({str(n).zfill(3)})", format=JSON, verbose=False
-            )
+        for _ in range(10**2):
+            value = simulate(f"multiples_of({str(n).zfill(3)})")
             counter[value] += 1
         t2 = time.time()
         print(f"n={n} took {t2-t1} seconds ({(t2-t1)/(10**3)} seconds/simulation)")
@@ -156,86 +114,123 @@ def do_multiples_of(initial_values: list[int]) -> None:
         print()
 
 
-def do_inc_dec(initial_values: list[int]) -> None:
-    for v in initial_values:
+def do_inc_dec(inputs: list[int]) -> None:
+    for v in inputs:
         system = generate_increment_system(v)
-        write(
-            system.to_dict(),
-            f"increment({str(v).zfill(3)})",
-            format=JSON,
-            simulating=False,
-        )
-        simulate(f"increment({str(v).zfill(3)})", format=JSON, verbose=True)
+        write(system.to_dict(), f"increment({str(v).zfill(3)})", format=JSON)
+        simulate(f"increment({str(v).zfill(3)})")
         system = generate_decrement_system(v)
-        write(
-            system.to_dict(),
-            f"decrement({str(v).zfill(3)})",
-            format=JSON,
-            simulating=False,
-        )
-        simulate(f"decrement({str(v).zfill(3)})", format=JSON, verbose=True)
-
-
-def do_boolean_triple_sum_not_2() -> None:
-    for b1 in range(2):
-        for b2 in range(2):
-            for b3 in range(2):
-                system = generate_boolean_triple_sum_not_2_system(b1, b2, b3)
-                write(
-                    system.to_dict(),
-                    f"boolean_triple_sum_not_2({b1},{b2},{b3})",
-                    format=JSON,
-                    simulating=False,
-                )
-                result = (
-                    1
-                    if simulate(
-                        f"boolean_triple_sum_not_2({b1},{b2},{b3})",
-                        format=JSON,
-                        verbose=False,
-                    )
-                    else 0
-                )
-                print(f"({b1},{b2},{b3}) => {result}")
-                print()
+        write(system.to_dict(), f"decrement({str(v).zfill(3)})", format=JSON)
+        simulate(f"decrement({str(v).zfill(3)})")
 
 
 def do_subset_sum(inputs: list[tuple[list[int], int]]) -> None:
     for L, s in inputs:
         system = generate_subset_sum_system(L, s)
         filename = f"subset_sum([{','.join(map(str, L))}],{s})"
-        write(
-            system.to_dict(),
-            filename,
-            format=JSON,
-            simulating=False,
-        )
+        write(system.to_dict(), filename)
         for _ in range(10**2):
-            result = simulate(filename, format=JSON, verbose=False)
-            if result != 10**2:
+            result = simulate(filename)
+            if result != 5 * 10**2:
                 break
+
+
+def do_bit_adder(inputs: list[list[int]]) -> None:
+    for L in inputs:
+        system = generate_bit_adder_system(L)
+        filename = f"bit_adder([{','.join(map(str, L))}])"
+        write(system.to_dict(), filename)
+        simulate(filename)
+
+
+def do_comparator(inputs: list[tuple[int, int]]) -> None:
+    for a, b in inputs:
+        system = generate_comparator_system(a, b)
+        filename = f"comparator({a},{b})"
+        write(system.to_dict(), filename)
+        simulate(filename)
+
+
+def to_bool_list(n: int, bits: int) -> list[bool]:
+    b = []
+    while n > 0:
+        b.append(n % 2 == 1)
+        n //= 2
+    while len(b) < bits:
+        b.append(False)
+    return b
+
+
+def do_boolean_function(
+    inputs: list[tuple[int, Callable[[list[bool]], bool], str]]
+) -> None:
+    for n, f, name in inputs:
+        for i in range(1 << n):
+            b = to_bool_list(i, n)
+            system = generate_boolean_function_system(b, f)
+            filename = (
+                "boolean_function"
+                f"({name}({','.join(map(lambda v: '1' if v else '0', b))}))"
+            )
+            write(system.to_dict(), filename)
+            result = simulate(filename)
+            print(f"({','.join(map(str, b))}) => {result}")
+            print()
 
 
 def main():
     # --- TO DO ---
-    # - split snapshots to A/B parts
-    # - add SAT test cases
+    # - use logfiles instead of snapshots
+    # - add sanity checker
 
-    # round_trip(filename="positive_integer_generator", format=JSON, simulating=False)
+    # round_trip(filename="even_positive_integer_generator")
+    # simulate("even_positive_integer_generator")
 
-    # simulate("positive_integer_generator", format=JSON, verbose=True)
-    # simulate("even_positive_integer_generator", format=JSON, verbose=True)
+    # multiples_of_inputs = [1, 2, 3, 4, 8, 9, 16, 27, 32, 64, 81, 100]
+    # do_multiples_of(multiples_of_inputs)
 
-    # multiples_of_initial_values = [1, 2, 3, 4, 8, 9, 16, 27, 32, 64, 81, 100]
-    # do_multiples_of(multiples_of_initial_values)
+    # inc_dec_inputs = [0, 1, 20, 30, 133, 140, 150, 165, 180, 198]
+    # do_inc_dec(inc_dec_inputs)
 
-    # inc_dec_initial_values = [0, 1, 20, 30, 133, 140, 150, 165, 180, 198]
-    # do_inc_dec(inc_dec_initial_values)
-
-    # do_boolean_triple_sum_not_2()
-
-    # subset_sum_inputs = [([1, 2, 3], 5), ([1, 3, 5], 2)]
+    # subset_sum_inputs = [
+    #     ([1, 2, 3], 5),
+    #     ([1, 3, 5], 2),
+    #     ([], 7),
+    #     ([], 0),
+    #     ([5], 5),
+    #     ([9], 6),
+    #     ([1, 2, 4, 8], 15),
+    # ]
     # do_subset_sum(subset_sum_inputs)
+
+    # bit_adder_inputs = [
+    #     [7, 11],
+    #     [2, 9, 14],
+    #     [30, 31, 32, 33],
+    #     [],
+    #     [1, 2, 4, 8, 16],
+    #     [0, 0, 3, 0, 0],
+    # ]
+    # do_bit_adder(bit_adder_inputs)
+
+    # comparator_inputs = [
+    #     (1, 6),
+    #     (3, 3),
+    #     (0, 5),
+    #     (4, 2),
+    #     (0, 0),
+    #     (7, 4),
+    #     (20, 23),
+    #     (204, 133),
+    # ]
+    # do_comparator(comparator_inputs)
+
+    # boolean_function_inputs = [
+    #     (3, lambda L: sum(L) != 2, "sum_not_2"),
+    #     (4, lambda L: functools.reduce(operator.and_, L), "and"),
+    #     (2, lambda L: functools.reduce(operator.xor, L), "xor"),
+    # ]
+    # do_boolean_function(boolean_function_inputs)
 
     # batch_convert(from_format=JSON, to_format=YAML)
     # batch_convert(from_format=JSON, to_format=XML)
