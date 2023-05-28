@@ -4,7 +4,7 @@ import random
 
 from heapq import heappush, heappop
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Literal
 from collections import Counter
 from src.globals import LOG
 from .Neuron import Neuron
@@ -84,7 +84,13 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
-    def simulate(self, filename: str, make_log: bool = True):
+    def simulate(
+        self,
+        filename: str,
+        type_: Literal["generating", "halting", "boolean"],
+        time_limit: int,
+        make_log: bool,
+    ):
         to_index: dict[str, int] = {}
         for i, neuron in enumerate(self.neurons):
             to_index[neuron.id] = i
@@ -119,9 +125,9 @@ class System:
         print_buffer = []
 
         start, end = -1, -1
-        output_at_3 = False
+        boolean_result = -1
 
-        while not done and time < 5 * 10**2:
+        while not done and time < time_limit:
             simulation_log.append(f"{'- ' * 15}time: {time} {'- '*15}\n")
             simulation_log.append("\n")
             simulation_log.append("> phase 1: incoming spikes\n")
@@ -250,23 +256,18 @@ class System:
                 simulation_log.append(">> no events during phase 4\n")
             simulation_log.append("\n")
 
-            if time == 3:
-                output_at_3 = output_detected
-            elif time == 4:
-                return output_at_3
-
-            # if output_detected:
-            #     if start == -1:
-            #         start = time
-            #         simulation_log.append(">> detected first output spike\n")
-            #         simulation_log.append("\n")
-            #     else:
-            #         end = time
-            #         simulation_log.append(
-            #             ">> detected second output spike, wrapping up...\n"
-            #         )
-            #         simulation_log.append("\n")
-            #         break
+            if type_ == "generating" and output_detected:
+                if start == -1:
+                    start = time
+                    simulation_log.append(">> detected first output spike\n")
+                    simulation_log.append("\n")
+                else:
+                    end = time
+                    simulation_log.append(
+                        ">> detected second output spike, wrapping up...\n"
+                    )
+                    simulation_log.append("\n")
+                    break
 
             simulation_log.append("> phase 5: showing in-between state\n")
             simulation_log.append("\n")
@@ -284,6 +285,10 @@ class System:
             print_buffer.clear()
             simulation_log.append("\n")
 
+            if type_ == "boolean" and time == 3:
+                boolean_result = output_detected
+                break
+
             time += 1
 
         if make_log:
@@ -292,12 +297,15 @@ class System:
             ) as log_file:
                 log_file.writelines(simulation_log)
 
-        return time
-
-        if end == -1:
-            return -1
-        else:
-            return end - start
+        if type_ == "generating":
+            if end == -1:
+                return -1
+            else:
+                return end - start
+        elif type_ == "halting":
+            return time
+        elif type_ == "boolean":
+            return boolean_result
 
     # def simulate_using_matrices(self):
     #     to_index = {}

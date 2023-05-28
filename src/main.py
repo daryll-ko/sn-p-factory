@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Callable
+from typing import Callable, Literal
 
 from src.generators.increment import generate_increment_system
 from src.generators.decrement import generate_decrement_system
@@ -27,13 +27,19 @@ def convert(filename: str, from_format: Format, to_format: Format) -> None:
     write(d, filename, to_format)
 
 
-def simulate(filename: str, format: Format = JSON, make_log: bool = True) -> int:
+def simulate(
+    filename: str,
+    type_: Literal["generating", "halting", "boolean"],
+    format: Format = JSON,
+    time_limit: int = 10**3,
+    make_log: bool = True,
+) -> int:
     system = (
         parse_dict_xml(read(filename, format))
         if format == XML
         else parse_dict(read(filename, format))
     )
-    return system.simulate(filename, format, make_log)
+    return system.simulate(filename, type_, time_limit, make_log)
 
 
 def search_through_folder(format: Format, f: Callable[[str], None]) -> None:
@@ -104,7 +110,7 @@ def do_multiples_of(inputs: list[int]) -> None:
         counter = Counter[int]()
         t1 = time.time()
         for _ in range(10**2):
-            value = simulate(f"multiples_of({str(n).zfill(3)})")
+            value = simulate(f"multiples_of({str(n).zfill(3)})", type_="generating")
             counter[value] += 1
         t2 = time.time()
         print(f"n={n} took {t2-t1} seconds ({(t2-t1)/(10**3)} seconds/simulation)")
@@ -118,10 +124,10 @@ def do_inc_dec(inputs: list[int]) -> None:
     for v in inputs:
         system = generate_increment_system(v)
         write(system.to_dict(), f"increment({str(v).zfill(3)})", format=JSON)
-        simulate(f"increment({str(v).zfill(3)})")
+        simulate(f"increment({str(v).zfill(3)})", type_="halting")
         system = generate_decrement_system(v)
         write(system.to_dict(), f"decrement({str(v).zfill(3)})", format=JSON)
-        simulate(f"decrement({str(v).zfill(3)})")
+        simulate(f"decrement({str(v).zfill(3)})", type_="halting")
 
 
 def do_subset_sum(inputs: list[tuple[list[int], int]]) -> None:
@@ -129,9 +135,10 @@ def do_subset_sum(inputs: list[tuple[list[int], int]]) -> None:
         system = generate_subset_sum_system(L, s)
         filename = f"subset_sum([{','.join(map(str, L))}],{s})"
         write(system.to_dict(), filename)
+        time_limit = 10**2
         for _ in range(10**2):
-            result = simulate(filename)
-            if result != 5 * 10**2:
+            result = simulate(filename, type_="halting", time_limit=time_limit)
+            if result != time_limit:
                 break
 
 
@@ -140,7 +147,7 @@ def do_bit_adder(inputs: list[list[int]]) -> None:
         system = generate_bit_adder_system(L)
         filename = f"bit_adder([{','.join(map(str, L))}])"
         write(system.to_dict(), filename)
-        simulate(filename)
+        simulate(filename, type_="halting")
 
 
 def do_comparator(inputs: list[tuple[int, int]]) -> None:
@@ -148,7 +155,7 @@ def do_comparator(inputs: list[tuple[int, int]]) -> None:
         system = generate_comparator_system(a, b)
         filename = f"comparator({a},{b})"
         write(system.to_dict(), filename)
-        simulate(filename)
+        simulate(filename, type_="halting")
 
 
 def to_bool_list(n: int, bits: int) -> list[bool]:
@@ -173,65 +180,65 @@ def do_boolean_function(
                 f"({name}({','.join(map(lambda v: '1' if v else '0', b))}))"
             )
             write(system.to_dict(), filename)
-            result = simulate(filename)
+            result = simulate(filename, type_="boolean")
             print(f"({','.join(map(str, b))}) => {result}")
             print()
 
 
 def main():
-    # round_trip(filename="even_positive_integer_generator")
-    # simulate("even_positive_integer_generator")
+    round_trip(filename="even_positive_integer_generator")
+    simulate("even_positive_integer_generator", type_="generating")
 
-    # multiples_of_inputs = [1, 2, 3, 4, 8, 9, 16, 27, 32, 64, 81, 100]
-    # do_multiples_of(multiples_of_inputs)
+    multiples_of_inputs = [1, 2, 3, 4, 8, 9, 16, 27, 32, 64, 81, 100]
+    do_multiples_of(multiples_of_inputs)
 
-    # inc_dec_inputs = [0, 1, 20, 30, 133, 140, 150, 165, 180, 198]
-    # do_inc_dec(inc_dec_inputs)
+    inc_dec_inputs = [0, 1, 20, 30, 133, 140, 150, 165, 180, 198]
+    do_inc_dec(inc_dec_inputs)
 
-    # subset_sum_inputs = [
-    #     ([1, 2, 3], 5),
-    #     ([1, 3, 5], 2),
-    #     ([], 7),
-    #     ([], 0),
-    #     ([5], 5),
-    #     ([9], 6),
-    #     ([1, 2, 4, 8], 15),
-    # ]
-    # do_subset_sum(subset_sum_inputs)
+    subset_sum_inputs = [
+        ([1, 2, 3], 5),
+        ([1, 3, 5], 2),
+        ([], 7),
+        ([], 0),
+        ([5], 5),
+        ([9], 6),
+        ([1, 2, 4, 8], 15),
+    ]
+    do_subset_sum(subset_sum_inputs)
 
-    # bit_adder_inputs = [
-    #     [7, 11],
-    #     [2, 9, 14],
-    #     [30, 31, 32, 33],
-    #     [],
-    #     [1, 2, 4, 8, 16],
-    #     [0, 0, 3, 0, 0],
-    # ]
-    # do_bit_adder(bit_adder_inputs)
+    bit_adder_inputs = [
+        [7, 11],
+        [2, 9, 14],
+        [30, 31, 32, 33],
+        [],
+        [1, 2, 4, 8, 16],
+        [0, 0, 3, 0, 0],
+    ]
+    do_bit_adder(bit_adder_inputs)
 
-    # comparator_inputs = [
-    #     (1, 6),
-    #     (3, 3),
-    #     (0, 5),
-    #     (4, 2),
-    #     (0, 0),
-    #     (7, 4),
-    #     (20, 23),
-    #     (204, 133),
-    # ]
-    # do_comparator(comparator_inputs)
+    comparator_inputs = [
+        (1, 6),
+        (3, 3),
+        (0, 5),
+        (4, 2),
+        (0, 0),
+        (7, 4),
+        (20, 23),
+        (204, 133),
+    ]
+    do_comparator(comparator_inputs)
 
-    # boolean_function_inputs = [
-    #     (3, lambda L: sum(L) != 2, "sum_not_2"),
-    #     (4, lambda L: functools.reduce(operator.and_, L), "and"),
-    #     (2, lambda L: functools.reduce(operator.xor, L), "xor"),
-    # ]
-    # do_boolean_function(boolean_function_inputs)
+    boolean_function_inputs = [
+        (3, lambda L: sum(L) != 2, "sum_not_2"),
+        (4, lambda L: functools.reduce(operator.and_, L), "and"),
+        (2, lambda L: functools.reduce(operator.xor, L), "xor"),
+    ]
+    do_boolean_function(boolean_function_inputs)
 
-    # batch_convert(from_format=JSON, to_format=YAML)
-    # batch_convert(from_format=JSON, to_format=XML)
+    batch_convert(from_format=JSON, to_format=YAML)
+    batch_convert(from_format=JSON, to_format=XML)
 
-    # benchmark()
+    benchmark()
 
     pass
 
