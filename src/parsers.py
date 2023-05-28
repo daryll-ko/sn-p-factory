@@ -2,7 +2,6 @@ from src.classes.System import System
 from src.classes.Neuron import Neuron
 from src.classes.Synapse import Synapse
 from src.classes.Position import Position
-from src.classes.Record import Record
 from src.classes.Rule import Rule
 from typing import Any, Literal, Union
 
@@ -76,13 +75,6 @@ def parse_position(d: dict[str, Any]) -> Position:
     y = d["y"]
 
     return Position(x, y)
-
-
-def parse_record(d: dict[str, Any]) -> Record:
-    time = d["time"]
-    spikes = d["spikes"]
-
-    return Record(time, spikes)
 
 
 def parse_rule(s: str) -> Rule:

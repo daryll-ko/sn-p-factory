@@ -1,16 +1,14 @@
 import os
 import re
 import random
-import shutil
 
 from heapq import heappush, heappop
 from dataclasses import dataclass
 from typing import Any
 from collections import Counter
-from src.globals import JSON, LOG
+from src.globals import LOG
 from .Neuron import Neuron
 from .Synapse import Synapse
-from .Format import Format
 
 
 @dataclass
@@ -86,13 +84,7 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
-    def simulate(self, filename: str, format: Format = JSON, make_log: bool = True):
-        log_folder_name = filename.replace(" ", "_")
-        log_folder_path = os.path.join(format.path, log_folder_name)
-
-        if os.path.isdir(log_folder_path):
-            shutil.rmtree(log_folder_path)
-
+    def simulate(self, filename: str, make_log: bool = True):
         to_index: dict[str, int] = {}
         for i, neuron in enumerate(self.neurons):
             to_index[neuron.id] = i
@@ -113,14 +105,14 @@ class System:
         for i, neuron in enumerate(self.neurons):
             if neuron.type_ == "input":
                 assert isinstance(neuron.content, list)
-                for index, record in enumerate(neuron.content):
-                    if record > 0:
+                for t, spikes in enumerate(neuron.content):
+                    if spikes > 0:
                         for synapse in adjacency_list[to_index[neuron.id]]:
                             to, weight = synapse.to, synapse.weight
                             j = to_index[to]
                             heappush(
                                 incoming_spikes[j],
-                                (index, record),
+                                (t, spikes),
                             )
 
         simulation_log = []
@@ -186,10 +178,10 @@ class System:
                     if downtime[i] == 0:
                         possible_indices = []
 
-                        for index, rule in enumerate(neuron.rules):
+                        for t, rule in enumerate(neuron.rules):
                             result = re.match(rule.regex, "a" * neuron.content)
                             if result:
-                                possible_indices.append(index)
+                                possible_indices.append(t)
 
                         if len(possible_indices) > 0:
                             some_rule_selected = True
