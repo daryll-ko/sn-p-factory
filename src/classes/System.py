@@ -66,9 +66,11 @@ class System:
 
             if neuron.type_ == "input":
                 assert isinstance(neuron.content, list)
+                v["delay"] = 0
                 v["isInput"] = True
 
             if neuron.type_ == "output":
+                v["spikes"] = 0
                 v["isOutput"] = True
 
             for synapse in self.synapses:
