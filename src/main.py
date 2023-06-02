@@ -8,6 +8,7 @@ from src.generators.subset_sum import generate_subset_sum_system
 from src.generators.bit_adder import generate_bit_adder_system
 from src.generators.comparator import generate_comparator_system
 from src.generators.boolean_function import generate_boolean_function_system
+from src.generators.complete import generate_complete_system
 
 from src.classes.Format import Format
 from src.globals import XML, JSON, YAML
@@ -185,6 +186,13 @@ def do_boolean_function(
             print()
 
 
+def do_complete(inputs: list[int]) -> None:
+    for n in inputs:
+        system = generate_complete_system(n)
+        filename = f"complete({str(n).zfill(3)})"
+        write(system.to_dict(), filename)
+
+
 def main():
     round_trip(filename="even_positive_integer_generator")
     simulate("even_positive_integer_generator", type_="generating")
@@ -234,6 +242,9 @@ def main():
         (2, lambda L: functools.reduce(operator.xor, L), "xor"),
     ]
     do_boolean_function(boolean_function_inputs)
+
+    complete_inputs = [1, 2, 4, 8, 16, 32, 64]
+    do_complete(complete_inputs)
 
     batch_convert(from_format=JSON, to_format=YAML)
     batch_convert(from_format=JSON, to_format=XML)
