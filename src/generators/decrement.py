@@ -56,7 +56,7 @@ def generate_decrement_system(initial_value: int) -> System:
             type_="regular",
             position=Position(0, 0),
             rules=[
-                Rule(regex="^a(aa)+$", consumed=3, produced=1, delay=0),
+                Rule(regex="^a(a{2})+$", consumed=3, produced=1, delay=0),
                 Rule(regex="^a$", consumed=1, produced=1, delay=1),
             ],
             content=2 * initial_value,

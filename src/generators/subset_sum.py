@@ -49,7 +49,7 @@ def generate_subset_sum_system(L: list[int], s: int) -> System:
             id=f"in_{{{i}}}",
             type_="regular",
             position=Position(0, 0),
-            rules=[Rule(regex="^a(aa)+$", consumed=2, produced=1, delay=0)],
+            rules=[Rule(regex="^a(a{2})+$", consumed=2, produced=1, delay=0)],
             content=2 * L[i - 1],
         )
         for i in range(1, n + 1)
@@ -58,7 +58,7 @@ def generate_subset_sum_system(L: list[int], s: int) -> System:
             id=f"in_{{{n+1}}}",
             type_="regular",
             position=Position(0, 0),
-            rules=[Rule(regex="^a(aa)+$", consumed=2, produced=1, delay=0)],
+            rules=[Rule(regex="^a(a{2})+$", consumed=2, produced=1, delay=0)],
             content=2 * s,
         )
     ]
@@ -150,7 +150,7 @@ def generate_subset_sum_system(L: list[int], s: int) -> System:
             id="acc",
             type_="regular",
             position=Position(0, 0),
-            rules=[Rule(regex="^a(aa)+$", consumed=2, produced=1, delay=0)],
+            rules=[Rule(regex="^a(a{2})+$", consumed=2, produced=1, delay=0)],
             content=0,
         )
     ]
