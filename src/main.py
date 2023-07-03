@@ -194,54 +194,54 @@ def do_complete_graph(inputs: list[int]) -> None:
 
 
 def main():
-    # round_trip(filename="even_positive_integer_generator")
-    # simulate("even_positive_integer_generator", type_="generating")
+    round_trip(filename="even_positive_integer_generator")
+    simulate("even_positive_integer_generator", type_="generating")
 
-    # multiples_of_inputs = [1, 2, 3, 4, 8, 9, 16, 27, 32, 64, 81, 100]
-    # do_multiples_of(multiples_of_inputs)
+    multiples_of_inputs = [1, 2, 3, 4, 8, 9, 16, 27, 32, 64, 81, 100]
+    do_multiples_of(multiples_of_inputs)
 
-    # inc_dec_inputs = [0, 1, 20, 30, 133, 140, 150, 165, 180, 198]
-    # do_inc_dec(inc_dec_inputs)
+    inc_dec_inputs = [0, 1, 20, 30, 133, 140, 150, 165, 180, 198]
+    do_inc_dec(inc_dec_inputs)
 
-    # subset_sum_inputs = [
-    #     ([1, 2, 3], 5),
-    #     ([1, 3, 5], 2),
-    #     ([], 7),
-    #     ([], 0),
-    #     ([5], 5),
-    #     ([9], 6),
-    #     ([1, 2, 4, 8], 15),
-    # ]
-    # do_subset_sum(subset_sum_inputs)
+    subset_sum_inputs = [
+        ([1, 2, 3], 5),
+        ([1, 3, 5], 2),
+        ([], 7),
+        ([], 0),
+        ([5], 5),
+        ([9], 6),
+        ([1, 2, 4, 8], 15),
+    ]
+    do_subset_sum(subset_sum_inputs)
 
-    # bit_adder_inputs = [
-    #     [7, 11],
-    #     [2, 9, 14],
-    #     [30, 31, 32, 33],
-    #     [],
-    #     [1, 2, 4, 8, 16],
-    #     [0, 0, 3, 0, 0],
-    # ]
-    # do_bit_adder(bit_adder_inputs)
+    bit_adder_inputs = [
+        [7, 11],
+        [2, 9, 14],
+        [30, 31, 32, 33],
+        [],
+        [1, 2, 4, 8, 16],
+        [0, 0, 3, 0, 0],
+    ]
+    do_bit_adder(bit_adder_inputs)
 
-    # comparator_inputs = [
-    #     (1, 6),
-    #     (3, 3),
-    #     (0, 5),
-    #     (4, 2),
-    #     (0, 0),
-    #     (7, 4),
-    #     (20, 23),
-    #     (204, 133),
-    # ]
-    # do_comparator(comparator_inputs)
+    comparator_inputs = [
+        (1, 6),
+        (3, 3),
+        (0, 5),
+        (4, 2),
+        (0, 0),
+        (7, 4),
+        (20, 23),
+        (204, 133),
+    ]
+    do_comparator(comparator_inputs)
 
-    # boolean_function_inputs = [
-    #     (3, lambda L: sum(L) != 2, "sum_not_2"),
-    #     (4, lambda L: functools.reduce(operator.and_, L), "and"),
-    #     (2, lambda L: functools.reduce(operator.xor, L), "xor"),
-    # ]
-    # do_boolean_function(boolean_function_inputs)
+    boolean_function_inputs = [
+        (3, lambda L: sum(L) != 2, "sum_not_2"),
+        (4, lambda L: functools.reduce(operator.and_, L), "and"),
+        (2, lambda L: functools.reduce(operator.xor, L), "xor"),
+    ]
+    do_boolean_function(boolean_function_inputs)
 
     complete_graph_inputs = [1, 2, 4, 8, 16, 32, 64]
     do_complete_graph(complete_graph_inputs)
