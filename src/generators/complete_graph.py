@@ -5,7 +5,7 @@ from src.classes.System import System
 from src.classes.Synapse import Synapse
 
 
-def generate_complete_system(n: int) -> System:
+def generate_complete_graph_system(n: int) -> System:
     neurons = [
         Neuron(
             id=f"n_{{{i}}}",
