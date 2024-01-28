@@ -15,10 +15,11 @@ from src.globals import XML, JSON, YAML
 from src.utils import read, write
 from src.parsers import parse_dict_xml, parse_dict
 
-import os
-import time
+import argparse
 import functools
 import operator
+import os
+import time
 
 
 def convert(filename: str, from_format: Format, to_format: Format) -> None:
@@ -170,7 +171,7 @@ def to_bool_list(n: int, bits: int) -> list[bool]:
 
 
 def do_boolean_function(
-    inputs: list[tuple[int, Callable[[list[bool]], bool], str]]
+    inputs: list[tuple[int, Callable[[list[bool]], bool], str]],
 ) -> None:
     for n, f, name in inputs:
         for i in range(1 << n):
@@ -251,8 +252,12 @@ def main():
 
     benchmark()
 
-    pass
-
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        prog="main.py",
+        description="Converts, generates, and simulates Spiking Neural P (SN P) systems.",
+    )
+    parser.add_argument("action", choices=["convert", "generate", "simulate"])
+    args = parser.parse_args()
+    print(args.action)
