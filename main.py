@@ -253,11 +253,40 @@ def main():
     benchmark()
 
 
+DESCRIPTION = """
+Converts, generates, and simulates Spiking Neural P (SN P) systems.
+
+All actions take in a file path (e.g., ./json/even_positive_integer_generator.json).
+What happens next depends on the action specified:
+
+
+    - [c]onvert: Converts {filetype} into {json,yaml} - {filetype}.
+    - [s]imulate: Simulates the indicated system.
+    - [g]enerate: Generates the requested system(s) into the indicated file path.
+                  The given file path must be a folder.
+
+
+If the action is to generate, another argument must be provided to indicate the type
+of system to generate.
+"""
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         prog="main.py",
-        description="Converts, generates, and simulates Spiking Neural P (SN P) systems.",
+        description=DESCRIPTION,
+        formatter_class=argparse.RawTextHelpFormatter,
     )
-    parser.add_argument("action", choices=["convert", "generate", "simulate"])
+    parser.add_argument(
+        "action",
+        choices=["c", "g", "s"],
+        help="[c]onvert, [g]enerate, or [s]imulate",
+    )
+    parser.add_argument("path", help="path of folder or .xml, .json, or .yaml file to work on")
     args = parser.parse_args()
-    print(args.action)
+    match args.action:
+        case "c":
+            print("converting...")
+        case "g":
+            print("generating...")
+        case "s":
+            print("simulating...")
