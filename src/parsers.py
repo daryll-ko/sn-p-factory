@@ -9,7 +9,7 @@ import re
 
 
 def parse_rule_xml(s: str) -> Rule:
-    result = re.match("(.*)/(\d*a)->(\d*a|0);(\d+)", s)
+    result = re.match(r"(.*)/(\d*a)->(\d*a|0);(\d+)", s)
 
     if result:
         regex, consumed, produced, delay = result.groups()
