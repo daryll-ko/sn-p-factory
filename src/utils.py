@@ -1,19 +1,17 @@
-from typing import Any
 from src.classes.Format import Format
-from src.globals import JSON
 
 import os
 
 
-def read(filename: str, format: Format = JSON) -> dict[str, Any]:
+def read_dict(filename: str, format: Format) -> dict:
     with open(
         os.path.join(format.path, f"{filename}.{format.extension}"), "r"
     ) as input_file:
-        return format.read_function(input_file.read())
+        return format.str_to_dict(input_file.read())
 
 
-def write(d: dict[str, Any], filename: str, format: Format = JSON) -> None:
+def write_dict(d: dict, filename: str, format: Format) -> None:
     with open(
         os.path.join(format.path, f"{filename}.{format.extension}"), "w"
     ) as output_file:
-        output_file.write(format.write_function(d))
+        output_file.write(format.dict_to_str(d))
