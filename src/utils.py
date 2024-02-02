@@ -9,7 +9,7 @@ def read_dict(filename: str, format: Format) -> dict:
     and returns a dict that contains the SN P system's info.
     """
     with open(
-        os.path.join(format.path, f"{filename}.{format.extension}"), "r"
+        os.path.join(format.get_path(), f"{filename}.{format.extension}"), "r"
     ) as input_file:
         return format.str_to_dict(input_file.read())
 
@@ -20,6 +20,6 @@ def write_dict(d: dict, filename: str, format: Format) -> None:
     with name `{filename}.{format extension}` via `format`.
     """
     with open(
-        os.path.join(format.path, f"{filename}.{format.extension}"), "w"
+        os.path.join(format.get_path(), f"{filename}.{format.extension}"), "w"
     ) as output_file:
         output_file.write(format.dict_to_str(d))
