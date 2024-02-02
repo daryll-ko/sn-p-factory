@@ -1,5 +1,4 @@
 import json
-import os
 import xmltodict
 import yaml
 
