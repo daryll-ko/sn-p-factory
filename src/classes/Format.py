@@ -6,5 +6,5 @@ from dataclasses import dataclass
 class Format:
     path: str
     extension: str
-    read_function: Callable[[str], dict]
-    write_function: Callable[[dict], str]
+    str_to_dict: Callable[[str], dict]
+    dict_to_str: Callable[[dict], str]
