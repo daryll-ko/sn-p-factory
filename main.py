@@ -194,7 +194,7 @@ def do_complete_graph(inputs: list[int]) -> None:
         write(system.to_dict(), filename)
 
 
-def main():
+def _main():
     round_trip(filename="even_positive_integer_generator")
     simulate("even_positive_integer_generator", type_="generating")
 
@@ -259,18 +259,16 @@ Converts, generates, and simulates Spiking Neural P (SN P) systems.
 All actions take in a file path (e.g., ./json/even_positive_integer_generator.json).
 What happens next depends on the action specified:
 
-
     - [c]onvert: Converts {filetype} into {json,yaml} - {filetype}.
     - [s]imulate: Simulates the indicated system.
     - [g]enerate: Generates the requested system(s) into the indicated file path.
                   The given file path must be a folder.
 
-
 If the action is to generate, another argument must be provided to indicate the type
 of system to generate.
 """
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         prog="main.py",
         description=DESCRIPTION,
@@ -290,3 +288,7 @@ if __name__ == "__main__":
             print("generating...")
         case "s":
             print("simulating...")
+    
+
+if __name__ == "__main__":
+    main()
