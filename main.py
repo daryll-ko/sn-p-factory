@@ -268,6 +268,7 @@ If the action is to generate, another argument must be provided to indicate the 
 of system to generate.
 """
 
+
 def main():
     parser = argparse.ArgumentParser(
         prog="main.py",
@@ -279,7 +280,9 @@ def main():
         choices=["c", "g", "s"],
         help="[c]onvert, [g]enerate, or [s]imulate",
     )
-    parser.add_argument("path", help="path of folder or .xml, .json, or .yaml file to work on")
+    parser.add_argument(
+        "path", help="path of folder or .xml, .json, or .yaml file to work on"
+    )
     args = parser.parse_args()
     match args.action:
         case "c":
@@ -288,7 +291,7 @@ def main():
             print("generating...")
         case "s":
             print("simulating...")
-    
+
 
 if __name__ == "__main__":
     main()
