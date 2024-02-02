@@ -5,8 +5,6 @@ import yaml
 
 from src.classes.Format import Format
 
-TEST_CASE_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
-
 XML = Format(
     extension="xml",
     str_to_dict=lambda s: xmltodict.parse(s)["content"],
