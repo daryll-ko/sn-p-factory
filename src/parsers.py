@@ -21,7 +21,7 @@ def parse_rule_xml(s: str) -> Rule:
 
         return Rule(regex, consumed, produced, delay)
     else:
-        return Rule("", -1, -1, -1)
+        raise NameError("Error\tParsing xml rule failed...")
 
 
 def parse_neuron_xml(d: dict) -> Neuron:
@@ -29,9 +29,7 @@ def parse_neuron_xml(d: dict) -> Neuron:
     type_: Literal["regular", "input", "output"] = (
         "input"
         if "isInput" in d and d["isInput"]
-        else "output"
-        if "isOutput" in d and d["isOutput"]
-        else "regular"
+        else "output" if "isOutput" in d and d["isOutput"] else "regular"
     )
     position = Position(
         round(float(d["position"]["x"])), round(float(d["position"]["y"]))
@@ -40,9 +38,11 @@ def parse_neuron_xml(d: dict) -> Neuron:
     content: Union[int, list[int]] = (
         int(d["spikes"])
         if type_ == "regular"
-        else list(map(int, d["bitstring"].split(",")))
-        if d["bitstring"] is not None
-        else []
+        else (
+            list(map(int, d["bitstring"].split(",")))
+            if d["bitstring"] is not None
+            else []
+        )
     )
 
     return Neuron(
@@ -84,31 +84,31 @@ def parse_rule(s: str) -> Rule:
     result_both = re.match(r"^(.+)\s*\\to\s*(.+)\s*$", s)
 
     if result is not None:
-        regex, consumed, produced, delay = result.groups()
+        regex_, consumed_, produced_, delay_ = result.groups()
 
-        regex = Rule.json_to_python_regex(regex)
-        consumed = Rule.get_value(consumed, in_xml=False)
-        produced = Rule.get_value(produced, in_xml=False)
-        delay = int(delay)
+        regex = Rule.json_to_python_regex(regex_)
+        consumed = Rule.get_value(consumed_, in_xml=False)
+        produced = Rule.get_value(produced_, in_xml=False)
+        delay = int(delay_)
 
         return Rule(regex, consumed, produced, delay)
 
     elif result_no_regex is not None:
-        consumed, produced, delay = result_no_regex.groups()
+        consumed_, produced_, delay_ = result_no_regex.groups()
 
-        regex = Rule.json_to_python_regex(consumed)
-        consumed = Rule.get_value(consumed, in_xml=False)
-        produced = Rule.get_value(produced, in_xml=False)
-        delay = int(delay)
+        regex = Rule.json_to_python_regex(consumed_)
+        consumed = Rule.get_value(consumed_, in_xml=False)
+        produced = Rule.get_value(produced_, in_xml=False)
+        delay = int(delay_)
 
         return Rule(regex, consumed, produced, delay)
 
     elif result_no_delay is not None:
-        regex, consumed, produced = result_no_delay.groups()
+        regex_, consumed_, produced_ = result_no_delay.groups()
 
-        regex = Rule.json_to_python_regex(regex)
-        consumed = Rule.get_value(consumed, in_xml=False)
-        produced = Rule.get_value(produced, in_xml=False)
+        regex = Rule.json_to_python_regex(regex_)
+        consumed = Rule.get_value(consumed_, in_xml=False)
+        produced = Rule.get_value(produced_, in_xml=False)
         delay = 0
 
         assert produced == 0
@@ -116,11 +116,11 @@ def parse_rule(s: str) -> Rule:
         return Rule(regex, consumed, produced, delay)
 
     elif result_both is not None:
-        consumed, produced = result_both.groups()
+        consumed_, produced_ = result_both.groups()
 
-        regex = Rule.json_to_python_regex(consumed)
-        consumed = Rule.get_value(consumed, in_xml=False)
-        produced = Rule.get_value(produced, in_xml=False)
+        regex = Rule.json_to_python_regex(consumed_)
+        consumed = Rule.get_value(consumed_, in_xml=False)
+        produced = Rule.get_value(produced_, in_xml=False)
         delay = 0
 
         assert produced == 0
@@ -128,7 +128,7 @@ def parse_rule(s: str) -> Rule:
         return Rule(regex, consumed, produced, delay)
 
     else:
-        return Rule("", -1, -1, -1)
+        raise NameError("Error\tParsing non-xml rule failed...")
 
 
 def parse_neuron(d: dict) -> Neuron:
@@ -140,9 +140,7 @@ def parse_neuron(d: dict) -> Neuron:
     content: Union[int, list[int]] = (
         int(d["content"])
         if type_ == "regular"
-        else list(map(int, list(d["content"])))
-        if len(d["content"]) > 0
-        else []
+        else list(map(int, list(d["content"]))) if len(d["content"]) > 0 else []
     )
 
     return Neuron(id, type_, position, rules, content)
