@@ -3,7 +3,7 @@ from src.classes.Neuron import Neuron
 from src.classes.Synapse import Synapse
 from src.classes.Position import Position
 from src.classes.Rule import Rule
-from typing import Any, Literal, Union
+from typing import Literal, Union
 
 import re
 
@@ -24,7 +24,7 @@ def parse_rule_xml(s: str) -> Rule:
         return Rule("", -1, -1, -1)
 
 
-def parse_neuron_xml(d: dict[str, Any]) -> Neuron:
+def parse_neuron_xml(d: dict) -> Neuron:
     id = d["id"]
     type_: Literal["regular", "input", "output"] = (
         "input"
@@ -54,7 +54,7 @@ def parse_neuron_xml(d: dict[str, Any]) -> Neuron:
     )
 
 
-def parse_dict_xml(d: dict[str, Any]) -> System:
+def parse_dict_xml(d: dict) -> System:
     to_index = {}
     for i, k in enumerate(d.keys()):
         to_index[k] = i
@@ -70,7 +70,7 @@ def parse_dict_xml(d: dict[str, Any]) -> System:
     return System(neurons, synapses)
 
 
-def parse_position(d: dict[str, Any]) -> Position:
+def parse_position(d: dict) -> Position:
     x = d["x"]
     y = d["y"]
 
@@ -131,7 +131,7 @@ def parse_rule(s: str) -> Rule:
         return Rule("", -1, -1, -1)
 
 
-def parse_neuron(d: dict[str, Any]) -> Neuron:
+def parse_neuron(d: dict) -> Neuron:
     id = d["id"]
     type_ = d["type"]
     position = parse_position(d["position"])
@@ -148,7 +148,7 @@ def parse_neuron(d: dict[str, Any]) -> Neuron:
     return Neuron(id, type_, position, rules, content)
 
 
-def parse_synapse(d: dict[str, Any]) -> Synapse:
+def parse_synapse(d: dict) -> Synapse:
     from_ = d["from"]
     to = d["to"]
     weight = d["weight"]
@@ -156,7 +156,7 @@ def parse_synapse(d: dict[str, Any]) -> Synapse:
     return Synapse(from_, to, weight)
 
 
-def parse_dict(d: dict[str, Any]) -> System:
+def parse_dict(d: dict) -> System:
     neurons = [parse_neuron(neuron) for neuron in d["neurons"]]
     synapses = [parse_synapse(synapse) for synapse in d["synapses"]]
 
