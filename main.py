@@ -22,14 +22,14 @@ import os
 import time
 
 
-def convert(filename: str, from_format: Format, to_format: Format) -> None:
+def _convert(filename: str, from_format: Format, to_format: Format) -> None:
     d = read(filename, from_format)
     system = parse_dict_xml(d) if from_format == XML else parse_dict(d)
     d = system.to_dict_xml() if to_format == XML else system.to_dict()
     write(d, filename, to_format)
 
 
-def simulate(
+def _simulate(
     filename: str,
     type_: Literal["generating", "halting", "boolean"],
     format: Format = JSON,
@@ -96,7 +96,7 @@ def benchmark():
 def batch_convert(from_format: Format, to_format: Format) -> None:
     search_through_folder(
         format=from_format,
-        f=lambda file: convert(os.path.splitext(file)[0], from_format, to_format),
+        f=lambda file: _convert(os.path.splitext(file)[0], from_format, to_format),
     )
 
 
@@ -112,7 +112,7 @@ def do_multiples_of(inputs: list[int]) -> None:
         counter = Counter[int]()
         t1 = time.time()
         for _ in range(10**2):
-            value = simulate(f"multiples_of({str(n).zfill(3)})", type_="generating")
+            value = _simulate(f"multiples_of({str(n).zfill(3)})", type_="generating")
             counter[value] += 1
         t2 = time.time()
         print(f"n={n} took {t2-t1} seconds ({(t2-t1)/(10**3)} seconds/simulation)")
@@ -126,10 +126,10 @@ def do_inc_dec(inputs: list[int]) -> None:
     for v in inputs:
         system = generate_increment_system(v)
         write(system.to_dict(), f"increment({str(v).zfill(3)})", format=JSON)
-        simulate(f"increment({str(v).zfill(3)})", type_="halting")
+        _simulate(f"increment({str(v).zfill(3)})", type_="halting")
         system = generate_decrement_system(v)
         write(system.to_dict(), f"decrement({str(v).zfill(3)})", format=JSON)
-        simulate(f"decrement({str(v).zfill(3)})", type_="halting")
+        _simulate(f"decrement({str(v).zfill(3)})", type_="halting")
 
 
 def do_subset_sum(inputs: list[tuple[list[int], int]]) -> None:
@@ -139,7 +139,7 @@ def do_subset_sum(inputs: list[tuple[list[int], int]]) -> None:
         write(system.to_dict(), filename)
         time_limit = 10**2
         for _ in range(10**2):
-            result = simulate(filename, type_="halting", time_limit=time_limit)
+            result = _simulate(filename, type_="halting", time_limit=time_limit)
             if result != time_limit:
                 break
 
@@ -149,7 +149,7 @@ def do_bit_adder(inputs: list[list[int]]) -> None:
         system = generate_bit_adder_system(L)
         filename = f"bit_adder([{','.join(map(str, L))}])"
         write(system.to_dict(), filename)
-        simulate(filename, type_="halting")
+        _simulate(filename, type_="halting")
 
 
 def do_comparator(inputs: list[tuple[int, int]]) -> None:
@@ -157,7 +157,7 @@ def do_comparator(inputs: list[tuple[int, int]]) -> None:
         system = generate_comparator_system(a, b)
         filename = f"comparator({a},{b})"
         write(system.to_dict(), filename)
-        simulate(filename, type_="halting")
+        _simulate(filename, type_="halting")
 
 
 def to_bool_list(n: int, bits: int) -> list[bool]:
@@ -182,7 +182,7 @@ def do_boolean_function(
                 f"({name}({','.join(map(lambda v: '1' if v else '0', b))}))"
             )
             write(system.to_dict(), filename)
-            result = simulate(filename, type_="boolean")
+            result = _simulate(filename, type_="boolean")
             print(f"({','.join(map(str, b))}) => {result}")
             print()
 
@@ -253,19 +253,51 @@ def _main():
     benchmark()
 
 
+def convert(path: str):
+    if not os.path.exists(path):
+        print(f"Error:\tFile at {path} doesn't exist...")
+        return
+    pass
+
+
+def simulate(path: str):
+    if not os.path.exists(path):
+        print(f"Error:\tFile at {path} doesn't exist...")
+        return
+    if not os.path.isfile(path):
+        print(f"Error:\tFile at {path} may be a directory...")
+
+
+def generate(path: str, sys_type: str):
+    if not os.path.exists(path):
+        print(f"Error:\tFile at {path} doesn't exist...")
+        return
+    if not os.path.isdir(path):
+        print(f"Error:\tFile at {path} isn't a directory...")
+        return
+    if sys_type is None:
+        print(f"Error:\tNo type of system indicated...")
+        return
+    pass
+
+
 DESCRIPTION = """
 Converts, generates, and simulates Spiking Neural P (SN P) systems.
 
-All actions take in a file path (e.g., ./json/even_positive_integer_generator.json).
+All actions take in a file path (e.g., /json/even_positive_integer_generator.json).
 What happens next depends on the action specified:
 
     - [c]onvert: Converts {filetype} into {json,yaml} - {filetype}.
+                 Note that xml is not a target filetype of the conversion.
+                 If the given file path is a folder, attempts to convert each file
+                 in this folder.
+
     - [s]imulate: Simulates the indicated system.
+
     - [g]enerate: Generates the requested system(s) into the indicated file path.
                   The given file path must be a folder.
-
-If the action is to generate, another argument must be provided to indicate the type
-of system to generate.
+                  For this action, another argument must be provided to indicate the
+                  type of system to generate.
 """
 
 
@@ -281,16 +313,19 @@ def main():
         help="[c]onvert, [g]enerate, or [s]imulate",
     )
     parser.add_argument(
-        "path", help="path of folder or .xml, .json, or .yaml file to work on"
+        "path", help="path of folder or file to work on"
+    )
+    parser.add_argument(
+        "-t", "--type", choices=["incr"], help="type of system to generate"
     )
     args = parser.parse_args()
     match args.action:
         case "c":
-            print("converting...")
+            convert(args.path)
         case "g":
-            print("generating...")
+            generate(args.path, args.type)
         case "s":
-            print("simulating...")
+            simulate(args.path)
 
 
 if __name__ == "__main__":
