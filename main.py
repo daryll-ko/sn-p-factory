@@ -247,24 +247,25 @@ def convert(path: str):
         return
     if os.path.isdir(path):
         for file in os.listdir(path):
-            if file[0] != ".":  # ignore e.g., `.git` folder
+            if file[0] not in [".", "_"]:  # ignore `.git/`, `__pycache__/`, etc.
                 convert(os.path.join(path, file))
         return
-    name, ext = os.path.splitext(os.path.basename(path))
-    source_format = get_format(ext[1:])
+    filename, fileext = os.path.splitext(os.path.basename(path))
+    source_format = get_format(fileext[1:])
     if source_format is None or source_format not in [XML, JSON, YAML]:
-        print(f"Warning:\t{path} extension unsupported, skipping...")
+        print(f"Warning:\tFile extension of {path} is not supported, skipping...")
         return
     for target_format in [JSON, YAML]:
         if target_format != source_format:
-            new_path = target_format.get_file_path(name)
+            new_path = target_format.get_file_path(filename)
             if os.path.exists(new_path):
-                print(f"Warning:\t{new_path} already exists, skipping...")
+                new_path_rel = new_path.replace(os.getcwd(), ".")
+                print(f"Warning:\t{new_path_rel} already exists, skipping...")
                 continue
-            d = source_format.read_dict(name)
+            d = source_format.read_dict(filename)
             system = parse_dict_xml(d) if source_format == XML else parse_dict(d)
             d = system.to_dict_xml() if target_format == XML else system.to_dict()
-            target_format.write_dict(d, name)
+            target_format.write_dict(d, filename)
 
 
 def simulate(path: str):
