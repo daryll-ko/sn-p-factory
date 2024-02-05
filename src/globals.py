@@ -27,3 +27,5 @@ LOG = Format(
     str_to_dict=lambda _: {},
     dict_to_str=lambda _: "",
 )
+
+ALL_FORMATS = [XML, JSON, YAML, LOG]
