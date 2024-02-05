@@ -86,13 +86,6 @@ def benchmark():
     print()
 
 
-def batch_convert(from_format: Format, to_format: Format) -> None:
-    search_through_folder(
-        format=from_format,
-        f=lambda file: _convert(os.path.splitext(file)[0], from_format, to_format),
-    )
-
-
 def round_trip(filename: str, format: Format = JSON) -> None:
     system = parse_dict(read_dict(filename, format))
     write_dict(system.to_dict(), filename, format)
@@ -240,9 +233,6 @@ def _main():
     complete_graph_inputs = [1, 2, 4, 8, 16, 32, 64]
     do_complete_graph(complete_graph_inputs)
 
-    batch_convert(from_format=JSON, to_format=YAML)
-    batch_convert(from_format=JSON, to_format=XML)
-
     benchmark()
 
 
@@ -262,20 +252,21 @@ def convert(path: str):
                 convert(os.path.join(path, file))
         return
     name, ext = os.path.splitext(os.path.basename(path))
-    format = get_format(ext[1:])
-    if format is None or format not in [XML, JSON, YAML]:
+    source_format = get_format(ext[1:])
+    if source_format is None or source_format not in [XML, JSON, YAML]:
         print(f"Warning:\t{path} extension unsupported, skipping...")
         return
-    for target in [JSON, YAML]:
-        if target != format:
-            new_path = os.path.join(target.get_path(), f"{name}.{target.extension}")
+    for target_format in [JSON, YAML]:
+        if target_format != source_format:
+            # make creating new_path a Format method?
+            new_path = os.path.join(target_format.get_path(), f"{name}.{target_format.extension}")
             if os.path.exists(new_path):
                 print(f"Warning:\t{new_path} already exists, skipping...")
                 continue
-            d = read_dict(name, format)
-            system = parse_dict_xml(d) if from_format == XML else parse_dict(d)
-            d = system.to_dict_xml() if target == XML else system.to_dict()
-            write_dict(d, filename, target)
+            d = read_dict(name, source_format)
+            system = parse_dict_xml(d) if source_format == XML else parse_dict(d)
+            d = system.to_dict_xml() if target_format == XML else system.to_dict()
+            write_dict(d, name, target_format)
 
 
 def simulate(path: str):
