@@ -3,7 +3,7 @@ import os
 from dataclasses import dataclass
 from typing import Callable
 
-TEST_CASE_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+TEST_CASE_FOLDER = os.path.join(os.getcwd(), "data")
 
 
 @dataclass
