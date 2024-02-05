@@ -12,7 +12,6 @@ from src.generators.complete_graph import generate_complete_graph_system
 
 from src.classes.Format import Format
 from src.globals import XML, JSON, YAML, ALL_FORMATS
-from src.utils import read_dict, write_dict
 from src.parsers import parse_dict_xml, parse_dict
 
 import argparse
@@ -262,10 +261,10 @@ def convert(path: str):
             if os.path.exists(new_path):
                 print(f"Warning:\t{new_path} already exists, skipping...")
                 continue
-            d = read_dict(name, source_format)
+            d = source_format.read_dict(name)
             system = parse_dict_xml(d) if source_format == XML else parse_dict(d)
             d = system.to_dict_xml() if target_format == XML else system.to_dict()
-            write_dict(d, name, target_format)
+            target_format.write_dict(d, name)
 
 
 def simulate(path: str):
