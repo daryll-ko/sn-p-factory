@@ -14,3 +14,6 @@ class Format:
 
     def get_dir_path(self):
         return os.path.join(TEST_CASE_FOLDER, self.extension)
+
+    def get_file_path(self, filename: str):
+        return os.path.join(get_dir_path(self), f"{name}.{self.extension}")
