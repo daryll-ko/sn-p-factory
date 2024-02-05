@@ -29,7 +29,9 @@ def parse_neuron_xml(d: dict) -> Neuron:
     type_: Literal["regular", "input", "output"] = (
         "input"
         if "isInput" in d and d["isInput"]
-        else "output" if "isOutput" in d and d["isOutput"] else "regular"
+        else "output"
+        if "isOutput" in d and d["isOutput"]
+        else "regular"
     )
     position = Position(
         round(float(d["position"]["x"])), round(float(d["position"]["y"]))
@@ -140,7 +142,9 @@ def parse_neuron(d: dict) -> Neuron:
     content: Union[int, list[int]] = (
         int(d["content"])
         if type_ == "regular"
-        else list(map(int, list(d["content"]))) if len(d["content"]) > 0 else []
+        else list(map(int, list(d["content"])))
+        if len(d["content"]) > 0
+        else []
     )
 
     return Neuron(id, type_, position, rules, content)
