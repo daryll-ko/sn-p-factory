@@ -1,5 +1,5 @@
 from collections import Counter
-from typing import Callable, Literal
+from typing import Callable, Literal, Optional
 
 from src.generators.increment import generate_increment_system
 from src.generators.decrement import generate_decrement_system
@@ -11,8 +11,8 @@ from src.generators.boolean_function import generate_boolean_function_system
 from src.generators.complete_graph import generate_complete_graph_system
 
 from src.classes.Format import Format
-from src.globals import XML, JSON, YAML
-from src.utils import read, write
+from src.globals import XML, JSON, YAML, ALL_FORMATS
+from src.utils import read_dict, write_dict
 from src.parsers import parse_dict_xml, parse_dict
 
 import argparse
@@ -20,13 +20,6 @@ import functools
 import operator
 import os
 import time
-
-
-def _convert(filename: str, from_format: Format, to_format: Format) -> None:
-    d = read(filename, from_format)
-    system = parse_dict_xml(d) if from_format == XML else parse_dict(d)
-    d = system.to_dict_xml() if to_format == XML else system.to_dict()
-    write(d, filename, to_format)
 
 
 def _simulate(
@@ -37,9 +30,9 @@ def _simulate(
     make_log: bool = True,
 ) -> int:
     system = (
-        parse_dict_xml(read(filename, format))
+        parse_dict_xml(read_dict(filename, format))
         if format == XML
-        else parse_dict(read(filename, format))
+        else parse_dict(read_dict(filename, format))
     )
     return system.simulate(filename, type_, time_limit, make_log)
 
@@ -101,14 +94,14 @@ def batch_convert(from_format: Format, to_format: Format) -> None:
 
 
 def round_trip(filename: str, format: Format = JSON) -> None:
-    system = parse_dict(read(filename, format))
-    write(system.to_dict(), filename, format)
+    system = parse_dict(read_dict(filename, format))
+    write_dict(system.to_dict(), filename, format)
 
 
 def do_multiples_of(inputs: list[int]) -> None:
     for n in inputs:
         system = generate_multiples_of_system(n)
-        write(system.to_dict(), f"multiples_of({str(n).zfill(3)})")
+        write_dict(system.to_dict(), f"multiples_of({str(n).zfill(3)})", JSON)
         counter = Counter[int]()
         t1 = time.time()
         for _ in range(10**2):
@@ -125,10 +118,10 @@ def do_multiples_of(inputs: list[int]) -> None:
 def do_inc_dec(inputs: list[int]) -> None:
     for v in inputs:
         system = generate_increment_system(v)
-        write(system.to_dict(), f"increment({str(v).zfill(3)})", format=JSON)
+        write_dict(system.to_dict(), f"increment({str(v).zfill(3)})", format=JSON)
         _simulate(f"increment({str(v).zfill(3)})", type_="halting")
         system = generate_decrement_system(v)
-        write(system.to_dict(), f"decrement({str(v).zfill(3)})", format=JSON)
+        write_dict(system.to_dict(), f"decrement({str(v).zfill(3)})", format=JSON)
         _simulate(f"decrement({str(v).zfill(3)})", type_="halting")
 
 
@@ -136,7 +129,7 @@ def do_subset_sum(inputs: list[tuple[list[int], int]]) -> None:
     for L, s in inputs:
         system = generate_subset_sum_system(L, s)
         filename = f"subset_sum([{','.join(map(str, L))}],{s})"
-        write(system.to_dict(), filename)
+        write_dict(system.to_dict(), filename, JSON)
         time_limit = 10**2
         for _ in range(10**2):
             result = _simulate(filename, type_="halting", time_limit=time_limit)
@@ -148,7 +141,7 @@ def do_bit_adder(inputs: list[list[int]]) -> None:
     for L in inputs:
         system = generate_bit_adder_system(L)
         filename = f"bit_adder([{','.join(map(str, L))}])"
-        write(system.to_dict(), filename)
+        write_dict(system.to_dict(), filename, JSON)
         _simulate(filename, type_="halting")
 
 
@@ -156,7 +149,7 @@ def do_comparator(inputs: list[tuple[int, int]]) -> None:
     for a, b in inputs:
         system = generate_comparator_system(a, b)
         filename = f"comparator({a},{b})"
-        write(system.to_dict(), filename)
+        write_dict(system.to_dict(), filename, JSON)
         _simulate(filename, type_="halting")
 
 
@@ -181,7 +174,7 @@ def do_boolean_function(
                 "boolean_function"
                 f"({name}({','.join(map(lambda v: '1' if v else '0', b))}))"
             )
-            write(system.to_dict(), filename)
+            write_dict(system.to_dict(), filename, JSON)
             result = _simulate(filename, type_="boolean")
             print(f"({','.join(map(str, b))}) => {result}")
             print()
@@ -191,7 +184,7 @@ def do_complete_graph(inputs: list[int]) -> None:
     for n in inputs:
         system = generate_complete_graph_system(n)
         filename = f"complete_graph({str(n).zfill(3)})"
-        write(system.to_dict(), filename)
+        write_dict(system.to_dict(), filename, JSON)
 
 
 def _main():
@@ -253,32 +246,57 @@ def _main():
     benchmark()
 
 
+def get_format(ext: str) -> Optional[Format]:
+    for format in ALL_FORMATS:
+        if ext == format.extension:
+            return format
+
+
 def convert(path: str):
     if not os.path.exists(path):
-        print(f"Error:\tFile at {path} doesn't exist...")
+        print(f"Error:\t{path} doesn't exist...")
         return
-    pass
+    if os.path.isdir(path):
+        for file in os.listdir(path):
+            if file[0] != ".":  # ignore e.g., `.git` folder
+                convert(os.path.join(path, file))
+        return
+    name, ext = os.path.splitext(os.path.basename(path))
+    format = get_format(ext[1:])
+    if format is None or format not in [XML, JSON, YAML]:
+        print(f"Warning:\t{path} extension unsupported, skipping...")
+        return
+    for target in [JSON, YAML]:
+        if target != format:
+            new_path = os.path.join(target.get_path(), f"{name}.{target.extension}")
+            if os.path.exists(new_path):
+                print(f"Warning:\t{new_path} already exists, skipping...")
+                continue
+            d = read_dict(name, format)
+            system = parse_dict_xml(d) if from_format == XML else parse_dict(d)
+            d = system.to_dict_xml() if target == XML else system.to_dict()
+            write_dict(d, filename, target)
 
 
 def simulate(path: str):
     if not os.path.exists(path):
-        print(f"Error:\tFile at {path} doesn't exist...")
+        print(f"Error:\t{path} doesn't exist...")
         return
     if not os.path.isfile(path):
-        print(f"Error:\tFile at {path} may be a directory...")
+        print(f"Error:\t{path} isn't a file...")
+        return
 
 
 def generate(path: str, sys_type: str):
     if not os.path.exists(path):
-        print(f"Error:\tFile at {path} doesn't exist...")
+        print(f"Error:\t{path} doesn't exist...")
         return
     if not os.path.isdir(path):
-        print(f"Error:\tFile at {path} isn't a directory...")
+        print(f"Error:\t{path} isn't a directory...")
         return
     if sys_type is None:
-        print(f"Error:\tNo type of system indicated...")
+        print("Error:\tNo type of system indicated...")
         return
-    pass
 
 
 DESCRIPTION = """
@@ -312,9 +330,7 @@ def main():
         choices=["c", "g", "s"],
         help="[c]onvert, [g]enerate, or [s]imulate",
     )
-    parser.add_argument(
-        "path", help="path of folder or file to work on"
-    )
+    parser.add_argument("path", help="path of folder or file to work on")
     parser.add_argument(
         "-t", "--type", choices=["incr"], help="type of system to generate"
     )
