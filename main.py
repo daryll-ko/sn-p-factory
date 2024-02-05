@@ -1,4 +1,5 @@
 from collections import Counter
+from colorama import Back, Fore, Style
 from typing import Callable, Literal, Optional
 
 from src.generators.increment import generate_increment_system
@@ -243,7 +244,9 @@ def get_format(ext: str) -> Optional[Format]:
 
 def convert(path: str):
     if not os.path.exists(path):
-        print(f"Error:\t{path} doesn't exist...")
+        print(
+            f"{Back.RED} Error {Style.RESET_ALL}\t\t{Back.RED} {path} {Style.RESET_ALL} doesn't exist..."
+        )
         return
     if os.path.isdir(path):
         for file in os.listdir(path):
@@ -253,14 +256,18 @@ def convert(path: str):
     filename, fileext = os.path.splitext(os.path.basename(path))
     source_format = get_format(fileext[1:])
     if source_format is None or source_format not in [XML, JSON, YAML]:
-        print(f"Warning:\tFile extension of {path} is not supported, skipping...")
+        print(
+            f"{Back.MAGENTA} Warning {Style.RESET_ALL}\t\tFile extension of {Back.MAGENTA} {path} {Style.RESET_ALL} is not supported, skipping..."
+        )
         return
     for target_format in [JSON, YAML]:
         if target_format != source_format:
             new_path = target_format.get_file_path(filename)
             if os.path.exists(new_path):
                 new_path_rel = new_path.replace(os.getcwd(), ".")
-                print(f"Warning:\t{new_path_rel} already exists, skipping...")
+                print(
+                    f"{Back.MAGENTA} Warning {Style.RESET_ALL}\t\t{Back.MAGENTA} {new_path_rel} {Style.RESET_ALL} already exists, skipping..."
+                )
                 continue
             d = source_format.read_dict(filename)
             system = parse_dict_xml(d) if source_format == XML else parse_dict(d)
