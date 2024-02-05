@@ -259,7 +259,7 @@ def convert(path: str):
     for target_format in [JSON, YAML]:
         if target_format != source_format:
             # make creating new_path a Format method?
-            new_path = os.path.join(target_format.get_path(), f"{name}.{target_format.extension}")
+            new_path = os.path.join(target_format.get_dir_path(), f"{name}.{target_format.extension}")
             if os.path.exists(new_path):
                 print(f"Warning:\t{new_path} already exists, skipping...")
                 continue

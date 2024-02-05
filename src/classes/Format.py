@@ -12,5 +12,5 @@ class Format:
     str_to_dict: Callable[[str], dict]
     dict_to_str: Callable[[dict], str]
 
-    def get_path(self):
+    def get_dir_path(self):
         return os.path.join(TEST_CASE_FOLDER, self.extension)
