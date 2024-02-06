@@ -1,5 +1,5 @@
 from collections import Counter
-from colorama import Back, Fore, Style
+from colorama import Back, Style
 from typing import Callable, Literal, Optional
 
 from src.generators.increment import generate_increment_system
@@ -242,11 +242,17 @@ def get_format(ext: str) -> Optional[Format]:
             return format
 
 
+type LogKind = Literal["Error", "Warning"]
+
+
+def log_str(kind: LogKind, message: str) -> Optional[str]:
+    color = Back.RED if kind == "Error" else Back.MAGENTA
+    return f"{color} {kind} {Style.RESET_ALL}\t\t{message}"
+
+
 def convert(path: str):
     if not os.path.exists(path):
-        print(
-            f"{Back.RED} Error {Style.RESET_ALL}\t\t{Back.RED} {path} {Style.RESET_ALL} doesn't exist..."
-        )
+        print(log_str("Error", f"{Back.RED} {path} {Style.RESET_ALL} doesn't exist..."))
         return
     if os.path.isdir(path):
         for file in os.listdir(path):
@@ -257,7 +263,10 @@ def convert(path: str):
     source_format = get_format(fileext[1:])
     if source_format is None or source_format not in [XML, JSON, YAML]:
         print(
-            f"{Back.MAGENTA} Warning {Style.RESET_ALL}\t\tFile extension of {Back.MAGENTA} {path} {Style.RESET_ALL} is not supported, skipping..."
+            log_str(
+                "Warning",
+                f"File extension of {Back.MAGENTA} {path} {Style.RESET_ALL} is not supported, skipping...",
+            )
         )
         return
     for target_format in [JSON, YAML]:
@@ -266,7 +275,10 @@ def convert(path: str):
             if os.path.exists(new_path):
                 new_path_rel = new_path.replace(os.getcwd(), ".")
                 print(
-                    f"{Back.MAGENTA} Warning {Style.RESET_ALL}\t\t{Back.MAGENTA} {new_path_rel} {Style.RESET_ALL} already exists, skipping..."
+                    log_str(
+                        "Warning",
+                        f"{Back.MAGENTA} {new_path_rel} {Style.RESET_ALL} already exists, skipping...",
+                    )
                 )
                 continue
             d = source_format.read_dict(filename)
