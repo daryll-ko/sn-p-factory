@@ -252,7 +252,7 @@ def log_str(kind: LogKind, message: str) -> Optional[str]:
 
 def convert(path: str):
     if not os.path.exists(path):
-        print(log_str("Error", f"{Back.RED} {path} {Style.RESET_ALL} doesn't exist..."))
+        print(log_str("Error", f"{path} doesn't exist..."))
         return
     if os.path.isdir(path):
         for file in os.listdir(path):
@@ -265,7 +265,7 @@ def convert(path: str):
         print(
             log_str(
                 "Warning",
-                f"File extension of {Back.MAGENTA} {path} {Style.RESET_ALL} is not supported, skipping...",
+                f"File extension of {path} is not supported, skipping...",
             )
         )
         return
@@ -277,7 +277,7 @@ def convert(path: str):
                 print(
                     log_str(
                         "Warning",
-                        f"{Back.MAGENTA} {new_path_rel} {Style.RESET_ALL} already exists, skipping...",
+                        f"{new_path_rel} already exists, skipping...",
                     )
                 )
                 continue
