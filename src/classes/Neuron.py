@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, Literal, Union
-from .Rule import Rule
+
 from .Position import Position
+from .Rule import Rule
 
 
 @dataclass

@@ -1,8 +1,8 @@
-from src.classes.Position import Position
 from src.classes.Neuron import Neuron
+from src.classes.Position import Position
 from src.classes.Rule import Rule
-from src.classes.System import System
 from src.classes.Synapse import Synapse
+from src.classes.System import System
 
 
 def generate_increment_system(initial_value: int) -> System:

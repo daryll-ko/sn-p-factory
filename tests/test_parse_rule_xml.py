@@ -1,7 +1,7 @@
+import unittest
+
 from src.classes.Rule import Rule
 from src.parsers import parse_rule_xml
-
-import unittest
 
 
 class TestParseRuleXmp(unittest.TestCase):

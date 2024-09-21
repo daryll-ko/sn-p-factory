@@ -1,11 +1,11 @@
-from src.classes.System import System
-from src.classes.Neuron import Neuron
-from src.classes.Synapse import Synapse
-from src.classes.Position import Position
-from src.classes.Rule import Rule
+import re
 from typing import Literal, Union
 
-import re
+from src.classes.Neuron import Neuron
+from src.classes.Position import Position
+from src.classes.Rule import Rule
+from src.classes.Synapse import Synapse
+from src.classes.System import System
 
 
 def parse_rule_xml(s: str) -> Rule:

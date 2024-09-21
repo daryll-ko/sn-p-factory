@@ -1,25 +1,24 @@
-from collections import Counter
-from colorama import Back, Style
-from typing import Callable, Literal, Optional
-
-from src.generators.increment import generate_increment_system
-from src.generators.decrement import generate_decrement_system
-from src.generators.multiples_of import generate_multiples_of_system
-from src.generators.subset_sum import generate_subset_sum_system
-from src.generators.bit_adder import generate_bit_adder_system
-from src.generators.comparator import generate_comparator_system
-from src.generators.boolean_function import generate_boolean_function_system
-from src.generators.complete_graph import generate_complete_graph_system
-
-from src.classes.Format import Format
-from src.globals import XML, JSON, YAML, ALL_FORMATS
-from src.parsers import parse_dict_xml, parse_dict
-
 import argparse
 import functools
 import operator
 import os
 import time
+from collections import Counter
+from typing import Callable, Literal, Optional
+
+from colorama import Back, Style
+
+from src.classes.Format import Format
+from src.generators.bit_adder import generate_bit_adder_system
+from src.generators.boolean_function import generate_boolean_function_system
+from src.generators.comparator import generate_comparator_system
+from src.generators.complete_graph import generate_complete_graph_system
+from src.generators.decrement import generate_decrement_system
+from src.generators.increment import generate_increment_system
+from src.generators.multiples_of import generate_multiples_of_system
+from src.generators.subset_sum import generate_subset_sum_system
+from src.globals import ALL_FORMATS, JSON, XML, YAML
+from src.parsers import parse_dict, parse_dict_xml
 
 
 def _simulate(

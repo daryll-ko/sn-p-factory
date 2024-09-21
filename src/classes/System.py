@@ -1,12 +1,13 @@
 import os
-import re
 import random
-
-from heapq import heappush, heappop
-from dataclasses import dataclass
-from typing import Any, Literal
+import re
 from collections import Counter
+from dataclasses import dataclass
+from heapq import heappop, heappush
+from typing import Any, Literal
+
 from src.globals import LOG
+
 from .Neuron import Neuron
 from .Synapse import Synapse
 
