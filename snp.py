@@ -310,7 +310,7 @@ def generate(path: str, sys_type: str):
 
 
 DESCRIPTION = """
-Converts, generates, and simulates Spiking Neural P (SN P) systems.
+Utilities for working with Spiking Neural P (SN P) systems.
 
 All actions take in a file path (e.g., /json/even_positive_integer_generator.json).
 What happens next depends on the action specified:
@@ -329,29 +329,37 @@ What happens next depends on the action specified:
 """
 
 
-def main():
+def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="main.py",
+        prog="snp.py",
         description=DESCRIPTION,
-        formatter_class=argparse.RawTextHelpFormatter,
+        formatter_class=argparse.RawTextHelpFormatter,  # preserves desc spacing
     )
-    parser.add_argument(
-        "action",
-        choices=["c", "g", "s"],
-        help="[c]onvert, [g]enerate, or [s]imulate",
+    subparsers = parser.add_subparsers(required=True)
+
+    c = subparsers.add_parser("convert", aliases=["c"], help="Convert an SN P system.")
+    c.add_argument("file")
+    c.set_defaults(func=convert)
+
+    g = subparsers.add_parser(
+        "generate", aliases=["g"], help="Generate an SN P system."
     )
-    parser.add_argument("path", help="path of folder or file to work on")
-    parser.add_argument(
-        "-t", "--type", choices=["incr"], help="type of system to generate"
+    g.add_argument("folder")
+    g.set_defaults(func=generate)
+
+    s = subparsers.add_parser(
+        "simulate", aliases=["s"], help="Simulate an SN P system."
     )
+    s.add_argument("file")
+    s.set_defaults(func=simulate)
+
+    return parser
+
+
+def main():
+    parser = setup_parser()
     args = parser.parse_args()
-    match args.action:
-        case "c":
-            convert(args.path)
-        case "g":
-            generate(args.path, args.type)
-        case "s":
-            simulate(args.path)
+    args.func(args)
 
 
 if __name__ == "__main__":
