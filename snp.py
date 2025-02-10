@@ -247,14 +247,6 @@ def get_format(ext: str) -> Optional[Format]:
             return format
 
 
-type LogKind = Literal["Error", "Warning"]
-
-
-def log_str(kind: LogKind, message: str) -> Optional[str]:
-    color = Back.RED if kind == "Error" else Back.MAGENTA
-    return f"{color} {kind} {Style.RESET_ALL}\t\t{message}"
-
-
 def _convert(
     src_path: Path, dest_path: Path, src_format: FileFormat, dest_format: FileFormat
 ) -> None:
