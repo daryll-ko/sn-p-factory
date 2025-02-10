@@ -6,9 +6,13 @@ import operator
 import os
 import time
 from collections import Counter
-from typing import Callable, Literal, Optional
+from typing import Any, Callable, Literal, Optional
+from pathlib import Path
 
-from colorama import Back, Style
+from argparse import ArgumentParser
+
+from utils.logging import tgreen, tred
+from classes.FileFormat import FileFormat, str_to_format
 
 from src.classes.Format import Format
 from src.generators.bit_adder import generate_bit_adder_system
@@ -251,41 +255,46 @@ def log_str(kind: LogKind, message: str) -> Optional[str]:
     return f"{color} {kind} {Style.RESET_ALL}\t\t{message}"
 
 
-def convert(path: str):
-    if not os.path.exists(path):
-        print(log_str("Error", f"{path} doesn't exist..."))
+def _convert(
+    src_path: Path, dest_path: Path, src_format: FileFormat, dest_format: FileFormat
+) -> None:
+    try:
+        with open(src_path, "r") as f:
+            s = f.read()
+    except Exception as e:
+        print(tred(e))
         return
-    if os.path.isdir(path):
-        for file in os.listdir(path):
-            if file[0] not in [".", "_"]:  # ignore `.git/`, `__pycache__/`, etc.
-                convert(os.path.join(path, file))
+
+    d = src_format.str_to_dict(s)
+    s = dest_format.dict_to_str(d)
+
+    try:
+        with open(dest_path, "w") as f:
+            f.write(s)
+    except Exception as e:
+        print(tred(e))
         return
-    filename, fileext = os.path.splitext(os.path.basename(path))
-    source_format = get_format(fileext[1:])
-    if source_format is None or source_format not in [XML, JSON, YAML]:
-        print(
-            log_str(
-                "Warning",
-                f"File extension of {path} is not supported, skipping...",
-            )
-        )
-        return
-    for target_format in [JSON, YAML]:
-        if target_format != source_format:
-            new_path = target_format.get_file_path(filename)
-            if os.path.exists(new_path):
-                new_path_rel = new_path.replace(os.getcwd(), ".")
-                print(
-                    log_str(
-                        "Warning",
-                        f"{new_path_rel} already exists, skipping...",
-                    )
+
+    print(tgreen(f"{src_path} --> {dest_path}"))
+
+
+def convert(args: Any) -> None:
+    src_format = args._from
+    src_paths = Path(args.dir).glob(f"**/*{args.name}*.{src_format}")
+    dest_formats = args.to if isinstance(args.to, list) else [args.to]
+
+    for src_path in src_paths:
+        for dest_format in dest_formats:
+            if dest_format != src_format:
+                dest_path = (
+                    Path(args.dir) / dest_format / f"{src_path.stem}.{dest_format}"
                 )
-                continue
-            d = source_format.read_dict(filename)
-            system = parse_dict_xml(d) if source_format == XML else parse_dict(d)
-            d = system.to_dict_xml() if target_format == XML else system.to_dict()
-            target_format.write_dict(d, filename)
+                _convert(
+                    src_path,
+                    dest_path,
+                    str_to_format(args._from),
+                    str_to_format(dest_format),
+                )
 
 
 def simulate(path: str):
@@ -309,7 +318,16 @@ def generate(path: str, sys_type: str):
         return
 
 
-def setup_parser() -> argparse.ArgumentParser:
+def setup_converter(c: ArgumentParser) -> None:
+    c.add_argument("name")
+    c.add_argument("_from", choices=["xml", "json", "yaml"])
+    c.add_argument("-t", "--to", choices=["json", "yaml"], default=["json", "yaml"])
+    c.add_argument("-d", "--dir", default="systems")
+
+    c.set_defaults(func=convert)
+
+
+def setup_parser() -> ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="snp.py",
         description="Utilities for working with Spiking Neural P (SN P) systems.",
@@ -317,8 +335,7 @@ def setup_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(required=True)
 
     c = subparsers.add_parser("convert", aliases=["c"], help="Convert an SN P system.")
-    c.add_argument("file")
-    c.set_defaults(func=convert)
+    setup_converter(c)
 
     g = subparsers.add_parser(
         "generate", aliases=["g"], help="Generate an SN P system."
