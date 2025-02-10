@@ -5,15 +5,13 @@ import functools
 import operator
 import os
 import time
-from collections import Counter
-from typing import Any, Callable, Literal, Optional
-from pathlib import Path
-
 from argparse import ArgumentParser
+from collections import Counter
+from pathlib import Path
+from typing import Any, Callable, Literal, Optional
 
-from utils.logging import tgreen, tred
 from classes.FileFormat import FileFormat, str_to_format
-
+from globals import DEST_FORMATS, GENERATORS, SRC_FORMATS
 from src.classes.Format import Format
 from src.generators.bit_adder import generate_bit_adder_system
 from src.generators.boolean_function import generate_boolean_function_system
@@ -25,6 +23,7 @@ from src.generators.multiples_of import generate_multiples_of_system
 from src.generators.subset_sum import generate_subset_sum_system
 from src.globals import ALL_FORMATS, JSON, XML, YAML
 from src.parsers import parse_dict, parse_dict_xml
+from utils.logging import tgreen, tred
 
 
 def _simulate(
@@ -249,25 +248,23 @@ def simulate(path: str):
         return
 
 
-def generate(path: str, sys_type: str):
-    if not os.path.exists(path):
-        print(f"Error:\t{path} doesn't exist...")
-        return
-    if not os.path.isdir(path):
-        print(f"Error:\t{path} isn't a directory...")
-        return
-    if sys_type is None:
-        print("Error:\tNo type of system indicated...")
-        return
+def generate(args: Any) -> None: ...
 
 
 def setup_converter(c: ArgumentParser) -> None:
     c.add_argument("name")
-    c.add_argument("_from", choices=["xml", "json", "yaml"])
-    c.add_argument("-t", "--to", choices=["json", "yaml"], default=["json", "yaml"])
+    c.add_argument("_from", choices=SRC_FORMATS)
+    c.add_argument("-t", "--to", choices=DEST_FORMATS, default=DEST_FORMATS)
     c.add_argument("-d", "--dir", default="systems")
 
     c.set_defaults(func=convert)
+
+
+def setup_generator(g: ArgumentParser) -> None:
+    g.add_argument("generator", choices=GENERATORS)
+    g.add_argument("-t", "--to", choices=DEST_FORMATS, default=DEST_FORMATS)
+    g.add_argument("-d", "--dir", default="systems")
+    g.set_defaults(func=generate)
 
 
 def setup_parser() -> ArgumentParser:
@@ -283,8 +280,7 @@ def setup_parser() -> ArgumentParser:
     g = subparsers.add_parser(
         "generate", aliases=["g"], help="Generate an SN P system."
     )
-    g.add_argument("folder")
-    g.set_defaults(func=generate)
+    setup_generator(g)
 
     s = subparsers.add_parser(
         "simulate", aliases=["s"], help="Simulate an SN P system."
