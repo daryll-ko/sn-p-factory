@@ -42,55 +42,6 @@ def _simulate(
     return system.simulate(filename, type_, time_limit, make_log)
 
 
-def search_through_folder(format: Format, f: Callable[[str], None]) -> None:
-    for file in os.listdir(format.path):
-        filepath = os.path.join(format.path, file)
-        if os.path.isfile(filepath):
-            f(file)
-
-
-total_xml_size = 0
-total_json_size = 0
-total_yaml_size = 0
-
-
-def benchmark():
-    def benchmark_size(file: str) -> None:
-        global total_xml_size, total_json_size, total_yaml_size
-
-        filename = os.path.splitext(file)[0]
-
-        xml_size = os.path.getsize(os.path.join(XML.path, f"{filename}.xml"))
-        json_size = os.path.getsize(os.path.join(JSON.path, f"{filename}.json"))
-        yaml_size = os.path.getsize(os.path.join(YAML.path, f"{filename}.yaml"))
-
-        total_xml_size += xml_size
-        total_json_size += json_size
-        total_yaml_size += yaml_size
-
-        xml_to_json = round(json_size / xml_size * 100, 1)
-        xml_to_yaml = round(yaml_size / xml_size * 100, 1)
-
-        print(f"File sizes for ({filename})")
-        print()
-        print(f"xml: {xml_size}")
-        print(f"json: {json_size} ({xml_to_json}% of xml)")
-        print(f"yaml: {yaml_size} ({xml_to_yaml}% of xml)")
-        print()
-
-    search_through_folder(format=JSON, f=benchmark_size)
-
-    total_xml_to_json = round(total_json_size / total_xml_size * 100, 1)
-    total_xml_to_yaml = round(total_yaml_size / total_xml_size * 100, 1)
-
-    print("Total file sizes")
-    print()
-    print(f"xml: {total_xml_size}")
-    print(f"json: {total_json_size} ({total_xml_to_json}% of xml)")
-    print(f"yaml: {total_yaml_size} ({total_xml_to_yaml}% of xml)")
-    print()
-
-
 def round_trip(filename: str, format: Format = JSON) -> None:
     system = parse_dict(read_dict(filename, format))
     write_dict(system.to_dict(), filename, format)
