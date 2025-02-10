@@ -191,12 +191,6 @@ def _main():
     benchmark()
 
 
-def get_format(ext: str) -> Optional[Format]:
-    for format in ALL_FORMATS:
-        if ext == format.extension:
-            return format
-
-
 def _convert(
     src_path: Path, dest_path: Path, src_format: FileFormat, dest_format: FileFormat
 ) -> None:
