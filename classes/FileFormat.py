@@ -1,8 +1,10 @@
 import json
+from typing import Protocol
+
 import xmltodict
 import yaml
+
 from utils.logging import tred
-from typing import Protocol
 
 
 class FileFormat(Protocol):
