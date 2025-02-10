@@ -309,31 +309,10 @@ def generate(path: str, sys_type: str):
         return
 
 
-DESCRIPTION = """
-Utilities for working with Spiking Neural P (SN P) systems.
-
-All actions take in a file path (e.g., /json/even_positive_integer_generator.json).
-What happens next depends on the action specified:
-
-    - [c]onvert: Converts {filetype} into {json,yaml} - {filetype}.
-                 Note that xml is not a target filetype of the conversion.
-                 If the given file path is a folder, attempts to convert each file
-                 in this folder.
-
-    - [s]imulate: Simulates the indicated system.
-
-    - [g]enerate: Generates the requested system(s) into the indicated file path.
-                  The given file path must be a folder.
-                  For this action, another argument must be provided to indicate the
-                  type of system to generate.
-"""
-
-
 def setup_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="snp.py",
-        description=DESCRIPTION,
-        formatter_class=argparse.RawTextHelpFormatter,  # preserves desc spacing
+        description="Utilities for working with Spiking Neural P (SN P) systems.",
     )
     subparsers = parser.add_subparsers(required=True)
 
