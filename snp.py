@@ -7,8 +7,8 @@ from typing import Any
 
 from classes.FileFormat import FileFormat, str_to_format
 from classes.SystemGenerator import SystemGenerator, str_to_generator
-from src.parsers import parse_dict
 from utils.logging import tgreen, tred
+from utils.parsers import parse_dict
 from utils.types import DESTINATION_FORMATS, GENERATORS, SOURCE_FORMATS
 
 
