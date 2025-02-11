@@ -1,4 +1,5 @@
 from functools import partial
+
 import colorama
 from termcolor import colored
 
