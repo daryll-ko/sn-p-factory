@@ -1,33 +1,15 @@
 #!/usr/bin/env -S uv run
 
-import argparse
-import os
 from argparse import ArgumentParser
 from pathlib import Path
 from random import Random
 from typing import Any
 
-from classes.FileFormat import str_to_format
+from classes.FileFormat import FileFormat, str_to_format
 from classes.SystemGenerator import SystemGenerator, str_to_generator
+from src.parsers import parse_dict
 from utils.logging import tgreen, tred
 from utils.types import DESTINATION_FORMATS, GENERATORS, SOURCE_FORMATS
-
-# def _simulate(
-#     filename: str,
-#     type_: Literal["generating", "halting", "boolean"],
-#     format: Format = JSON,
-#     time_limit: int = 10**3,
-#     make_log: bool = True,
-# ) -> int:
-#     system = (
-#         parse_dict_xml(read_dict(filename, format))
-#         if format == XML
-#         else parse_dict(read_dict(filename, format))
-#     )
-#     return system.simulate(filename, type_, time_limit, make_log)
-#
-# def _main():
-#     round_trip(filename="even_positive_integer_generator")
 
 
 def _convert(src_path: Path, dest_path: Path) -> None:
@@ -94,13 +76,24 @@ def generate(args: Any) -> None:
         generate_with_args(args.args)
 
 
-def simulate(path: str):
-    if not os.path.exists(path):
-        print(f"Error:\t{path} doesn't exist...")
-        return
-    if not os.path.isfile(path):
-        print(f"Error:\t{path} isn't a file...")
-        return
+def _simulate(path: Path, _format: FileFormat) -> None:
+    try:
+        with open(path, "r") as f:
+            s = f.read()
+
+        d = _format.str_to_dict(s)
+        sys = parse_dict(d)
+
+        sys.simulate("generating", 100, True)
+    except Exception as e:
+        print(tred(e))
+
+
+def simulate(args: Any):
+    path = Path(args.path)
+    _format = str_to_format(path.suffix)
+
+    _simulate(path, _format)
 
 
 def setup_converter(c: ArgumentParser) -> None:
@@ -128,11 +121,18 @@ def setup_generator(g: ArgumentParser) -> None:
         "-t", "--to", choices=DESTINATION_FORMATS, default=DESTINATION_FORMATS
     )
     g.add_argument("-d", "--dir", default="systems")
+
     g.set_defaults(func=generate)
 
 
+def setup_simulator(s: ArgumentParser) -> None:
+    s.add_argument("path")
+
+    s.set_defaults(func=simulate)
+
+
 def setup_parser() -> ArgumentParser:
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         prog="snp.py",
         description="Utilities for working with Spiking Neural P (SN P) systems.",
     )
@@ -149,8 +149,7 @@ def setup_parser() -> ArgumentParser:
     s = subparsers.add_parser(
         "simulate", aliases=["s"], help="Simulate an SN P system."
     )
-    s.add_argument("file")
-    s.set_defaults(func=simulate)
+    setup_simulator(s)
 
     return parser
 
