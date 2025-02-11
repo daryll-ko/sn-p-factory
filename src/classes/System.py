@@ -6,8 +6,6 @@ from dataclasses import dataclass
 from heapq import heappop, heappush
 from typing import Any, Literal
 
-from src.globals import LOG
-
 from .Neuron import Neuron
 from .Synapse import Synapse
 
