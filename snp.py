@@ -105,7 +105,7 @@ def setup_converter(c: ArgumentParser) -> None:
         choices=DESTINATION_FORMATS,
         default=DESTINATION_FORMATS,
     )
-    c.add_argument("-d", "--dir", default="systems")
+    c.add_argument("-d", "--dir", default="data")
 
     c.set_defaults(func=convert)
 
@@ -120,7 +120,7 @@ def setup_generator(g: ArgumentParser) -> None:
     g.add_argument(
         "-t", "--to", choices=DESTINATION_FORMATS, default=DESTINATION_FORMATS
     )
-    g.add_argument("-d", "--dir", default="systems")
+    g.add_argument("-d", "--dir", default="data")
 
     g.set_defaults(func=generate)
 
