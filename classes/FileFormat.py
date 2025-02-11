@@ -4,8 +4,6 @@ from typing import Protocol
 import xmltodict
 import yaml
 
-from utils.logging import tred
-
 
 class FileFormat(Protocol):
     def str_to_dict(self, s: str) -> dict: ...
@@ -38,11 +36,11 @@ class YAML:
 
 def str_to_format(s: str) -> FileFormat:
     match s:
-        case "xml":
+        case ".xml":
             return XML()
-        case "json":
+        case ".json":
             return JSON()
-        case "yaml":
+        case ".yaml":
             return YAML()
         case _:
-            raise Exception(tred(":("))
+            raise Exception(":(")
