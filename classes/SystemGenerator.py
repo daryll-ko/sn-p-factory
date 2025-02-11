@@ -604,15 +604,16 @@ class BoolFunction:
         fun_str, *L = args
         L = [*map(int, L)]
 
-        match fun_str:
-            case "and":
-                fun = lambda L: functools.reduce(operator.and_, L)
-            case "xor":
-                fun = lambda L: functools.reduce(operator.xor, L)
-            case "sum_not_two":
-                fun = lambda L: sum(L) != 2
-            case _:
-                raise Exception(":(")
+        def fun(L):
+            match fun_str:
+                case "and":
+                    return functools.reduce(operator.and_, L)
+                case "xor":
+                    return functools.reduce(operator.xor, L)
+                case "sum_not_two":
+                    return lambda L: sum(L) != 2
+                case _:
+                    raise Exception(":(")
 
         n = len(L)
 
