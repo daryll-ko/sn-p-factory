@@ -1,19 +1,39 @@
-import os
 import random
 import re
-from collections import Counter
-from dataclasses import dataclass
-from heapq import heappop, heappush
+from collections import Counter, defaultdict
 from typing import Any, Literal
 
 from .Neuron import Neuron
 from .Synapse import Synapse
 
 
-@dataclass
 class System:
     neurons: list[Neuron]
     synapses: list[Synapse]
+
+    _neuron_to_index: dict[str, int]
+    _adjacency_list: list[list[Synapse]]
+    _incoming_spikes: dict[int, dict[str, int]]
+    _downtime: list[int]
+
+    def __init__(self, neurons: list[Neuron], synapses: list[Synapse]) -> None:
+        self.neurons = neurons
+        self.synapses = synapses
+
+        self._neuron_to_index = {}
+        for i, neuron in enumerate(self.neurons):
+            self._neuron_to_index[neuron.id] = i
+
+        self._adjacency_list = [[] for _ in range(len(self.neurons))]
+        for i, neuron in enumerate(self.neurons):
+            self._adjacency_list[i] = self._get_synapses_from(neuron.id)
+
+        self._incoming_spikes = defaultdict(lambda: defaultdict(int))
+
+        self._downtime = [0 for _ in range(len(self.neurons))]
+
+    def __repr__(self) -> str:
+        raise NotImplementedError
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -21,16 +41,16 @@ class System:
             "synapses": [synapse.to_dict() for synapse in self.synapses],
         }
 
-    def get_synapses_from(self, from_: str) -> list[Synapse]:
+    def _get_synapses_from(self, from_: str) -> list[Synapse]:
         return list(filter(lambda synapse: synapse.from_ == from_, self.synapses))
 
-    def get_synapses_to(self, to: str) -> list[Synapse]:
+    def _get_synapses_to(self, to: str) -> list[Synapse]:
         return list(filter(lambda synapse: synapse.to == to, self.synapses))
 
     @staticmethod
     def clean_xml_tag(s: str) -> str:
         cleaned = re.sub(",", "", re.sub("}", "", re.sub("{", "", s)))
-        if re.match("^\d+", s):
+        if re.match(r"^\d+", s):
             return f"n_{cleaned}"
         else:
             return f"{cleaned}"
@@ -87,26 +107,29 @@ class System:
 
     def simulate(
         self,
-        filename: str,
         type_: Literal["generating", "halting", "boolean"],
         time_limit: int,
         make_log: bool,
     ):
-        to_index: dict[str, int] = {}
-        for i, neuron in enumerate(self.neurons):
-            to_index[neuron.id] = i
+        simulation_log: list[str] = []
+        print_buffer: list[str] = []
 
-        adjacency_list: list[list[Synapse]] = [[] for _ in range(len(self.neurons))]
-        for i, neuron in enumerate(self.neurons):
-            adjacency_list[i] = self.get_synapses_from(neuron.id)
+        def flush_print_buffer() -> None:
+            simulation_log.append("\n".join(print_buffer))
+            print_buffer.clear()
 
-        incoming_spikes: list[list[tuple[int, int]]] = [
-            [] for _ in range(len(self.neurons))
-        ]
+        def capture_state() -> None:
+            for i, neuron in enumerate(self.neurons):
+                if neuron.type_ == "regular":
+                    print_buffer.append(
+                        f">> {neuron.id}\t<{neuron.content}/{self._downtime[i]}>"
+                    )
+                else:
+                    print_buffer.append(f">> {neuron.id}\t{neuron.content}")
 
-        downtime = [0 for _ in range(len(self.neurons))]
-
-        time = 0
+        start, end = -1, -1
+        boolean_result = -1
+        t = 0
         done = False
 
         for i, neuron in enumerate(self.neurons):
@@ -114,67 +137,51 @@ class System:
                 assert isinstance(neuron.content, list)
                 for t, spikes in enumerate(neuron.content):
                     if spikes > 0:
-                        for synapse in adjacency_list[to_index[neuron.id]]:
+                        for synapse in self._adjacency_list[
+                            self._neuron_to_index[neuron.id]
+                        ]:
                             to, weight = synapse.to, synapse.weight
-                            j = to_index[to]
-                            heappush(
-                                incoming_spikes[j],
-                                (t, spikes),
-                            )
+                            j = self._neuron_to_index[to]
+                            self._incoming_spikes[t][to] += spikes
 
-        simulation_log = []
-        print_buffer = []
+        while not done and t < time_limit:
 
-        start, end = -1, -1
-        boolean_result = -1
+            # = = = = = = = = = = = = = = = = = = = = = = = = =
 
-        while not done and time < time_limit:
-            simulation_log.append(f"{'- ' * 15}time: {time} {'- '*15}\n")
-            simulation_log.append("\n")
-            simulation_log.append("> phase 1: incoming spikes\n")
-            simulation_log.append("\n")
+            simulation_log.append(f"{t=}")
+            simulation_log.append("> phase 1: incoming spikes")
 
             incoming_updates: Counter[str] = Counter()
 
-            for i, neuron in enumerate(self.neurons):
-                heap = incoming_spikes[i]
-                if downtime[i] == 0:
-                    while len(heap) > 0 and heap[0][0] == time:
-                        incoming_updates[neuron.id] += heap[0][1]
-                        heappop(heap)
-                    if neuron.type_ == "regular":
-                        assert isinstance(neuron.content, int)
-                        neuron.content += incoming_updates[neuron.id]
+            for neuron in self.neurons:
+                i = self._neuron_to_index[neuron.id]
+                if self._downtime[i] == 0:
+                    if neuron.id in self._incoming_spikes[t]:
+                        incoming_updates[neuron.id] += self._incoming_spikes[t][
+                            neuron.id
+                        ]
+                        if neuron.type_ == "regular":
+                            assert isinstance(neuron.content, int)
+                            neuron.content += incoming_updates[neuron.id]
 
             for k, v in incoming_updates.items():
-                print_buffer.append(f">> {k}: {v}")
+                print_buffer.append(f">> {k}\t{v}")
 
             if len(print_buffer) > 0:
-                for line in print_buffer:
-                    simulation_log.append(f"{line}\n")
-                print_buffer.clear()
+                flush_print_buffer()
             else:
-                simulation_log.append(">> no events during phase 1\n")
-            simulation_log.append("\n")
+                simulation_log.append(">> no events during phase 1")
 
-            simulation_log.append("> phase 2: showing starting state\n")
-            simulation_log.append("\n")
+            # = = = = = = = = = = = = = = = = = = = = = = = = =
 
-            for neuron in self.neurons:
-                if neuron.type_ == "regular":
-                    print_buffer.append(
-                        f">> {neuron.id}: <{neuron.content}/{downtime[i]}>"
-                    )
-                else:
-                    print_buffer.append(f">> {neuron.id}: {neuron.content}")
+            simulation_log.append("> phase 2: showing starting state")
 
-            for line in print_buffer:
-                simulation_log.append(f"{line}\n")
-            print_buffer.clear()
-            simulation_log.append("\n")
+            capture_state()
+            flush_print_buffer()
 
-            simulation_log.append("> phase 3: selecting rules\n")
-            simulation_log.append("\n")
+            # = = = = = = = = = = = = = = = = = = = = = = = = =
+
+            simulation_log.append("> phase 3: selecting rules")
 
             some_rule_selected = False
 
@@ -182,166 +189,150 @@ class System:
                 if neuron.type_ == "regular":
                     assert isinstance(neuron.content, int)
 
-                    if downtime[i] == 0:
-                        possible_indices = []
+                    if self._downtime[i] == 0:
+                        possible_rules = []
 
-                        for t, rule in enumerate(neuron.rules):
+                        for j, rule in enumerate(neuron.rules):
                             result = re.match(rule.regex, "a" * neuron.content)
                             if result:
-                                possible_indices.append(t)
+                                possible_rules.append(rule)
 
-                        if len(possible_indices) > 0:
+                        if len(possible_rules) > 0:
                             some_rule_selected = True
-                            chosen_index = random.choice(possible_indices)
-                            rule = neuron.rules[chosen_index]
+                            rule = random.choice(possible_rules)
                             print_buffer.append(f">> {neuron.id}: {rule}")
 
                             neuron.content -= rule.consumed
                             if rule.produced > 0:
-                                for synapse in adjacency_list[to_index[neuron.id]]:
+                                for synapse in self._adjacency_list[
+                                    self._neuron_to_index[neuron.id]
+                                ]:
                                     to, weight = synapse.to, synapse.weight
-                                    j = to_index[to]
-                                    heappush(
-                                        incoming_spikes[j],
-                                        (
-                                            time
-                                            + rule.delay
-                                            + (
-                                                1
-                                                if self.neurons[j].type_ != "output"
-                                                else 0
-                                            ),
-                                            rule.produced * weight,
-                                        ),
-                                    )
-                            downtime[i] = rule.delay
+                                    j = self._neuron_to_index[to]
+                                    self._incoming_spikes[
+                                        t
+                                        + rule.delay
+                                        + (
+                                            1
+                                            if self.neurons[j].type_ != "output"
+                                            else 0
+                                        )
+                                    ][to] += (rule.produced * weight)
+
+                            self._downtime[i] = rule.delay
                     else:
-                        downtime[i] -= 1
+                        self._downtime[i] -= 1
 
             if len(print_buffer) > 0:
-                for line in print_buffer:
-                    simulation_log.append(f"{line}\n")
-                print_buffer.clear()
+                flush_print_buffer()
             else:
-                simulation_log.append(">> no events during phase 3\n")
-            simulation_log.append("\n")
+                simulation_log.append(">> no events during phase 3")
 
             done = (
-                all([len(heap) == 0 for heap in incoming_spikes])
+                all(len(d) == 0 for _t, d in self._incoming_spikes.items() if _t > t)
                 and not some_rule_selected
             )
 
-            simulation_log.append(
-                "> phase 4: accumulating updates, detecting outputs\n"
-            )
-            simulation_log.append("\n")
+            # = = = = = = = = = = = = = = = = = = = = = = = = =
+
+            simulation_log.append("> phase 4: accumulating updates, detecting outputs")
 
             output_detected = False
 
             for i, neuron in enumerate(self.neurons):
-                heap = incoming_spikes[i]
-                if downtime[i] == 0:
-                    while len(heap) > 0 and heap[0][0] == time:
-                        incoming_updates[neuron.id] += heap[0][1]
-                        heappop(heap)
+                if self._downtime[i] == 0:
+                    if neuron.id in self._incoming_spikes[t]:
+                        delta = self._incoming_spikes[t][neuron.id]
+                        incoming_updates[neuron.id] += delta
+
                     if neuron.type_ == "output":
                         assert isinstance(neuron.content, list)
                         neuron.content.append(incoming_updates[neuron.id])
                         output_detected |= incoming_updates[neuron.id] > 0
 
             if len(print_buffer) > 0:
-                for line in print_buffer:
-                    simulation_log.append(f"{line}\n")
-                print_buffer.clear()
+                flush_print_buffer()
             else:
-                simulation_log.append(">> no events during phase 4\n")
-            simulation_log.append("\n")
+                simulation_log.append(">> no events during phase 4")
 
             if type_ == "generating" and output_detected:
                 if start == -1:
-                    start = time
-                    simulation_log.append(">> detected first output spike\n")
-                    simulation_log.append("\n")
+                    start = t
+                    simulation_log.append(">> detected first output spike")
                 else:
-                    end = time
+                    end = t
                     simulation_log.append(
-                        ">> detected second output spike, wrapping up...\n"
+                        ">> detected second output spike, wrapping up..."
                     )
-                    simulation_log.append("\n")
                     break
 
-            simulation_log.append("> phase 5: showing in-between state\n")
-            simulation_log.append("\n")
+            # = = = = = = = = = = = = = = = = = = = = = = = = =
 
-            for neuron in self.neurons:
-                if neuron.type_ == "regular":
-                    print_buffer.append(
-                        f">> {neuron.id}: <{neuron.content}/{downtime[i]}>"
-                    )
-                else:
-                    print_buffer.append(f">> {neuron.id}: {neuron.content}")
+            simulation_log.append("> phase 5: showing in-between state")
 
-            for line in print_buffer:
-                simulation_log.append(f"{line}\n")
-            print_buffer.clear()
-            simulation_log.append("\n")
+            capture_state()
+            flush_print_buffer()
 
-            if type_ == "boolean" and time == 3:
+            if type_ == "boolean" and t == 3:
                 boolean_result = output_detected
                 break
 
-            time += 1
+            t += 1
 
         if make_log:
-            with open(
-                os.path.join(LOG.path, f"{filename}.{LOG.extension}"), "w"
-            ) as log_file:
-                log_file.writelines(simulation_log)
+            for line in simulation_log:
+                print(line)
+                print()
 
-        if type_ == "generating":
-            if end == -1:
-                return -1
-            else:
-                return end - start
-        elif type_ == "halting":
-            return time
-        elif type_ == "boolean":
-            return boolean_result
+        match type_:
+            case "generating":
+                if end == -1:
+                    return -1
+                else:
+                    return end - start
+            case "halting":
+                return t
+            case "boolean":
+                return boolean_result
 
-    # def simulate_using_matrices(self):
-    #     to_index = {}
-    #     for j, neuron in enumerate(self.neurons):
-    #         to_index[neuron.id] = j
+    def simulate_using_matrices(self):
+        to_index = {}
+        for j, neuron in enumerate(self.neurons):
+            to_index[neuron.id] = j
 
-    #     N = sum([len(neuron.rules) for neuron in self.neurons])
-    #     M = len(self.neurons)
+        N = sum([len(neuron.rules) for neuron in self.neurons])
+        M = len(self.neurons)
 
-    #     P = [[0 for _ in range(M)] for _ in range(N)]  # production matrix (N×M)
-    #     C = [[0 for _ in range(M)] for _ in range(N)]  # consumption matrix (N×M)
+        P = [[0 for _ in range(M)] for _ in range(N)]  # production matrix (N×M)
+        C = [[0 for _ in range(M)] for _ in range(N)]  # consumption matrix (N×M)
 
-    #     offset = 0
-    #     for j, neuron in enumerate(self.neurons):
-    #         adjacent_indices = [to_index[synapse.to] for synapse in neuron.synapses]
-    #         for i, rule in enumerate(neuron.rules):
-    #             for adjacent_index in adjacent_indices:
-    #                 P[offset + i][adjacent_index] = rule.produced
-    #             C[offset + i][j] = rule.consumed
-    #         offset += len(neuron.rules)
+        offset = 0
+        for j, neuron in enumerate(self.neurons):
+            adjacent_indices = [
+                to_index[synapse.to] for synapse in self._get_synapses_from(neuron.id)
+            ]
+            for i, rule in enumerate(neuron.rules):
+                for adjacent_index in adjacent_indices:
+                    P[offset + i][adjacent_index] = rule.produced
+                C[offset + i][j] = rule.consumed
+            offset += len(neuron.rules)
 
-    #     time = 0
+        time = 0
 
-    #     while time < 10**3:
-    #         S = [0 for _ in range(M)]  # status vector (1×M)
-    #         I = [0 for _ in range(N)]  # indicator vector (1×N)
+        while time < 10**3:
+            # S = [0 for _ in range(M)]  # status vector (1×M)
+            # I = [0 for _ in range(N)]  # indicator vector (1×N)
 
-    #         SP  # spiking vector (1×N)
-    #         G = I • P  # gain vector (1×N • N×M = 1×M)
-    #         L = SP • C  # loss vector (1×N • N×M = 1×M)
+            # SP  # spiking vector (1×N)
+            # G = I • P  # gain vector (1×N • N×M = 1×M)
+            # L = SP • C  # loss vector (1×N • N×M = 1×M)
 
-    #         NG = S × (G - L) (1×M)
-    #         C_{k+1} - C_{k} = S × (G - L)
-    #         C_{k+1} = C_{k} + S × [(I • P) - (Sp • C)]
+            # NG = S × (G - L) (1×M)
+            # C_{k+1} - C_{k} = S × (G - L)
+            # C_{k+1} = C_{k} + S × [(I • P) - (Sp • C)]
 
-    #         what's the difference between I and SP?
+            # what's the difference between I and SP?
 
-    #         time += 1
+            time += 1
+
+        raise NotImplementedError()
