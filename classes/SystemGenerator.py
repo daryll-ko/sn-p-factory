@@ -3,11 +3,11 @@ import operator
 from random import Random
 from typing import Protocol
 
-from src.classes.Neuron import Neuron
-from src.classes.Position import Position
-from src.classes.Rule import Rule
-from src.classes.Synapse import Synapse
-from src.classes.System import System
+from classes.Neuron import Neuron
+from classes.Position import Position
+from classes.Rule import Rule
+from classes.Synapse import Synapse
+from classes.System import System
 
 
 class SystemGenerator(Protocol):

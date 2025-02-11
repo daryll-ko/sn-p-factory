@@ -1,11 +1,11 @@
 import re
 from typing import Literal, Union
 
-from src.classes.Neuron import Neuron
-from src.classes.Position import Position
-from src.classes.Rule import Rule
-from src.classes.Synapse import Synapse
-from src.classes.System import System
+from classes.Neuron import Neuron
+from classes.Position import Position
+from classes.Rule import Rule
+from classes.Synapse import Synapse
+from classes.System import System
 
 
 def parse_position(d: dict) -> Position:
