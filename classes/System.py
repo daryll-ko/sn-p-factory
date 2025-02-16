@@ -1,7 +1,14 @@
+from __future__ import annotations
+
+import itertools
 import random
 import re
 from collections import Counter, defaultdict
-from typing import Any, Literal
+from collections.abc import Iterable
+from copy import deepcopy
+from typing import Any, Literal, Optional
+
+from classes.Rule import Rule
 
 from .Neuron import Neuron
 from .Synapse import Synapse
@@ -11,14 +18,20 @@ class System:
     neurons: list[Neuron]
     synapses: list[Synapse]
 
+    _id_to_neuron: dict[str, Neuron]
     _neuron_to_index: dict[str, int]
     _adjacency_list: list[list[Synapse]]
     _incoming_spikes: dict[int, dict[str, int]]
     _downtime: list[int]
+    _buffers: list[Optional[Rule]]
 
     def __init__(self, neurons: list[Neuron], synapses: list[Synapse]) -> None:
         self.neurons = neurons
         self.synapses = synapses
+
+        self._id_to_neuron = {}
+        for neuron in self.neurons:
+            self._id_to_neuron[neuron.id] = neuron
 
         self._neuron_to_index = {}
         for i, neuron in enumerate(self.neurons):
@@ -32,8 +45,16 @@ class System:
 
         self._downtime = [0 for _ in range(len(self.neurons))]
 
+        self._buffers = [None for _ in range(len(self.neurons))]
+
     def __repr__(self) -> str:
-        raise NotImplementedError
+        lines = []
+        cols = max(len(neuron.id) for neuron in self.neurons)
+        for i, neuron in enumerate(self.neurons):
+            lines.append(
+                f"{neuron.id:<{cols+5}}{neuron.content}{'/' + str(self._downtime[i]) if neuron.type_ == 'regular' else ''}"
+            )
+        return "\n".join(lines) + "\n"
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -105,12 +126,138 @@ class System:
 
         return {"content": dict(neuron_entries)}
 
+    def _get_possible_rules(self) -> dict[str, list[Rule]]:
+        ans = {}
+
+        for i, neuron in enumerate(self.neurons):
+            if neuron.type_ == "regular":
+                assert isinstance(neuron.content, int)
+
+                if self._downtime[i] == 0:
+                    possible_rules = []
+
+                    for rule in neuron.rules:
+                        result = re.match(rule.regex, "a" * neuron.content)
+                        if result:
+                            possible_rules.append(rule)
+
+                    if possible_rules:
+                        ans[neuron.id] = possible_rules
+                elif self._downtime[i] == 1:
+                    self._downtime[i] = 0
+
+                    rule = self._buffers[i]
+
+                    assert rule is not None
+
+                    rule_copy = deepcopy(rule)
+                    rule_copy.delay = 0
+
+                    ans[neuron.id] = [rule_copy]
+
+                    self._buffers[i] = None
+                else:
+                    self._downtime[i] -= 1
+
+        return ans
+
+    @staticmethod
+    def _choose_possible_rules(
+        l: dict[str, list[Rule]], acc: dict[str, Rule] = {}
+    ) -> Iterable[dict[str, Rule]]:
+        if len(l) == 0:
+            yield acc
+        else:
+            for k, v in l.items():
+                for rule in v:
+                    l_copy = deepcopy(l)
+                    acc_copy = deepcopy(acc)
+
+                    l_copy.pop(k)
+                    acc_copy[k] = rule
+
+                    yield from System._choose_possible_rules(l_copy, acc_copy)
+                break
+
+    def _apply_chosen_rules(self, l: dict[str, Rule] = {}) -> None:
+        affected = set()
+
+        for id, rule in l.items():
+            neuron = self._id_to_neuron[id]
+            i = self._neuron_to_index[neuron.id]
+            if neuron.type_ == "regular":
+                if rule.delay == 0:
+                    neuron.remove(rule.consumed)
+                    if rule.produced > 0:
+                        for synapse in self._adjacency_list[i]:
+                            to_neuron = self.neurons[self._neuron_to_index[synapse.to]]
+                            to_neuron.add(rule.produced * synapse.weight)
+                            affected.add(to_neuron.id)
+                else:
+                    self._buffers[i] = rule
+                    self._downtime[i] = rule.delay
+
+        for neuron in self.neurons:
+            if neuron.type_ == "output" and neuron.id not in affected:
+                neuron.add(0)
+
+    def get_spike_distance(self) -> Optional[int]:
+        for neuron in self.neurons:
+            if neuron.type_ == "output":
+                assert isinstance(neuron.content, list)
+                l = -1
+                for i, b in enumerate(neuron.content):
+                    if b > 0:
+                        if l == -1:
+                            l = i
+                        else:
+                            return i - l
+                break
+
+    def is_done(self) -> bool:
+        return self.get_spike_distance() is not None
+
+    def get_next_det(self) -> System:
+        possible_rules = self._get_possible_rules()
+
+        if len(possible_rules) > 0:
+            chosen_rules = next(
+                itertools.islice(self._choose_possible_rules(possible_rules), 1)
+            )
+            self._apply_chosen_rules(chosen_rules)
+        else:
+            self._apply_chosen_rules()
+
+        return self
+
+    def get_next_nondet(self) -> Iterable[System]:
+        possible_rules = self._get_possible_rules()
+
+        if len(possible_rules) > 0:
+            for chosen_rules in self._choose_possible_rules(possible_rules):
+                clone = deepcopy(self)
+                clone._apply_chosen_rules(chosen_rules)
+                yield clone
+        else:
+            self._apply_chosen_rules()
+            yield self
+
+    def get_configs(self, time_left: int, det: bool, lazy: bool) -> Iterable[System]:
+        if time_left == 0 or (lazy and self.is_done()):
+            yield self
+        else:
+            if det:
+                yield from self.get_next_det().get_configs(time_left - 1, det, lazy)
+            else:
+                for poss in self.get_next_nondet():
+                    yield from poss.get_configs(time_left - 1, det, lazy)
+
     def simulate(
         self,
         type_: Literal["generating", "halting", "boolean"],
         time_limit: int,
         make_log: bool,
-    ):
+    ) -> int:
         simulation_log: list[str] = []
         print_buffer: list[str] = []
 
