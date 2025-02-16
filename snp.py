@@ -3,7 +3,7 @@
 from argparse import ArgumentParser
 from pathlib import Path
 from random import Random
-from typing import Any
+from typing import Any, Optional
 
 from classes.FileFormat import FileFormat, str_to_format
 from classes.SystemGenerator import SystemGenerator, str_to_generator
@@ -96,6 +96,62 @@ def simulate(args: Any):
     _simulate(path, _format)
 
 
+def _check(
+    path: Path, intrp: str, n: Optional[int], b: Optional[str], _format: FileFormat
+) -> None:
+    try:
+        with open(path, "r") as f:
+            s = f.read()
+
+        d = _format.str_to_dict(s)
+        sys = parse_dict(d)
+
+        if intrp == "dis":
+            assert n is not None
+            for ans in sys.get_configs(n + 1, det=False, lazy=True):
+                if ans.get_spike_distance() == n:
+                    print(tgreen(f"{n} is accepted by the system!"))
+                    return
+            print(tred(f"{n} isn't accepted by the system..."))
+        elif intrp == "lit":
+            assert b is not None
+            for ans in sys.get_configs(len(b), det=False, lazy=True):
+                if ans.get_bit_string() == b:
+                    print(tgreen(f"{b} is accepted by the system!"))
+                    return
+            print(tred(f"{b} isn't accepted by the system..."))
+
+    except Exception as e:
+        print(tred(e))
+
+
+def check(args: Any):
+    path = Path(args.path)
+    intrp = args.interpretation
+
+    n, b = None, None
+
+    if intrp == "dis":
+        assert args.num is not None
+        n = args.num
+    elif intrp == "lit":
+        assert args.bit_string is not None
+        b = args.bit_string
+
+    _format = str_to_format(path.suffix)
+
+    _check(path, intrp, n, b, _format)
+
+
+def setup_checker(ch: ArgumentParser) -> None:
+    ch.add_argument("path")
+    ch.add_argument("interpretation", choices=["dis", "lit"])
+    ch.add_argument("-n", "--num", type=int)
+    ch.add_argument("-b", "--bit_string")
+
+    ch.set_defaults(func=check)
+
+
 def setup_converter(c: ArgumentParser) -> None:
     c.add_argument("name")
     c.add_argument("_from", choices=SOURCE_FORMATS)
@@ -150,6 +206,11 @@ def setup_parser() -> ArgumentParser:
         "simulate", aliases=["s"], help="Simulate an SN P system."
     )
     setup_simulator(s)
+
+    ch = subparsers.add_parser(
+        "check", aliases=["ch"], help="Check if a string is accepted by an SN P system."
+    )
+    setup_checker(ch)
 
     return parser
 
