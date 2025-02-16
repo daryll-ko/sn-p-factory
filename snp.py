@@ -115,7 +115,7 @@ def _check(
             print(tred(f"{n} isn't accepted by the system..."))
         elif intrp == "lit":
             assert b is not None
-            for ans in sys.get_configs(len(b), det=False, lazy=True):
+            for ans in sys.get_configs(len(b), det=False, lazy=False):
                 if ans.get_bit_string() == b:
                     print(tgreen(f"{b} is accepted by the system!"))
                     return
