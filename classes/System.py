@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import itertools
 import random
 import re
 from collections import Counter, defaultdict
-from collections.abc import Iterable
+from collections.abc import Iterator
 from copy import deepcopy
 from typing import Any, Literal, Optional
 
@@ -164,7 +163,7 @@ class System:
     @staticmethod
     def _choose_possible_rules(
         l: dict[str, list[Rule]], acc: dict[str, Rule] = {}
-    ) -> Iterable[dict[str, Rule]]:
+    ) -> Iterator[dict[str, Rule]]:
         if len(l) == 0:
             yield acc
         else:
@@ -224,19 +223,9 @@ class System:
         return self.get_spike_distance() is not None
 
     def get_next_det(self) -> System:
-        possible_rules = self._get_possible_rules()
+        return next(self.get_next_nondet())
 
-        if len(possible_rules) > 0:
-            chosen_rules = next(
-                itertools.islice(self._choose_possible_rules(possible_rules), 1)
-            )
-            self._apply_chosen_rules(chosen_rules)
-        else:
-            self._apply_chosen_rules()
-
-        return self
-
-    def get_next_nondet(self) -> Iterable[System]:
+    def get_next_nondet(self) -> Iterator[System]:
         possible_rules = self._get_possible_rules()
 
         if len(possible_rules) > 0:
@@ -248,7 +237,7 @@ class System:
             self._apply_chosen_rules()
             yield self
 
-    def get_configs(self, time_left: int, det: bool, lazy: bool) -> Iterable[System]:
+    def get_configs(self, time_left: int, det: bool, lazy: bool) -> Iterator[System]:
         if time_left == 0 or (lazy and self.is_done()):
             yield self
         else:
