@@ -214,6 +214,12 @@ class System:
                             return i - l
                 break
 
+    def get_bit_string(self) -> Optional[str]:
+        for neuron in self.neurons:
+            if neuron.type_ == "output":
+                assert isinstance(neuron.content, list)
+                return "".join(map(str, neuron.content))
+
     def is_done(self) -> bool:
         return self.get_spike_distance() is not None
 
