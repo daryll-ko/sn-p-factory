@@ -146,8 +146,10 @@ def check(args: Any):
 def setup_checker(ch: ArgumentParser) -> None:
     ch.add_argument("path")
     ch.add_argument("interpretation", choices=["dis", "lit"])
-    ch.add_argument("-n", "--num", type=int)
-    ch.add_argument("-b", "--bit_string")
+
+    _ch = ch.add_mutually_exclusive_group(required=True)
+    _ch.add_argument("-n", "--num", type=int)
+    _ch.add_argument("-b", "--bit_string")
 
     ch.set_defaults(func=check)
 
