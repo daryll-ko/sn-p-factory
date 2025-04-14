@@ -1,5 +1,6 @@
 # `sn-p-factory`
 
+<!--
 <img src="assets/sn-p-factory-overview.png" />
 
 Test case generator and simulator for Spiking Neural P (SN P) system simulation or analysis projects.
@@ -76,3 +77,4 @@ At each time step ($`t = 0, 1, 2, \dots`$), this factory's simulator does the fo
 5. show state of system
 
 Step 5 is there to reflect the changes made in Step 3.
+-->
