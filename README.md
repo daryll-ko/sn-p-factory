@@ -1,5 +1,9 @@
 # `sn-p-factory`
 
+A swiss-army knife for working with Spiking Neural P (SN P) systems.
+
+## Setup
+
 Set up your virtual environment first (assumes you have [`uv`](https://docs.astral.sh/uv/) installed):
 
 ```bash
@@ -7,6 +11,12 @@ uv venv
 source .venv/bin/activate
 uv pip install
 ```
+
+## Generation
+
+## Simulation
+
+## String Computation
 
 <!--
 <img src="assets/sn-p-factory-overview.png" />
