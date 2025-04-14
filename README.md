@@ -14,6 +14,11 @@ uv pip install
 
 ## Generation
 
+```bash
+snp.py generate [-h] [-a ARGS [ARGS ...] | -r RANDOM] [-t {json,yaml}] [-d DIR]
+                       {multiples_of,increment,decrement,subset_sum,bit_adder,comparator,bool_function,complete_graph}
+```
+
 ## Simulation
 
 ## String Computation
