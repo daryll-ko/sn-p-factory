@@ -1,5 +1,13 @@
 # `sn-p-factory`
 
+Set up your virtual environment first (assumes you have [`uv`](https://docs.astral.sh/uv/) installed):
+
+```bash
+uv venv
+source .venv/bin/activate
+uv pip install
+```
+
 <!--
 <img src="assets/sn-p-factory-overview.png" />
 
