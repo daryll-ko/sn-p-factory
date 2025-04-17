@@ -23,6 +23,14 @@ You may also use `g` instead of `generate`.
 
 ## Simulation
 
+You may run the web simulation via:
+
+```bash
+uvicorn web:app --reload
+```
+
+Ensure that the virtual environment is activated, and that the necessary dependencies are installed (via `uv pip install`).
+
 ## String Computation
 
 <!--
