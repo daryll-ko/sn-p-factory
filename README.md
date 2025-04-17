@@ -21,7 +21,7 @@ uv pip install
 
 You may also use `g` instead of `generate`.
 
-## Simulation
+## String Computation
 
 You may run the web simulation via:
 
@@ -31,7 +31,9 @@ uvicorn web:app --reload
 
 Ensure that the virtual environment is activated, and that the necessary dependencies are installed (via `uv pip install`).
 
-## String Computation
+Alternatively, you may also run either of the `meta*.py` files (via `uv run`).
+
+## Simulation
 
 <!--
 <img src="assets/sn-p-factory-overview.png" />
