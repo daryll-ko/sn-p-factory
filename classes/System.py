@@ -238,14 +238,32 @@ class System:
             yield self
 
     def get_configs(self, time_left: int, det: bool, lazy: bool) -> Iterator[System]:
-        if time_left == 0 or (lazy and self.is_done()):
-            yield self
-        else:
-            if det:
-                yield from self.get_next_det().get_configs(time_left - 1, det, lazy)
-            else:
-                for poss in self.get_next_nondet():
-                    yield from poss.get_configs(time_left - 1, det, lazy)
+        # iterative
+
+        st = []
+        st.append((0, self))
+        res = []
+
+        while st:
+            t, sys = st.pop()
+            res.append(sys)
+            if t < time_left and (not lazy or not sys.is_done()):
+                op = sys.get_next_det if det else sys.get_next_nondet
+                for poss in list(op()):
+                    st.append((t + 1, poss))
+
+        yield from res
+
+        # recursive
+
+        # if time_left == 0 or (lazy and self.is_done()):
+        #     yield self
+        # else:
+        #     if det:
+        #         yield from self.get_next_det().get_configs(time_left - 1, det, lazy)
+        #     else:
+        #         for poss in self.get_next_nondet():
+        #             yield from poss.get_configs(time_left - 1, det, lazy)
 
     def simulate(
         self,
